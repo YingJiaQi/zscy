@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace： 名称空间 可以随意命名 -->
+<mapper namespace="com.syard.dao.UserDao">
+	
+	<select id="queryUserAll" resultType="User" parameterType="PageBean">
+		select * from tbl_s_user where 1=1 
+		<if test="startTime != null">
+			<![CDATA[ and create_time >= date(#{startTime,jdbcType=TIMESTAMP})  ]]>
+		</if>
+		<if test="endTime != null">
+			 <![CDATA[ and create_time <= date(#{endTime,jdbcType=TIMESTAMP})  ]]>
+		</if>
+		<if test="isDeleted == 1 || isDeleted == 0">
+			and is_deleted = #{isDeleted}
+		</if>
+		<if test="isDeleted == 10">
+			and is_deleted in (1, 0)
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="key != null and key != ''">
+			and user_code = #{key}
+		</if>
+		<if test="key3 != null and key3 != ''">
+			and user_name like '%${key3}%'
+		</if>
+		<if test="key2 != null and key2 != ''">
+			and login_times >= #{key2}
+		</if>
+	</select>
+	<insert id="addUser" parameterType="User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO tb_user (
+			id,
+			user_name,
+			password,
+			name,
+			age,
+			sex,
+			birthday,
+			created,
+			updated
+		)VALUES(
+			null,
+			#{userName},
+			#{password},
+			#{name},
+			#{age},
+			#{sex},
+			#{birthday},
+			NOW(),
+			NOW()
+	);
+	</insert>
+	<delete id="deleteUsers" parameterType="java.util.List">
+		delete from tb_user where id in 
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+	<select id="getMaxUserCode"  resultType="java.lang.String">
+		select max(user_code) from tbl_s_user
+	</select>
+</mapper>

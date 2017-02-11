@@ -1,0 +1,10 @@
+[
+		{ "id":"1", "pId":"0", "name":"用户管理       ","page":"/ZSCY/toLogin/Back_UserManage"},
+		{ "id":"2", "pId":"0", "name":"商品管理      ","page":"/ZSCY/toLogin/Back_CommodityManage"},
+		{ "id":"21", "pId":"2", "name":"新增商品      ","page":"/ZSCY/toLogin/Back_AddCommodity"},
+		{ "id":"22", "pId":"2", "name":"查询商品      ","page":"/ZSCY/toLogin/Back_QueryCommodity"},
+		{ "id":"23", "pId":"2", "name":"规格参数      ","page":"/ZSCY/toLogin/Back_CommodityParam"},
+		{ "id":"3", "pId":"0", "name":"网站内容管理","page":"/ZSCY/toLogin/Back_ContentManage"},
+		{ "id":"4", "pId":"0", "name":"系统通知管理","page":"/ZSCY/toLogin/SystemInformManage"}
+
+]

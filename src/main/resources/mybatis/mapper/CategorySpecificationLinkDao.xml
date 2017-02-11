@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace： 名称空间 可以随意命名 -->
+<mapper namespace="com.syard.dao.CategorySpecificationLinkDao">
+	<select id="findByCategoryId" resultType="CategorySpecificationLink" parameterType="java.lang.String">
+		select * from tbl_s_category_specification_link where category_id = #{categoryId} and is_deleted = 0
+	</select>
+</mapper>

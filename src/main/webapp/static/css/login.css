@@ -1,0 +1,55 @@
+*{font-size:20px; font-family:Tahoma,Verdana,微软雅黑,新宋体}
+body{background-color:rgb(224, 236, 255)}
+a{ color:#008040; text-decoration:none;}
+a:hover{ color:Red; text-decoration:underline;}
+tr {
+	padding:5px;
+	margin:15px;
+}
+form {
+	position:absolute;
+	top:33%;
+	left:40%;
+	color:#0080ff;
+}
+.username {
+	height:50px;
+	width:275px;
+	border-radius:10px;
+	color:#c1c1c1;
+	padding-left:25px;
+}
+.password {
+	margin-top:20px;
+	height:50px;
+	border-radius:10px;
+	width:275px;
+	color:#c1c1c1;
+	padding-left:25px;
+	background: url(../image/pwd.png)  no-repeat 12px 8px ;
+	background-color:white;
+}
+.login {
+	margin-top:20px;
+	height:50px;
+	border-radius:10px;
+	width:300px;
+	cursor:pointer;
+	background-color:white
+}
+.input_off {
+	margin-top:20px;
+	height:50px;
+	border-radius:10px;
+	width:300px;
+	cursor:pointer;
+	background-color:#E0EEEE
+}
+.input_out {
+	margin-top:20px;
+	height:50px;
+	border-radius:10px;
+	width:300px;
+	cursor:pointer;
+	background-color:white
+}

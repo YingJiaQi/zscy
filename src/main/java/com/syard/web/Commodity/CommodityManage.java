@@ -1,0 +1,144 @@
+package com.syard.web.Commodity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.syard.pojo.CategorySpecificationLink;
+import com.syard.pojo.Commodity;
+import com.syard.pojo.CommoditySpecificationContent;
+import com.syard.service.Category.CategorySpecificationLinkService;
+import com.syard.service.commodity.CommodityDescService;
+import com.syard.service.commodity.CommodityService;
+import com.syard.service.commodity.CommoditySpecificationContentService;
+import com.syard.vo.PageBean;
+
+
+@Controller
+@RequestMapping(value="/Commodity")
+public class CommodityManage {
+	private static Logger logger = LoggerFactory.getLogger(CommodityManage.class);
+	@Autowired
+	private CommodityService commodityService;
+	@Autowired
+	private CommodityDescService commodityDescService;
+	@Autowired
+	private CategorySpecificationLinkService categorySpecificationLinkService;
+	@Autowired
+	private CommoditySpecificationContentService commoditySpecificationContentService;
+	
+	@RequestMapping(value="/addCommodity", method = RequestMethod.POST)
+	public ResponseEntity<?> addCommodity(@RequestBody Map<String,Object> param){
+		Map<String, Object> result = new HashMap<String, Object>();
+		String title = (String) param.get("title");
+		String sellPoint = (String) param.get("sellPoint");
+		String priceView = (String) param.get("priceView");
+		String num = (String) param.get("num");
+		String barcode = (String) param.get("barcode");
+		String imageUrls = (String) param.get("imageUrls");
+		String categoryName = (String) param.get("category_id");
+		//类目处理
+		String[] categoryList = categoryName.split(",");
+		//cscList存储所有的规格参数内容
+		List<CommoditySpecificationContent> cscList = new ArrayList<CommoditySpecificationContent>();
+		String commodityId = (UUID.randomUUID()+"").replaceAll("-", "");
+		//循环取出后台提交的规格参数
+		for(int i=0;i<categoryList.length;i++){
+			String categoryNames = categoryList[i];
+			//根据类目到数据库中取出与之相关联的参数
+			List<CategorySpecificationLink> cList = categorySpecificationLinkService.getDataByCategoryName(categoryName);
+			//从param中取出相应的规格参数
+			for(int j=0;j<cList.size();j++){
+				String specificationContent = param.get(categoryName+"_"+cList.get(j).getCateforySpecificationName()).toString();
+				CommoditySpecificationContent csc = new CommoditySpecificationContent();
+				csc.setCommodityId(commodityId);
+				csc.setCreateTime(new Date());
+				csc.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				csc.setIsDel(0);
+				csc.setCategoryName(categoryNames);
+				csc.setSpecificationContent(specificationContent);
+				csc.setSpecificationName(cList.get(j).getCateforySpecificationName());
+				csc.setUpdateTime(csc.getCreateTime());
+				cscList.add(csc);
+			}
+			
+		}
+		//将规格参数存储
+		boolean flags = commoditySpecificationContentService.addData(cscList);
+		
+		imageUrls = imageUrls.replaceAll("\\|f\\|", "=");
+		StringBuffer sb = new StringBuffer();
+		String[] split = imageUrls.split("</p>");
+		for(int i=0;i<split.length;i++){
+			String[] split2 = split[i].split("=");
+			for(int j=0;j<split2.length;j++){
+				if(j==1){
+					//图片地址
+					int indexOf = split2[j].indexOf("http");
+					int indexOf2 = split2[j].indexOf("title");
+					sb.append(split2[j].substring(indexOf, indexOf2-2)+",");
+				}else if(j==2){
+					//图片title
+					//System.out.println(split2[j].substring(1, split2[j].length()-3));
+				}
+			}
+		}
+		sb.length();
+		String hot = (String) param.get("hotCommodity");
+		String commodityDesc = (String) param.get("commodityDesc");
+		commodityDesc = commodityDesc.replaceAll("\\|f\\|", "=");
+		Commodity cy = new Commodity();
+		cy.setBarcode(barcode);
+		if(StringUtils.isNotBlank(hot)){
+			cy.setHot(Integer.parseInt(hot));
+		}
+		cy.setImage(sb.toString());
+		if(StringUtils.isNotBlank(num)){
+			cy.setNum(Integer.parseInt(num));
+		}
+		if(StringUtils.isNotBlank(priceView)){
+			cy.setPrice(Double.parseDouble(priceView));
+		}
+		cy.setSell_point(sellPoint);
+		cy.setId(commodityId);
+		cy.setTitle(title);
+		cy.setStatus(2);
+		cy.setCategoryName(categoryName);
+		Boolean flag = commodityService.addCommodity(cy);
+		Boolean tag =commodityDescService.addCommodityDesc(commodityDesc,commodityId);
+		if(flag && tag && flags){
+			result.put("msg", "添加成功");
+			result.put("flag", "success");
+			logger.info("添加商品成功"+cy.getTitle());
+		}else{
+			result.put("msg", "添加失败");
+			//删除记录
+			commodityService.deleteCommodity(cy.getId());
+			logger.info("添加商品失败"+cy.getTitle());
+		}
+		return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+	}
+	/**
+	 * 获取商品列表
+	 * @param pageBean
+	 * @return easyuivo
+	 */
+	@RequestMapping(value="getCommodityList")
+	public ResponseEntity<?> getCommodityList(PageBean pageBean){
+		return new ResponseEntity<Object>(commodityService.getCommodityList(pageBean),HttpStatus.OK);
+	}
+}

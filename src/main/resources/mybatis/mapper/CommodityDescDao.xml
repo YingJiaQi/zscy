@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace： 名称空间 可以随意命名 -->
+<mapper namespace="com.syard.pojo.CommodityDesc">
+	
+	<!-- <select id="queryUserAll" resultType="User" parameterType="PageBean">
+		select * from tbl_s_user where 1=1 
+		<if test="startTime != null">
+			<![CDATA[ and create_time >= date(#{startTime,jdbcType=TIMESTAMP})  ]]>
+		</if>
+		<if test="endTime != null">
+			 <![CDATA[ and create_time <= date(#{endTime,jdbcType=TIMESTAMP})  ]]>
+		</if>
+		<if test="isDeleted == 1 || isDeleted == 0">
+			and is_deleted = #{isDeleted}
+		</if>
+		<if test="isDeleted == 10">
+			and is_deleted in (1, 0)
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="userCode != null and userCode != ''">
+			and user_code = #{userCode}
+		</if>
+		<if test="userName != null and userName != ''">
+			and user_name like '%${userName}%'
+		</if>
+		<if test="loginTimes != null and loginTimes != ''">
+			and login_times >= #{loginTimes}
+		</if>
+	</select> -->
+	<insert id="insertEntity" parameterType="CommodityDesc"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO tbl_s_commodity_desc (
+			id,
+			creat_time,
+			updat_time
+		)VALUES(
+			null,
+			NOW(),
+			NOW()
+	);
+	</insert>
+	<!-- <delete id="deleteUsers" parameterType="java.util.List">
+		delete from tb_user where id in 
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+	<select id="getMaxUserCode"  resultType="java.lang.String">
+		select max(user_code) from tbl_s_user
+	</select> -->
+</mapper>
