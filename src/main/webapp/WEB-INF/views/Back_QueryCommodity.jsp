@@ -174,6 +174,37 @@ var columns = [
 		});
 
 	}
+	function deleteIndexFrequency(id, index) {
+		jQuery.messager
+			.confirm(
+				'提示:',
+				'你确认要删除吗?',
+				function(event) {
+					if(event) {
+						var dataVo = {
+							id: id
+						};
+						$
+							.ajax({
+								type: 'post',
+								url: '${pageContext.request.contextPath}/systemMessage/deleteSysMsgById',
+								data: JSON.stringify(dataVo),
+								dataType: 'json',
+								contentType: "application/json; charset=utf-8",
+								success: function(data) {
+									if(data.result) {
+										$('#grid').datagrid('reload');
+										$.messager.alert('提示', data.msg, "info");
+									} else {
+										$.messager.alert('提示', data.msg, "error");
+									}
+								}
+							});
+					} else {
+						return;
+					}
+				});
+	}
 </script>
 <style type="text/css">
 		.buttonStyle {
