@@ -13,8 +13,8 @@ public class PageBean {
 	
 	private Integer page;
 	private Integer rows;
-	private String startTime;
-	private String endTime;
+	private Date startTime;
+	private Date endTime;
 	private Integer isDeleted=0;
 	private String id;
 	
@@ -22,6 +22,7 @@ public class PageBean {
 	private String key2;
 	private String key3;
 	
+	//SourceManager
 	private String nodeID;
 	private String docId;
 	
@@ -57,17 +58,17 @@ public class PageBean {
 	}
 	
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 	public String getId() {

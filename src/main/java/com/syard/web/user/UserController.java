@@ -37,13 +37,10 @@ public class UserController {
 			PageInfo<User> po = new PageInfo<User>(uList);
 			result.put("total", po.getTotal());
 			result.put("rows", po.getList());
-			
 			return new ResponseEntity<Object>(result, HttpStatus.OK);
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 		}
-		
 		return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
 	}
 	@RequestMapping(value="/getUserById", method = RequestMethod.POST)

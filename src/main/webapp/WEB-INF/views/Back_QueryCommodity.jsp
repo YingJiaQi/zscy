@@ -6,30 +6,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>eHealthRep</title>
 <!-- 导入jquery核心类库 -->
-<script type="text/javascript"
-	src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
-		<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/utils.js"></script>
-<!-- 导入easyui类库 -->
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath }/static/js/easyui/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath }/static/js/easyui/themes/icon.css">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath }/static/js/easyui/ext/portal.css">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath }/static/css/default.css">
-<script type="text/javascript"
-	src="${pageContext.request.contextPath }/static/js/easyui/jquery.easyui.min.js"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath }/static/js/easyui/ext/jquery.portal.js"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath }/static/js/easyui/ext/jquery.cookie.js"></script>
-<script
-	src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js"
-	type="text/javascript"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/static/js/datajs/WdatePicker.js"></script>
+<link id="easyuiTheme" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/js/easyui/themes/icon.css">
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/jquery.easyui.min.js"></script>
+<script src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 var columns = [
 				[{
@@ -128,19 +112,20 @@ var columns = [
 							return opHtml;
 						}
 					},
+					hidden: true
 				}]
 			];
 	$(function(){
 		$("body").css("visibility","visible");
 		$('#grid').datagrid({
-			fit : true,
-			border : false,
-			rownumbers : true,
-			animate : true,
-			singleSelect : true,
-			striped : true,
-			pageList : [ 10, 20, 50 ],
-			pagination : true,
+			fit: true,
+			border: false,
+			rownumbers: true,
+			animate: true,
+			singleSelect: true,
+			striped: true,
+			pageList: [10, 20, 50],
+			pagination: true,
 			url: "${pageContext.request.contextPath }/Commodity/getCommodityList",
 			columns: columns,
 			loadMsg: '数据加载中...',
@@ -156,54 +141,9 @@ var columns = [
 			},
 
 		});
-		//按钮样式
-		$('.buttonStyle').hover(function(){$(this).removeClass('buttonStyle').addClass('overButtonStyle')},function(){$(this).removeClass('overButtonStyle').addClass('buttonStyle')});
-	});
+	})
 	function doDblClickRow(rowIndex, field, value){
 		
-	}
-	function doSearch() {
-		//alert($("#startDate").val()+"-----"+$("#endDate").val()+"---"+$("#category").combobox('getText')+"---"+$("input[name='commodityName']").val()+"---"+$("#commodityStatus").combobox('getText'));
-		
-		$("#grid").datagrid("load", {
-				"startTime" : $("#startDate").val(),
-				"endTime" : $("#endDate").val(),
-	 		"key" : $("#category").combobox('getText'),
-			"key2" : $("input[name='commodityName']").val(),
-			"key3" : $("#commodityStatus").combobox('getValue')
-		});
-
-	}
-	function deleteIndexFrequency(id, index) {
-		jQuery.messager
-			.confirm(
-				'提示:',
-				'你确认要删除吗?',
-				function(event) {
-					if(event) {
-						var dataVo = {
-							id: id
-						};
-						$
-							.ajax({
-								type: 'post',
-								url: '${pageContext.request.contextPath}/systemMessage/deleteSysMsgById',
-								data: JSON.stringify(dataVo),
-								dataType: 'json',
-								contentType: "application/json; charset=utf-8",
-								success: function(data) {
-									if(data.result) {
-										$('#grid').datagrid('reload');
-										$.messager.alert('提示', data.msg, "info");
-									} else {
-										$.messager.alert('提示', data.msg, "error");
-									}
-								}
-							});
-					} else {
-						return;
-					}
-				});
 	}
 </script>
 <style type="text/css">
@@ -216,38 +156,31 @@ var columns = [
 				cursor: pointer;
 				color: black
 			}
-	.overButtonStyle {
-		padding:4px 16px;
-			margin-left:30px;
-			border-radius:11px;
-			font-size:13px;
-			cursor: pointer;
-			background-color:#D9D9D9;
-			color:red
-		}
 </style>
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
 		<div style="display:none;color:red;position:absolute;top:50%;left:40%;font-size:2em" id="showSys"><b>没有查到相关数据</b></div>
 
 		<div data-options="region:'north'" style="padding: 6px; background: #7F99BE; border: false">
+			<form id="tb" method="post">
 				创建时间<input editable="false" id="startDate" class="Wdate" type="text" onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'endDate\')}',dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" style="width:126px!important; height: 15px" /> 
 				~<input editable="false" id="endDate" class="Wdate" type="text" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'startDate\')}',dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})" style="width:126px!important; height: 15px" />
 				&nbsp; 
 				<span>商品类目:</span>
-				<input class="easyui-combobox" id="category"  data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/category/getCategoryListWithCommodity',editable:false"/>
+				<input class="easyui-combobox" id="category"  multiple="true" data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/category/getCategoryListWithCommodity',editable:false"/>
 				&nbsp; 
-				<span>商品标题:</span>
+				<span>商品名称:</span>
 				<input id="commodityName" name="commodityName"/>
 				&nbsp;
 				<span>商品状态:</span>
 					<select id="commodityStatus" class="easyui-combobox" style="width: 80px;" data-options="editable:false">
-						<option value="1">上架商品</option>
-						<option value="2">待上架商品</option>
-						<option value="3">已删除</option>
+						<option value="up">上架商品</option>
+						<option value="down">待上架商品</option>
+						<option value="del">已删除</option>
 						<option value="all" selected>所有商品</option>
 				</select>
 				<span onclick="doSearch()" class="buttonStyle">搜索</span>&nbsp;
+			</form>
 		</div>
 		<div data-options="region:'center'" style="padding: 6px; background: #eee;" id="centerSys">
 			<table id="grid"></table>

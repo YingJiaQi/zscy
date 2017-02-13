@@ -137,7 +137,7 @@ public class CommodityManage {
 	 * @param pageBean
 	 * @return easyuivo
 	 */
-	@RequestMapping(value="getCommodityList")
+	@RequestMapping(value="getCommodityList", method = RequestMethod.POST)
 	public ResponseEntity<?> getCommodityList(PageBean pageBean){
 		return new ResponseEntity<Object>(commodityService.getCommodityList(pageBean),HttpStatus.OK);
 	}
