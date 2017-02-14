@@ -156,4 +156,13 @@ public class CommodityManage {
 	public ResponseEntity<?> getCommodityById(@RequestBody Map<String, String> param){
 		return new ResponseEntity<Object>(commodityService.getCommodityById(param.get("id")+""),HttpStatus.OK);
 	}
+	/**
+	 * 获取商品信息
+	 * @param param id
+	 * @return 
+	 */
+	@RequestMapping(value="/getCommodityWithUpdateById", method = RequestMethod.POST)
+	public ResponseEntity<?> getCommodityWithUpdateById(@RequestBody Map<String, String> param){
+		return new ResponseEntity<Object>(commodityService.getCommodityWithUpdateById(param.get("id")+""),HttpStatus.OK);
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.util.MultiValueMap;
 
 import com.syard.pojo.Commodity;
+import com.syard.vo.CommodityVo;
 import com.syard.vo.PageBean;
 
 public interface CommodityService{
@@ -31,5 +32,11 @@ public interface CommodityService{
 	 * @return
 	 */
 	Commodity getCommodityById(String id);
+	/**
+	 * 获取商品完整信息信息
+	 * @param param id
+	 * @return 
+	 */
+	CommodityVo getCommodityWithUpdateById(String id);
 
 }

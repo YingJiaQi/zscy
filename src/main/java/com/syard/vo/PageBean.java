@@ -16,7 +16,20 @@ public class PageBean {
 	private String key2;
 	private String key3;
 	
-	
+	private String nodeID;
+	private String docId;
+	public String getDocId() {
+		return docId;
+	}
+	public void setDocId(String docId) {
+		this.docId = docId;
+	}
+	public String getNodeID() {
+		return nodeID;
+	}
+	public void setNodeID(String nodeID) {
+		this.nodeID = nodeID;
+	}
 	public String getKey() {
 		return key;
 	}

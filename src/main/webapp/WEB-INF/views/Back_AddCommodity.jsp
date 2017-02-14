@@ -62,7 +62,6 @@ $(function(){
 				return;
 			}
 	});
-	//setInterval(isFocus, 100);
 });
 //添加类目时，相应添加规格描述
 function addSpecification(rec){
