@@ -49,7 +49,7 @@ var columns = [
 			width: 132,
 			align: 'center'
 		}, {
-			field: 'isDeleted',
+			field: 'isDel',
 			title: '操作',
 			width: 100,
 			align: 'center',

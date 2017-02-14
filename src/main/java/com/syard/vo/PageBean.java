@@ -1,11 +1,5 @@
 package com.syard.vo;
 
-import java.util.Date;
-
-
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.alibaba.fastjson.annotation.JSONField;
 
 
@@ -13,8 +7,8 @@ public class PageBean {
 	
 	private Integer page;
 	private Integer rows;
-	private Date startTime;
-	private Date endTime;
+	private String startTime;
+	private String endTime;
 	private Integer isDeleted=0;
 	private String id;
 	
@@ -22,22 +16,7 @@ public class PageBean {
 	private String key2;
 	private String key3;
 	
-	//SourceManager
-	private String nodeID;
-	private String docId;
 	
-	public String getNodeID() {
-		return nodeID;
-	}
-	public void setNodeID(String nodeID) {
-		this.nodeID = nodeID;
-	}
-	public String getDocId() {
-		return docId;
-	}
-	public void setDocId(String docId) {
-		this.docId = docId;
-	}
 	public String getKey() {
 		return key;
 	}
@@ -58,17 +37,17 @@ public class PageBean {
 	}
 	
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	public Date getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(Date startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	public Date getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(Date endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 	public String getId() {

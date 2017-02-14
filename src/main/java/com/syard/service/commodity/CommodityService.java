@@ -2,6 +2,8 @@ package com.syard.service.commodity;
 
 import java.util.Map;
 
+import org.springframework.util.MultiValueMap;
+
 import com.syard.pojo.Commodity;
 import com.syard.vo.PageBean;
 
@@ -17,5 +19,17 @@ public interface CommodityService{
 	 * @return
 	 */
 	Map<String, Object> getCommodityList(PageBean pageBean);
+	/**
+	 * 删除商品
+	 * @param param
+	 * @return
+	 */
+	Map<String, String> deleteCommodityById(Map<String, Object> param);
+	/**
+	 * 根据ID查找商品
+	 * @param id
+	 * @return
+	 */
+	Commodity getCommodityById(String id);
 
 }

@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.syard.pojo.CategorySpecificationLink;
 import com.syard.pojo.Commodity;
@@ -140,5 +142,18 @@ public class CommodityManage {
 	@RequestMapping(value="getCommodityList", method = RequestMethod.POST)
 	public ResponseEntity<?> getCommodityList(PageBean pageBean){
 		return new ResponseEntity<Object>(commodityService.getCommodityList(pageBean),HttpStatus.OK);
+	}
+	/**
+	 * 删除商品
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/deleteCommodityById", method = RequestMethod.POST)
+	public ResponseEntity<?> deleteCommodityById(@RequestBody Map<String, Object> param){
+		return new ResponseEntity<Object>(commodityService.deleteCommodityById(param), HttpStatus.OK);
+	}
+	@RequestMapping(value="/getCommodityById", method = RequestMethod.POST)
+	public ResponseEntity<?> getCommodityById(@RequestBody Map<String, String> param){
+		return new ResponseEntity<Object>(commodityService.getCommodityById(param.get("id")+""),HttpStatus.OK);
 	}
 }
