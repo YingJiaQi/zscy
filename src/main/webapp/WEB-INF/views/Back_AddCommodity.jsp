@@ -83,6 +83,7 @@ function addSpecification(rec){
 					var optionHtml = "<div style='height:30px; overflow:auto;' title='"+data.docList[0].categoryName+"'>"+data.docList[i].cateforySpecificationName+"<input type='text' name='"+data.docList[0].categoryName+"_"+data.docList[i].cateforySpecificationName+"'/></div>"
 					$("#specificationLocation").append(optionHtml);
 				}
+				$("#specificationLocation").append("<hr/>");
 			} else {
 				$.messager.alert('失败',"类目参数获取失败");
 			}

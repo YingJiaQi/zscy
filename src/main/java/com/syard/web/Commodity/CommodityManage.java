@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -92,7 +93,7 @@ public class CommodityManage {
 		List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
 		String[] split = imageUrls.split("</p>");
 		
-		for(int i=0;i<split.length;i++){
+		for(int i=0;i<split.length-1;i++){
 			Map<String, String> map = new HashMap<String, String>();
 			String[] split2 = split[i].split("=");
 			for(int j=0;j<split2.length;j++){
@@ -104,7 +105,7 @@ public class CommodityManage {
 				}else if(j==2){
 					//图片title
 					//System.out.println(split2[j].substring(1, split2[j].length()-3));
-					map.put("tile", split2[j].substring(1, split2[j].indexOf("alt")-2));
+					map.put("title", split2[j].substring(1, split2[j].lastIndexOf('"')));
 				}
 			}
 			lmap.add(map);
@@ -115,7 +116,9 @@ public class CommodityManage {
 		}
 		//遍历商品图片
 		for(Map<String, String> img : lmap){
-			File sourceCommodityImage = new File(img.get("path"));
+			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
 			} catch (IOException e) {
