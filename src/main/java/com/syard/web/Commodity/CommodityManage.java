@@ -1,5 +1,7 @@
 package com.syard.web.Commodity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.syard.common.utils.PropsUtil;
 import com.syard.pojo.CategorySpecificationLink;
 import com.syard.pojo.Commodity;
 import com.syard.pojo.CommoditySpecificationContent;
@@ -81,25 +85,45 @@ public class CommodityManage {
 		}
 		//将规格参数存储
 		boolean flags = commoditySpecificationContentService.addData(cscList);
-		
+		//将图片重新保存
+		//处理商品图片,转存到本地
 		imageUrls = imageUrls.replaceAll("\\|f\\|", "=");
-		StringBuffer sb = new StringBuffer();
+		//用于存储商品图片信息
+		List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
 		String[] split = imageUrls.split("</p>");
+		
 		for(int i=0;i<split.length;i++){
+			Map<String, String> map = new HashMap<String, String>();
 			String[] split2 = split[i].split("=");
 			for(int j=0;j<split2.length;j++){
 				if(j==1){
 					//图片地址
 					int indexOf = split2[j].indexOf("http");
 					int indexOf2 = split2[j].indexOf("title");
-					sb.append(split2[j].substring(indexOf, indexOf2-2)+",");
+					map.put("path", split2[j].substring(indexOf, indexOf2-2));
 				}else if(j==2){
 					//图片title
 					//System.out.println(split2[j].substring(1, split2[j].length()-3));
+					map.put("tile", split2[j].substring(1, split2[j].indexOf("alt")-2));
 				}
 			}
+			lmap.add(map);
 		}
-		sb.length();
+		File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityImages");
+		if(!DestcommodityImage.exists()){
+			DestcommodityImage.mkdirs();
+		}
+		//遍历商品图片
+		for(Map<String, String> img : lmap){
+			File sourceCommodityImage = new File(img.get("path"));
+			try {
+				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
 		String hot = (String) param.get("hotCommodity");
 		String commodityDesc = (String) param.get("commodityDesc");
 		commodityDesc = commodityDesc.replaceAll("\\|f\\|", "=");
@@ -108,7 +132,7 @@ public class CommodityManage {
 		if(StringUtils.isNotBlank(hot)){
 			cy.setHot(Integer.parseInt(hot));
 		}
-		cy.setImage(sb.toString());
+		cy.setImage(DestcommodityImage+"");
 		if(StringUtils.isNotBlank(num)){
 			cy.setNum(Integer.parseInt(num));
 		}

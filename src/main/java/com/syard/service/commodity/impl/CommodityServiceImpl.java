@@ -127,8 +127,8 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	private CommodityDesc getCommodityDescribe(String id) {
 		Example example = new Example(CommodityDesc.class);
 		example.createCriteria().andEqualTo("commodityId", id);
-		CommodityDesc commodityDesc = commodityDescDao.selectByExample(example).get(0);
-		return commodityDesc;
+		List<CommodityDesc> slist = commodityDescDao.selectByExample(example);
+		return slist.size() > 0 ? slist.get(0):null;
 	}
 
 	/**
@@ -150,18 +150,23 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	 */
 	private CommodityVo getBasicCommodityData(String id, CommodityVo cv) {
 		Commodity cc = commodityDao.selectByPrimaryKey(id);
-		cv.setBarcode(cc.getBarcode());
-		cv.setCategoryName(cc.getCategoryName());
+		cv.setBarcode(cc.getBarcode()==null?"":cc.getBarcode());
+		cv.setCategoryName(cc.getCategoryName()==null?"":cc.getCategoryName());
 		cv.setCreateTime(cc.getCreateTime());
-		cv.setHot(cc.getHot());
-		cv.setId(cc.getId());
+		cv.setHot(cc.getHot()==null?0:cc.getHot());
+		cv.setId(cc.getId()==null?"":cc.getId());
 		cv.setIsDel(cc.getIsDel());
 		cv.setNum(cc.getNum());
 		cv.setPrice(cc.getPrice());
-		cv.setSellPoint(cc.getSell_point());
+		cv.setSellPoint(cc.getSell_point()==null?"":cc.getSell_point());
 		cv.setStatus(cc.getStatus());
-		cv.setTitle(cc.getTitle());
+		cv.setTitle(cc.getTitle()==null?"":cc.getTitle());
 		cv.setUpdateTime(cc.getUpdateTime());
+		/*StringBuffer sb = new StringBuffer();
+		for(int i=0;i<cc.getImage().split(",").length;i++){
+			sb = sb.append("<img src='"+cc.getImage().split(",")[i]+"' title='"+cv.getId()+".png'/>");
+		}*/
+		cv.setImage(cc.getImage()==null?"": cc.getImage());
 		return cv;
 	}
 

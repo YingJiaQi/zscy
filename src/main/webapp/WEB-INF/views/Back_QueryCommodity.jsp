@@ -14,15 +14,12 @@
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/jquery.easyui.min.js"></script>
 <script src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/datajs/WdatePicker.js"></script>
-<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/ueditor.config.js"></script>
-<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.all.js"> </script>
 <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
 <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
-<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
-//根据ID查找的商品
-var commodityData = null;
-
 var columns = [
 				[{
 					field: 'id',
@@ -193,6 +190,7 @@ var columns = [
 					return;
 				}
 		});
+		setInterval(isFocus,1000);
 	})
 	function doDblClickRow(rowIndex, field, value){
 		
@@ -251,17 +249,39 @@ function edit(id, index) {
 			contentType: "application/json; charset=utf-8",
 			success: function(data) {
 				if(data != null) {
+					/* 打开更新窗口 */
 					$('#updateWindow').window("open");
-					var data = $("#category").combobox('getData');
-				    if (data.length > 0) {
-				        	for(var i =0 ;i<data.length;i++){
-				        		//alert(data[i].text +"=="+temp)
-				            	if(data[i].text=="ALL"){
-				        		//alert(data[i].id);
-				        		$("#category").combobox('select', data[i].id);
-				            	}
+					/* 回显类目信息 */
+					var categoryData = $("#categoryUpdate").combobox('getData');
+					//alert(data.categoryName)
+					var arr = data.categoryName.split(",");
+				    if (categoryData.length > 0) {
+				        	for(var i =0 ;i<categoryData.length;i++){
+				        		for(var j=0;j<arr.length;j++){
+				        		//alert(categoryData[i].text +"=="+arr[j])
+					            	if(categoryData[i].text==arr[j]){
+					        			//alert(categoryData[i].id);
+					        			$("#categoryUpdate").combobox('select', categoryData[i].id);
+					            	}
+				        		}
 				            }
 				     }
+				    if(data.hot == "1"){
+				    	$("[name = hotCommodity]:checkbox").attr("checked", true);
+				    }
+				    $("input[name='title']").val(data.title);
+				    $("input[name='sellPoint']").val(data.sellPoint);
+				    $("#commodityPrice").numberbox('setValue', data.price);
+				    $("#commodityNum").numberbox('setValue', data.num);
+				    $("input[name='barcode']").val(data.barcode);
+				    //商品图片数据初始化
+				   /* 	alert(data.image)
+				    image.setContent(data.image);
+				    //商品描述数据初始化
+				    alert(data.describe.content)
+				    editor.setContent(data.describe.content); */
+				    //规格参数数据初始化
+				    
 				} else {
 					$.messager.alert('提示', "更新失败");
 				}
@@ -351,7 +371,7 @@ function edit(id, index) {
 					<tr>
 						<th style="width:100px;">商品类目:</th>
 						<th>
-							<input class="easyui-combobox" id="category"  multiple="true" data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/category/getCategoryListWithCommodity',editable:false,onSelect: function(rec){addSpecification(rec);},onUnselect: function(re){delSpecification(re);}" />
+							<input class="easyui-combobox" id="categoryUpdate"  multiple="true" data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/category/getCategoryListWithCommodity',editable:false,onSelect: function(rec){addSpecification(rec);},onUnselect: function(re){delSpecification(re);}" />
 	            			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	            			<input type="checkbox" name="hotCommodity" value="1"/>热门商品
 	            		</th>
@@ -366,11 +386,11 @@ function edit(id, index) {
 					</tr>
 					<tr>
 						<th style="height: 40px">商品价格:</th>
-						<th><input type="text" name="priceView" class="easyui-numberbox" data-options="min:1,max:99999999,precision:2,required:true" /></th>
+						<th><input type="text" id="commodityPrice" name="priceView" class="easyui-numberbox" data-options="min:1,max:99999999,precision:2,required:true" /></th>
 					</tr>
 					<tr>
 						<th style="height: 40px">库存数量:</th>
-						<th><input type="text"  class="easyui-numberbox"  name="num" data-options="min:1,max:99999999,precision:0,required:true"/></th>
+						<th><input type="text" id="commodityNum"  class="easyui-numberbox"  name="num" data-options="min:1,max:99999999,precision:0,required:true"/></th>
 					</tr>
 					<tr>
 						<th style="height: 40px">条形码:</th>

@@ -15,11 +15,10 @@
 	src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js"
 	type="text/javascript"></script>
 	<link id="easyuiTheme" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/js/easyui/themes/default/easyui.css">
-<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/ueditor.all.min.js"> </script>
-    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
-    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
-    <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/editor/lang/zh-cn/zh-cn.js"></script>
+  <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+
 <script type="text/javascript">
 $(function(){
 	// 先将body隐藏，再显示，不会出现页面刷新效果
@@ -32,15 +31,17 @@ $(function(){
 			var category = $('#category').combobox('getText');
 			var aa = UE.getEditor('editor').getContent();
 			var imageUrls = UE.getEditor('imageEditor').getContent();
+			//必须转换，要不后台拿不到数据 
 			aa = aa.replace(/=/g, "|f|");
 			imageUrls = imageUrls.replace(/=/g, "|f|");
-			var arr = data.split("&");
+			alert(data)
+		/* 	var arr = data.split("&");
 			var datas = '';
 			for(var i=0;i<arr.length;i++){
 					datas += arr[i]+"&";
-			} 
-			datas = datas + "commodityDesc="+aa+"&"+"category_id="+category+"&"+"imageUrls="+imageUrls;
-			//alert(datas)
+			}  */
+			datas = data + "&commodityDesc="+aa+"&"+"category_id="+category+"&"+"imageUrls="+imageUrls;
+			alert(datas)
 			$.ajax({
 				type : 'post',
 				url : "${pageContext.request.contextPath }/Commodity/addCommodity",
@@ -62,6 +63,7 @@ $(function(){
 				return;
 			}
 	});
+	setInterval(isFocus,500);
 });
 //添加类目时，相应添加规格描述
 function addSpecification(rec){
@@ -134,7 +136,12 @@ function delSpecification(re){
 						<th style="height: 40px">条形码:</th>
 						<th><input type="text" name="barcode" class="easyui-validatebox" data-options="validType:'length[1,30]'"  invalidMessage="1-30个字符"/></th>
 					</tr>
-					<tr>
+					
+				</table>
+				<div id="specificationLocation" style="display:none;margin-left:50px"></div>
+			</form>
+			<table class="table-edit" width="90%" align="center">
+				<tr>
 						<th style="height: 40px">商品图片:</th>
 						<th> 
 							<!-- <a href="javascript:void(0)" onclick="upImage();">上传图片</a>
@@ -152,38 +159,42 @@ function delSpecification(re){
 							</div>
 	            		</td>
 					</tr>
-				</table>
-				<div id="specificationLocation" style="display:none;margin-left:50px"></div>
-			</form>
+			</table>
+			
 		</div>
 <script type="text/javascript">
-var editor =new UE.ui.Editor({
+var descEditor =UE.getEditor('editor',{
 	 //默认的编辑区域高度  
-    initialFrameHeight:500  
+   initialFrameHeight:500 ,
+   emotionLocalization:true,
+   //禁用浮动
+   autoFloatEnabled: false,
+   autoClearEmptyNode:true,
 });
-editor.render("editor");
-//var image =new UE.ui.Editor();
-var image= new UE.ui.Editor({  
+
+var commodityImage= UE.getEditor('imageEditor',{  
     //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
     toolbars:[['insertimage', 'Undo', 'Redo']],  
     //focus时自动清空初始化时的内容  
-    autoClearinitialContent:false,  
+    autoClearinitialContent:true,  
     //关闭字数统计  
     wordCount:false, 
-    //不可以编辑
-   // readonly:true,
-    //关闭elementPath
-    elementPathEnabled:false,
     //禁用浮动
     autoFloatEnabled: false,
+    //不可以编辑
+  	//readonly:true,
+    //关闭elementPath
+    elementPathEnabled:false,
+    autoClearEmptyNode:true,
+    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+    scaleEnabled :true,
     //默认的编辑区域高度  
     initialFrameHeight:260  
     //更多其他参数，请参考ueditor.config.js中的配置项  
 });  
-image.render("imageEditor");
 function isFocus(){    
-    if(image.isFocus()){
-    	image.blur();
+    if(commodityImage.isFocus()){
+    	commodityImage.blur();
     }
 }
 </script>
