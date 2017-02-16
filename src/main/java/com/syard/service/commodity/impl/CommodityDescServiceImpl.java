@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.abel533.entity.Example;
 import com.syard.common.utils.PropsUtil;
 import com.syard.dao.CommodityDescDao;
 import com.syard.pojo.CommodityDesc;

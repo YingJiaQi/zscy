@@ -24,6 +24,9 @@
 /* 资源列表初始化加载 列配置*/
 var columns = [
 		[{
+			field : 'index',
+			checkbox : true,
+		},{
 			field: 'id',
 			title: 'ID',
 			width: 150,
@@ -82,7 +85,86 @@ var columns = [
 	          url:'${pageContext.request.contextPath }/webContentManager/getModuleList',
 	          animate:true,
 	          onClick:function(node){
-	          }
+	      	 	 //将选择的节点传送到右侧docList中
+	        	 // getSelectedNodeData();
+	        	  
+	        	  //获取该节点所有父节点
+        		  var parentAll = node.text;
+        		  var flag = ">>";
+        		  parentAll = flag.concat(parentAll);
+   	        	  var parent = $('#tree').tree('getParent', node.target);
+   	        	  if(parent != null  && parentOne != ''){
+   	        			parentAll = (parent.text).concat(parentAll);
+   	        		  	var parentOne = $('#tree').tree('getParent', parent.target);
+   	        		  	if(parentOne != null && parentOne != ''){
+   	        				parentAll = flag.concat(parentAll);
+   	        		  		parentAll = (parentOne.text).concat(parentAll);
+   	        				var parentTwo = $('#tree').tree('getParent', parentOne.target)
+   	        			 	if(parentTwo != null  && parentTwo != ''){
+   	        		 			parentAll = flag.concat(parentAll);
+   	        			 		parentAll = (parentTwo.text).concat(parentAll);
+   	        			 	}
+   	        		  	}
+   	        	  }
+                  $(".path").text(parentAll+"");
+                //调用子页面的方法，实时更新路径
+          		/*myFrame.window.updatePathImmediately(parentAll+"");
+	        	  
+	        	  var leaf = $('#tree').tree('isLeaf', node.target);
+	        	  var current = node.id;
+	        	  if(!leaf){
+	        		  //将该节点的大于等于第二层子节点的状态改为关闭
+	        		  var nodeName = node.text;
+	        		  if(nodeName == '根'){
+	        			  $('#tree').tree('collapseAll');
+	        		  }
+	        	  	$(this).tree('toggle', node.target);
+	        	  	$("#articalList").removeClass("commonNode").addClass("chooseNode");
+	        		$("#asscoiatList").removeClass("chooseNode").addClass("commonNode");
+	        		$("#associatedList").css("display","none");
+	        		$("#documentList").css("display","block");
+	        		 pre = current;
+	        		 return;
+	        	  }else{
+	        		  //用于控制重复点击叶子节点
+	        		  if(current != pre){
+		        		  //用于控制对应关联库的显示
+		        		  var dataVo = {id : node.id};
+		          			 $.ajax({
+		          					type : 'post',
+		          					url : '${pageContext.request.contextPath}/document/toAssociatedListById',
+		          					data : JSON.stringify(dataVo),
+		          					dataType : 'json',
+		          					contentType : "application/json; charset=utf-8",
+		          					success : function(data) {
+		        						if (data.flag) {
+		        							$("#showAssociatedList").empty();
+		        							if(data.docList != null && data.docList != ""){
+		        								$("#showTip").css("display","none");
+		        								$("#showAssociatedList").css("display","block");
+			        							for(var i = 0; i< data.docList.length ;i++){
+			        								docIds[i] = String(data.docList[i].id);
+			        								var optionHtml = "<li title='"+data.docList[i].documentTitle+"' style='width:95px;height:149px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:2px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><img src='http://192.168.16.211:8085/icon/"+data.docList[i].id+"/icon.png"+"' width='95px' height='90px'/><br/><div style='height:60px; overflow:auto;'>"+data.docList[i].documentTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none'><b>删</b></a></li>"
+			        								$("#showAssociatedList").append(optionHtml);
+			        							}
+		        							}else{
+		        								$("#showTip").css("display","block");
+		        								$("#showAssociatedList").empty();
+		        							}
+		        						} else {
+		        							$.messager.alert('更新失败',data.msg,"error");
+		        						}
+		        					}
+		          				});
+		          			$("#asscoiatList").removeClass("commonNode").addClass("chooseNode");
+		        			$("#articalList").removeClass("chooseNode").addClass("commonNode");
+		        			$("#documentList").css("display","none");
+		        			$("#associatedList").css("display","block");
+	        		  }
+	                  pre = current;
+	        			  return;
+	        	  }*/
+	          } 
 	        });
 		/* 资源列表   添加资源窗口参数配置*/
 		$("#addWindow").window({
@@ -108,7 +190,6 @@ var columns = [
 			border: false,
 			rownumbers: true,
 			animate: true,
-			singleSelect: true,
 			striped: true,
 			pageList: [10, 20, 50],
 			pagination: true,
@@ -116,14 +197,56 @@ var columns = [
 			columns : columns,
 			loadMsg:'数据加载中...',
 			onUncheck : function(rowIndex,rowData){
-				judgeAssociated("uncheck");
+				//judgeAssociated("uncheck");
 			},
 			onCheck : function(rowIndex,rowData){
-				judgeAssociated("check");
+				//judgeAssociated("check");
 			},
 			onLoadSuccess: function (data) {
-				
+	           if (data.total == 0) {
+	            	$("#centerShow").css("display","none");
+	            	$("#showInfo").css("display","block")
+	            } else {
+	            	//对应相应目录，使之勾选上
+	            	$.each(data.rows, function(index, item){
+	            		if(item.checked){
+	            			$('#grid').datagrid('checkRow', index);
+	            		}
+	            	});
+	            	$("#showInfo").css("display","none")
+	            	$("#centerShow").css("display","block");
+	            }
+	            $(".datagrid-header-check").html("");
 			}
+		});
+		//点击已关联按钮
+		$("#associatedButton").click(function(){
+			//var flag = myFrame.window.dataHandle();
+			var node = $('#tree').tree('getSelected');
+			if(node != null && node != ""){
+				var leaf = $('#tree').tree('isLeaf', node.target);
+				if(leaf){
+					$(this).removeClass("commonNode").addClass("chooseNode");
+					$("#sourceListButton").removeClass("chooseNode").addClass("commonNode");
+					$("#sourceList").css("display","none");
+					$("#associatedList").css("display","block");
+				}else{
+					$.messager.alert("警告","请先选择叶子节点","warn");
+				}
+			}else{
+				$.messager.alert("警告","请先选择叶子节点","warn");
+			}
+			
+			
+		});
+		//点击资源列表
+		$("#sourceListButton").click(function(){
+			//调用子页面的方法，刷新doclist
+			//myFrame.window.docmentListFlash();
+			$(this).removeClass("commonNode").addClass("chooseNode");
+			$("#associatedButton").removeClass("chooseNode").addClass("commonNode");
+			$("#associatedList").css("display","none");
+			$("#sourceList").css("display","block");
 		});
 	})
 	/* 资源列表   判断是否修改关联 */
@@ -180,8 +303,7 @@ var columns = [
 </style>
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
-
-
+	<div style="display:none;color:red;position:absolute;top:50%;left:40%;font-size:2em" id="showInfo"><b>没有查到相关数据</b></div>
 	<!-- 左侧前台页面功能显示区域   start -->
     <div data-options="region:'west',title:'前台页面模块',split:true" style="width:200px;">
 		<ul id="tree" style="margin:16px"></ul>
@@ -203,7 +325,7 @@ var columns = [
 			<div data-options="region:'center'"  class="easyui-layout"   id="sourceList" >
 				<div data-options="region:'north',split:true" style="height:80px;">
 					<br>
-					<span style="font-size:12px;font-weight:bold;">&nbsp;&nbsp;&nbsp;当前节点:&nbsp;<b id="path"></b></span>
+					<span style="font-size:12px;font-weight:bold;">&nbsp;&nbsp;&nbsp;当前节点:&nbsp;<b class="path"></b></span>
 					<br><br>
 					&nbsp;&nbsp;&nbsp;类型:<select name="type" id="type">
 							<option selected  value="">请选择</option>
@@ -221,15 +343,29 @@ var columns = [
 					<span onclick="doAssociated();" class="commonNode" style="float:right;">保存关联</span>
 					<br/><br/>
 				</div>
-				<div data-options="region:'center'" style="padding: 6px; background: #eee;" id="centerSys">
+				<div data-options="region:'center'" style="padding: 6px; background: #eee;" id="centerShow">
 					<table id="sourceGrid"></table>
 				</div>
 			</div>
 			<!-- 资源列表  end -->
 			
 			<!-- 关联列表  start -->
-			<!-- <div id="associatedList" style="display:none;">
-			</div> -->
+			<div  id="associatedList" style="display:none;" >
+				<span style="font-size:12px;font-weight:bold;">当前节点:&nbsp;<b class="path"></b></span>
+			    <div id="showTip">
+			    	<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+			    		<div style="text-align:center;">
+			    			<font size="4" color="gray">
+			    				<b>没有发现任何关联资料，<br>可以从文件库里添加关联
+			    					<a onclick="toSourceList()"><input type="button" value="添加" /></a>
+			    				</b>
+			    			</font>
+			    		</div>
+			    </div>
+			    <div >
+			    	<ul id="showAssociatedList" style="margin-top:15px"></ul>
+			    </div>
+			</div>
 			<!-- 关联列表  end -->
 	   <!--  </div> -->
     </div>
@@ -245,6 +381,71 @@ var columns = [
     	<div id="addArtical" style="display:none">添加文档</div>
 	</div>
 	<!-- 资源添加窗口   end -->
+	<script type="text/javascript">
+		/* 转到资源列表 */
+		function toSourceList(){
+			$("#sourceListButton").removeClass("commonNode").addClass("chooseNode");
+			$("#associatedButton").removeClass("chooseNode").addClass("commonNode");
+			$("#associatedList").css("display","none");
+			$("#sourceList").css("display","block");
+		}
+		function toAssociatedList(){
+			$("#associatedButton").removeClass("commonNode").addClass("chooseNode");
+			$("#sourceListButton").removeClass("chooseNode").addClass("commonNode");
+			$("#sourceList").css("display","none");
+			$("#associatedList").css("display","block");
+		}
+		/* 保存关联 */
+		function doAssociated(){
+			var sourceDataList = $('#sourceGrid').datagrid('getChecked');
+			var node = $('#tree').tree('getSelected');
+			if(node == null || node == ""){
+				$.messager.alert("警告","请先选择左侧模块子节点");
+				return;
+			}else{
+				var leaf = $('#tree').tree('isLeaf', node.target);
+				if(!leaf){
+					$.messager.alert("警告","请选择左侧模块子节点,而不是父节点");
+					return;
+				}
+			};
+			var arr = new Array();
+			if(sourceDataList.length <=0){
+				$.messager.alert("警告","请选择需要关联的资源数据");
+				return;
+			}
+    		for(var i =0; i< sourceDataList.length;i++){
+    			//必须设置它为局部变量，否则会出现多条重复数据
+    			var map = {};
+    			map["id"]=sourceDataList[i].id;
+    			map["title"]=sourceDataList[i].sourceTitle;
+    			map["sourceType"]=sourceDataList[i].sourceType;
+    			arr[i] = map;
+    		};
+    		var dataVo = {
+				nodeName : node.text,
+				nodeId : node.id,
+				dataList : arr
+			};
+    		$.ajax({
+				type : 'post',
+				url : "${pageContext.request.contextPath }/webContentManager/addAssociated",
+				data : JSON.stringify(dataVo),
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					if (data.success == "true") {
+						//转到关联列表
+						toAssociatedList();
+						//$('#sourceGrid').datagrid('reload');
+					} else {
+						$.messager.alert('关联失败',data.msg,"error");
+						//$('#sourceGrid').datagrid('reload');
+					}
+				}
+			});
+		}
+	</script>
 </body>
 
 </html>

@@ -18,5 +18,10 @@ public interface WebContentManagerService {
 	 * @return
 	 */
 	List<VEasyuiTree> getModuleList();
+	/**
+	 * 添加关联
+	 * @return
+	 */
+	Map<String, String> addAssociated(Map<String, Object> param);
 
 }

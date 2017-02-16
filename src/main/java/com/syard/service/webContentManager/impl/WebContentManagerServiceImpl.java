@@ -1,18 +1,25 @@
 package com.syard.service.webContentManager.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.abel533.entity.Example;
-import com.github.abel533.entity.Example.Criteria;
 import com.syard.dao.CommodityDao;
+import com.syard.dao.PreModuleContentLinkDao;
 import com.syard.dao.PreSystemComponentsDao;
 import com.syard.pojo.Commodity;
+import com.syard.pojo.PreModuleContentLink;
 import com.syard.pojo.PreSystemComponents;
 import com.syard.service.webContentManager.WebContentManagerService;
 import com.syard.vo.PageBean;
@@ -24,6 +31,8 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 	private CommodityDao commodityDao;
 	@Autowired
 	private PreSystemComponentsDao preSystemComponentsDao;
+	@Autowired
+	private PreModuleContentLinkDao preModuleContentLinkDao;
 	
 	public Map<String, Object> getDataList(PageBean pageBean) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -86,7 +95,6 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		resultList.add(root);
 		//获取所有父元素，也就是每个页面
 		Example example =  new Example(PreSystemComponents.class);
-		//example.createCriteria().andIsNull("moduleParentId");
 		example.createCriteria().andEqualTo("moduleParentId", "");
 		List<PreSystemComponents> selectByExample = preSystemComponentsDao.selectByExample(example);
 		//遍历每个父元素，获取其所有子元素
@@ -111,6 +119,30 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		}
 		root.setChildren(lchild);
 		return resultList;
+	}
+
+	@Override
+	public Map<String, String> addAssociated(Map<String, Object> param) {
+		Map<String, String> results = new HashMap<String, String>();
+		JSONArray parseArray = JSONArray.parseArray(param.get("dataList").toString());
+		Iterator<Object> iterator = parseArray.iterator();
+		while(iterator.hasNext()){
+			Object next = iterator.next();
+			JSONObject parseObject = JSONObject.parseObject(next+"");
+			PreModuleContentLink pmcl = new PreModuleContentLink();
+			pmcl.setCreateTime(new Date());
+			pmcl.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			pmcl.setIsDel(0);
+			pmcl.setModuleId(param.get("nodeId").toString());
+			pmcl.setModuleName(param.get("nodeName").toString());
+			pmcl.setSourceId(parseObject.get("id")+"");
+			pmcl.setSourceTitle(parseObject.get("title")+"");
+			pmcl.setSourceType(parseObject.get("sourceType")+"");
+			pmcl.setUpdateTime(pmcl.getCreateTime());
+			preModuleContentLinkDao.insert(pmcl);
+		}
+		results.put("success", "true");
+		return results;
 	}
 
 }

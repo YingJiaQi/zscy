@@ -1,9 +1,12 @@
 package com.syard.web.webContent;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -30,5 +33,13 @@ public class WebContentManagerController {
 	@RequestMapping(value="/getModuleList", method = RequestMethod.POST)
 	public ResponseEntity<?> getModuleList(){
 		return new ResponseEntity<Object>(webContentManagerService.getModuleList(),HttpStatus.OK);
+	}
+	/**
+	 * 添加关联
+	 * @return
+	 */
+	@RequestMapping(value="/addAssociated", method = RequestMethod.POST)
+	public ResponseEntity<?> addAssociated(@RequestBody Map<String, Object> param){
+		return new ResponseEntity<Object>(webContentManagerService.addAssociated(param),HttpStatus.OK);
 	}
 }
