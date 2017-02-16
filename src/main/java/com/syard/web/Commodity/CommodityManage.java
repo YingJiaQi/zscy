@@ -91,11 +91,20 @@ public class CommodityManage {
 		imageUrls = imageUrls.replaceAll("\\|f\\|", "=");
 		//用于存储商品图片信息
 		List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
-		String[] split = imageUrls.split("</p>");
+		String[] split = imageUrls.split("img");
 		
-		for(int i=0;i<split.length-1;i++){
+		for(int i=0;i<split.length;i++){
 			Map<String, String> map = new HashMap<String, String>();
-			String[] split2 = split[i].split("=");
+			if(split[i].contains("http") && !split[i].contains("dialogs")){
+				//包含图片
+				String path = split[i].substring(6, split[i].indexOf("title")-2);
+				String substrings = split[i].substring(split[i].indexOf("title")+7);
+				String titles = substrings.substring(0, substrings.indexOf('"'));
+				map.put("path", path);
+				map.put("title", titles);
+				lmap.add(map);
+			}
+			/*String[] split2 = split[i].split("=");
 			for(int j=0;j<split2.length;j++){
 				if(j==1){
 					//图片地址
@@ -108,7 +117,7 @@ public class CommodityManage {
 					map.put("title", split2[j].substring(1, split2[j].lastIndexOf('"')));
 				}
 			}
-			lmap.add(map);
+			lmap.add(map);*/
 		}
 		File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityImages");
 		if(!DestcommodityImage.exists()){

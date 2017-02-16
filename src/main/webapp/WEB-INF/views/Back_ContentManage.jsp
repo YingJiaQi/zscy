@@ -49,15 +49,17 @@ var columns = [
 			width: 132,
 			align: 'center'
 		}, {
-			field: 'isDel',
+			field: 'status',
 			title: '操作',
 			width: 100,
 			align: 'center',
 			formatter: function(data, row, index) {
 				if(data == 1) {
-					var opHtml_recovery = "<a href=\"javascript:void(0);\" onclick=\"recovery('" + row.id + "'," + index + ")\" class=\"easyui-linkbutton\"  plain=\"true\" style=\"text-decoration:none;font-size:12px;height:100%;width:50%\"><b>恢复</b></a>"
+					var opHtml_recovery = "<a href=\"javascript:void(0);\"  style=\"text-decoration:none;font-size:12px;height:100%;width:50%;color:green\"><b>已关联</b></a>"+
+					"<a href=\"javascript:void(0);\" onclick=\"edit('" + row.id + "'," +index +
+					")\" class=\"easyui-linkbutton\"  plain=\"true\" style=\"text-decoration:none;font-size:12px;height:100%;width:50%\"><b>更新</b></a>"
 					return opHtml_recovery;
-				} else {
+				} else if(data ==2){
 					var opHtml = "<a href=\"javascript:void(0);\" onclick=\"edit('" + row.id + "'," +index +
 						")\" class=\"easyui-linkbutton\"  plain=\"true\" style=\"text-decoration:none;font-size:12px;height:100%;width:50%\"><b>更新</b></a>" +
 						"&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:void(0);\" onclick=\"deleteIndexFrequency('" +
@@ -68,7 +70,6 @@ var columns = [
 					return opHtml;
 				}
 			},
-			hidden: true
 		}]
 	];
 	$(function() {
@@ -76,6 +77,13 @@ var columns = [
 		$("body").css({
 			visibility: "visible"
 		});
+		/* 左侧菜单前台模块数据初始化加载 */
+		$('#tree').tree({
+	          url:'${pageContext.request.contextPath }/webContentManager/getModuleList',
+	          animate:true,
+	          onClick:function(node){
+	          }
+	        });
 		/* 资源列表   添加资源窗口参数配置*/
 		$("#addWindow").window({
 			width: 390,
@@ -96,14 +104,14 @@ var columns = [
 		   });
 		/* 资源列表初始化加载 */
 		$('#sourceGrid').datagrid({
-			fit : true,
-			border : false,
-			rownumbers : true,
+			fit: true,
+			border: false,
+			rownumbers: true,
 			animate: true,
-			nowrap:true,
-			striped : true,
-			pageList : [ 10, 20, 50, 100 ],
-			pagination : true,
+			singleSelect: true,
+			striped: true,
+			pageList: [10, 20, 50],
+			pagination: true,
 			url : "${pageContext.request.contextPath}/webContentManager/getDataList",
 			columns : columns,
 			loadMsg:'数据加载中...',
@@ -175,7 +183,9 @@ var columns = [
 
 
 	<!-- 左侧前台页面功能显示区域   start -->
-    <div data-options="region:'west',title:'前台页面功能',split:true" style="width:200px;">232</div>
+    <div data-options="region:'west',title:'前台页面模块',split:true" style="width:200px;">
+		<ul id="tree" style="margin:16px"></ul>
+    </div>
     <!-- 左侧前台页面功能显示区域   end -->
     
    	<!-- 右侧资源区域，包含两个部分(与前台页面关联部分，资源列表)   start -->
@@ -188,35 +198,40 @@ var columns = [
 				<span class="commonNode" onclick="addData();" style="float:right;margin-right:20px;margin-top:-7px">添加资源</span>
 			</div>
     	</div>
-	    <div data-options="region:'center'" style="padding:5px;background:#eee;">
+	   <!--  <div  data-options="region:'center'" style="padding:5px;background:#eee;"> -->
 	    	<!-- 资源列表  start -->
-			<div id="sourceList">
-				<span style="font-size:12px;font-weight:bold;">当前节点:&nbsp;<b id="path"></b></span>
-				<br><br>
-				类型:<select name="type" id="type">
-						<option selected  value="">请选择</option>
-						<option value="产品">产品</option>
-						<option value="视频">视频</option>
-						<option value="文档">文档</option>
-					</select>&nbsp;
-				标题关键字:<input type="text" name="titleKey" style="width:80px;"/>
-				排序:<select name="order" id="order">
-						<option selected  value="">请选择</option>
-						<option value="1">更新时间由早到晚</option>
-						<option value="2">更新时间由晚到早</option>
-					</select>&nbsp;&nbsp;&nbsp;
-				<span  onclick="doSearch()" class="commonNode">搜索</span>
-				<span onclick="doAssociated();" class="commonNode" style="float:right;">保存关联</span>
-				<br/><br/>
-				<table id="sourceGrid"></table>
+			<div data-options="region:'center'"  class="easyui-layout"   id="sourceList" >
+				<div data-options="region:'north',split:true" style="height:80px;">
+					<br>
+					<span style="font-size:12px;font-weight:bold;">&nbsp;&nbsp;&nbsp;当前节点:&nbsp;<b id="path"></b></span>
+					<br><br>
+					&nbsp;&nbsp;&nbsp;类型:<select name="type" id="type">
+							<option selected  value="">请选择</option>
+							<option value="产品">产品</option>
+							<option value="视频">视频</option>
+							<option value="文档">文档</option>
+						</select>&nbsp;
+					标题关键字:<input type="text" name="titleKey" style="width:80px;"/>
+					排序:<select name="order" id="order">
+							<option selected  value="">请选择</option>
+							<option value="1">更新时间由早到晚</option>
+							<option value="2">更新时间由晚到早</option>
+						</select>&nbsp;&nbsp;&nbsp;
+					<span  onclick="doSearch()" class="commonNode">搜索</span>
+					<span onclick="doAssociated();" class="commonNode" style="float:right;">保存关联</span>
+					<br/><br/>
+				</div>
+				<div data-options="region:'center'" style="padding: 6px; background: #eee;" id="centerSys">
+					<table id="sourceGrid"></table>
+				</div>
 			</div>
 			<!-- 资源列表  end -->
 			
 			<!-- 关联列表  start -->
-			<div id="associatedList" style="display:none;">
-			</div>
+			<!-- <div id="associatedList" style="display:none;">
+			</div> -->
 			<!-- 关联列表  end -->
-	    </div>
+	   <!--  </div> -->
     </div>
     <!-- 右侧资源区域，包含两个部分(与前台页面关联部分，资源列表)   end -->
     

@@ -1,8 +1,10 @@
 package com.syard.service.webContentManager;
 
+import java.util.List;
 import java.util.Map;
 
 import com.syard.vo.PageBean;
+import com.syard.vo.VEasyuiTree;
 
 public interface WebContentManagerService {
 	/**
@@ -11,5 +13,10 @@ public interface WebContentManagerService {
 	 * @return
 	 */
 	Map<String, Object> getDataList(PageBean pageBean);
+	/**
+	 * 初始加载前台模块数据
+	 * @return
+	 */
+	List<VEasyuiTree> getModuleList();
 
 }

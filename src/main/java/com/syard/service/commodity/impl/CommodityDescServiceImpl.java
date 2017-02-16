@@ -26,26 +26,37 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 	private CommodityDescDao commodityDescDao;
 	
 	public Boolean addCommodityDesc(String commodityDesc,String commodityId) {
-		//保存商品描述图片
-		List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
-		String[] split = commodityDesc.split("src");
-		for(int i=0;i<split.length;i++){
-			Map<String, String> map = new HashMap<String, String>();
-			if(split[i].contains("http")){
-				//包含图片
-				String path = split[i].substring(2, split[i].indexOf("title")-2);
-				String substrings = split[i].substring(split[i].indexOf("title")+7);
-				String title = substrings.substring(0, substrings.indexOf('"'));
-				map.put("path", path);
-				map.put("title", title);
-				lmap.add(map);
-			}
-		}
+		//用于存储更新后的新图片路径加内容
+		StringBuffer sourceContent = new StringBuffer();
+		//图片新地址
 		File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityDescImage");
 		if(!DestcommodityImage.exists()){
 			DestcommodityImage.mkdirs();
 		}
-		//遍历商品图片
+		//保存商品描述图片
+		List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
+		String[] split = commodityDesc.split("img");
+		for(int i=0;i<split.length;i++){
+			Map<String, String> map = new HashMap<String, String>();
+			if(split[i].contains("http")){
+				if(split[i].contains("dialogs")){
+					sourceContent.append(split[i]+"img");
+				}else{
+					//包含图片
+					String path = split[i].substring(6, split[i].indexOf("title")-2);
+					String substrings = split[i].substring(split[i].indexOf("title")+7);
+					String title = substrings.substring(0, substrings.indexOf('"'));
+					map.put("path", path);
+					map.put("title", title);
+					lmap.add(map);
+					sourceContent.append(split[i].substring(0, split[i].indexOf('"')+1)+DestcommodityImage+File.separator+title+" \""+split[i].substring(split[i].indexOf("title")-1)+"img");
+				}
+			}else{
+				sourceContent.append(split[i]+"img");
+			}
+		}
+		
+		//遍历商品图片，重新存储描述信息中的图片
 		for(Map<String, String> img : lmap){
 			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
 			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
@@ -63,7 +74,7 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 		cd.setId((UUID.randomUUID()+"").replaceAll("-", ""));
 		cd.setCreateTime(new Date());
 		cd.setUpdateTime(cd.getCreateTime());
-		cd.setContent(commodityDesc);
+		cd.setContent(sourceContent.toString().substring(0, sourceContent.toString().length()-3));
 		cd.setCommodityId(commodityId);
 		Integer save = super.save(cd);
 		return save >0 ? true:false;
