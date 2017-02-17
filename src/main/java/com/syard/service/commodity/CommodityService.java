@@ -38,5 +38,11 @@ public interface CommodityService{
 	 * @return 
 	 */
 	CommodityVo getCommodityWithUpdateById(String id);
+	/**
+	 * 检测商品标题是否重复
+	 * @param title
+	 * @return
+	 */
+	Boolean checkRepeatWithTitle(String title);
 
 }

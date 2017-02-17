@@ -27,22 +27,14 @@
 	var docIds = new Array();
 	//用于记录删除的关联文件id
 	var docName = null;
-	//文件上传个数标记
-	var imgs = 0;
-	//是否推送通知,1推送,0不推送
-	var isPush=0;
-	//上传文件完成后的提示信息标签
-	var uploadComplete=0;
-	//后台传的错误信息
-	var errorMsg = "";
 	//阻止重复点击类目
 	var categoryid = "";
 	  $(function(){
-		  document.onkeydown = function() {
+/* 		  document.onkeydown = function() {
 				if(event.keyCode == 9) { //如果是其它键，换上相应在ascii 码即可。
 					return false; //非常重要
 				}
-			}
+			} */
 		  $("body").css({visibility:"visible"});
 		  $('#tree').tree({
 	          url:'${pageContext.request.contextPath }/category/getCatagoryList',
@@ -76,7 +68,7 @@
 												$("#showAssociatedList").css("display","block");
 					   							for(var i = 0; i< data.docList.length ;i++){
 					   								docIds[i] = String(data.docList[i].id);
-					   								var optionHtml = "<li title='"+data.docList[i].cateforySpecificationName+"' style='width:60px;height:20px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:6px 2px 2px 30px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><div style='height:60px; overflow:auto;'>"+data.docList[i].cateforySpecificationName+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:2px;left:2px;text-decoration:none'><b>删</b></a></li>"
+					   								var optionHtml = "<li title='"+data.docList[i].cateforySpecificationName+"' style='width:60px;height:20px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:6px 2px 2px 30px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><div style='height:60px; overflow:auto;'>"+data.docList[i].cateforySpecificationName+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:2px;left:2px;text-decoration:none;font-size:1.3em'><b>删</b></a></li>"
 													$("#showAssociatedList").append(optionHtml);
 					   							}
 											}else{
@@ -360,7 +352,7 @@
 									$("#showAssociatedList").css("display","block");
 		   							for(var i = 0; i< data.docList.length ;i++){
 		   								docIds[i] = String(data.docList[i].id);
-		   								var optionHtml = "<li title='"+data.docList[i].cateforySpecificationName+"' style='width:60px;height:20px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:6px 2px 2px 30px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><div style='height:60px; overflow:auto;'>"+data.docList[i].cateforySpecificationName+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:2px;left:2px;text-decoration:none'><b>删</b></a></li>"
+		   								var optionHtml = "<li title='"+data.docList[i].cateforySpecificationName+"' style='width:60px;height:20px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:6px 2px 2px 30px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><div style='height:60px; overflow:auto;'>"+data.docList[i].cateforySpecificationName+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:2px;left:2px;text-decoration:none;font-size:1.3em'><b>删</b></a></li>"
 										$("#showAssociatedList").append(optionHtml);
 		   							}
 								}else{
@@ -390,8 +382,8 @@
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
-	    		if (data.success) { 
-	    			docName = docId;
+	    		if (data.success == "true") { 
+	    			//docName = docId;
 	    			$("#showAssociatedList li").remove("li[title ='"+data.specificationName+"']");
 					$.messager.alert("成功",data.msg,'info');
 					if ( $("#showAssociatedList li").length == 0 ) { 

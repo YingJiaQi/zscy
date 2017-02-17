@@ -92,6 +92,7 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		Commodity selectByPrimaryKey = commodityDao.selectByPrimaryKey(param.get("id").toString());
 		selectByPrimaryKey.setStatus(3);
 		selectByPrimaryKey.setIsDel(1);
+		selectByPrimaryKey.setTitle(selectByPrimaryKey.getTitle()+"deleted");
 		selectByPrimaryKey.setUpdateTime(new Date());
 		int updateByPrimaryKey = commodityDao.updateByPrimaryKey(selectByPrimaryKey);
 		if(updateByPrimaryKey > 0){
@@ -168,6 +169,13 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		}*/
 		cv.setImage(cc.getImage()==null?"": cc.getImage());
 		return cv;
+	}
+
+	@Override
+	public Boolean checkRepeatWithTitle(String title) {
+		Example example = new Example(Commodity.class);
+		example.createCriteria().andEqualTo("title", title);
+		return commodityDao.selectByExample(example).size() > 0 ? true:false;
 	}
 
 }

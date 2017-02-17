@@ -23,5 +23,17 @@ public interface WebContentManagerService {
 	 * @return
 	 */
 	Map<String, String> addAssociated(Map<String, Object> param);
+	/**
+	 * 根据前台功能模块ID获取其关联的数据
+	 * @param param 前台功能模块ID
+	 * @return
+	 */
+	Map<String, Object> getAssociatedListById(Map<String, Object> param);
+	/**
+	 * 根据模块ID和数据ID，删除关联
+	 * @param param
+	 * @return
+	 */
+	Map<String, String> delAssociated(Map<String, Object> param);
 
 }

@@ -58,6 +58,13 @@ public class CommodityManage {
 		String barcode = (String) param.get("barcode");
 		String imageUrls = (String) param.get("imageUrls");
 		String categoryName = (String) param.get("category_id");
+		/*资源数据标题都不能重复，检测标题是否重复*/
+		Boolean ifRepeat = commodityService.checkRepeatWithTitle(title);
+		if(ifRepeat){
+			result.put("msg", "添加失败,商品标题已存在，请更换");
+			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+		}
+		
 		//类目处理
 		String[] categoryList = categoryName.split(",");
 		//cscList存储所有的规格参数内容

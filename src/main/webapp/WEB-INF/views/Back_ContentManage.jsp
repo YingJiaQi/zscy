@@ -20,7 +20,15 @@
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/ext/jquery.cookie.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/datajs/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css" 	href="${pageContext.request.contextPath }/static/js/uploadify/uploadify.css">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/uploadify/jquery.uploadify.min.js"></script>  
 <script type="text/javascript">
+/* 用于保存之前的节点 */
+var preNode = null;
+//用于存放关联文件的id,在删除关联时使用
+var docIds = new Array();
+
+
 /* 资源列表初始化加载 列配置*/
 var columns = [
 		[{
@@ -85,9 +93,6 @@ var columns = [
 	          url:'${pageContext.request.contextPath }/webContentManager/getModuleList',
 	          animate:true,
 	          onClick:function(node){
-	      	 	 //将选择的节点传送到右侧docList中
-	        	 // getSelectedNodeData();
-	        	  
 	        	  //获取该节点所有父节点
         		  var parentAll = node.text;
         		  var flag = ">>";
@@ -107,11 +112,11 @@ var columns = [
    	        		  	}
    	        	  }
                   $(".path").text(parentAll+"");
-                //调用子页面的方法，实时更新路径
-          		/*myFrame.window.updatePathImmediately(parentAll+"");
 	        	  
 	        	  var leaf = $('#tree').tree('isLeaf', node.target);
-	        	  var current = node.id;
+	        	  //防止重复提交
+	        	  var currentNode = node.id;
+	        	 
 	        	  if(!leaf){
 	        		  //将该节点的大于等于第二层子节点的状态改为关闭
 	        		  var nodeName = node.text;
@@ -119,32 +124,33 @@ var columns = [
 	        			  $('#tree').tree('collapseAll');
 	        		  }
 	        	  	$(this).tree('toggle', node.target);
-	        	  	$("#articalList").removeClass("commonNode").addClass("chooseNode");
-	        		$("#asscoiatList").removeClass("chooseNode").addClass("commonNode");
-	        		$("#associatedList").css("display","none");
-	        		$("#documentList").css("display","block");
-	        		 pre = current;
+	        	  	$("#sourceListButton").removeClass("commonNode").addClass("chooseNode");
+	    			$("#associatedButton").removeClass("chooseNode").addClass("commonNode");
+	    			$("#associatedList").css("display","none");
+	    			$("#sourceList").css("display","block");
+	        		 preNode = currentNode;
 	        		 return;
 	        	  }else{
 	        		  //用于控制重复点击叶子节点
-	        		  if(current != pre){
+	        		  if(currentNode != preNode){
 		        		  //用于控制对应关联库的显示
 		        		  var dataVo = {id : node.id};
 		          			 $.ajax({
 		          					type : 'post',
-		          					url : '${pageContext.request.contextPath}/document/toAssociatedListById',
+		          					url : '${pageContext.request.contextPath}/webContentManager/getAssociatedListById',
 		          					data : JSON.stringify(dataVo),
 		          					dataType : 'json',
 		          					contentType : "application/json; charset=utf-8",
 		          					success : function(data) {
-		        						if (data.flag) {
+		        						if (data.success == "true") {
 		        							$("#showAssociatedList").empty();
-		        							if(data.docList != null && data.docList != ""){
+		        							if(data.pmcl != null && data.pmcl != ""){
 		        								$("#showTip").css("display","none");
 		        								$("#showAssociatedList").css("display","block");
-			        							for(var i = 0; i< data.docList.length ;i++){
-			        								docIds[i] = String(data.docList[i].id);
-			        								var optionHtml = "<li title='"+data.docList[i].documentTitle+"' style='width:95px;height:149px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:2px;overflow:hidden;font-size:10px;line-height:1.3;letter-spacing:2px;position:relative'><img src='http://192.168.16.211:8085/icon/"+data.docList[i].id+"/icon.png"+"' width='95px' height='90px'/><br/><div style='height:60px; overflow:auto;'>"+data.docList[i].documentTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none'><b>删</b></a></li>"
+			        							for(var i = 0; i< data.pmcl.length ;i++){
+			        								docIds[i] = String(data.pmcl[i].id);
+			        								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:100px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 15px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px; overflow:auto;letter-spacing:6px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
+			        								"<span style='position:absolute;top:-10px;left:90px;background-color:#7F99BE;padding:2px;font-size:0.9em'>"+data.pmcl[i].sourceType+"</span></li>"
 			        								$("#showAssociatedList").append(optionHtml);
 			        							}
 		        							}else{
@@ -156,14 +162,14 @@ var columns = [
 		        						}
 		        					}
 		          				});
-		          			$("#asscoiatList").removeClass("commonNode").addClass("chooseNode");
-		        			$("#articalList").removeClass("chooseNode").addClass("commonNode");
-		        			$("#documentList").css("display","none");
+		          			$("#associatedButton").removeClass("commonNode").addClass("chooseNode");
+		        			$("#sourceListButton").removeClass("chooseNode").addClass("commonNode");
+		        			$("#sourceList").css("display","none");
 		        			$("#associatedList").css("display","block");
 	        		  }
-	                  pre = current;
-	        			  return;
-	        	  }*/
+	        		  preNode = currentNode;
+	        		  return;
+	        	  }
 	          } 
 	        });
 		/* 资源列表   添加资源窗口参数配置*/
@@ -210,7 +216,7 @@ var columns = [
 	            	//对应相应目录，使之勾选上
 	            	$.each(data.rows, function(index, item){
 	            		if(item.checked){
-	            			$('#grid').datagrid('checkRow', index);
+	            			$('#sourceGrid').datagrid('checkRow', index);
 	            		}
 	            	});
 	            	$("#showInfo").css("display","none")
@@ -219,6 +225,66 @@ var columns = [
 	            $(".datagrid-header-check").html("");
 			}
 		});
+		/**
+		*资源列表上传文件，视频，图片
+		*/
+		 $("#uploadify").uploadify({  
+			 'swf' : "${pageContext.request.contextPath}/static/js/uploadify/uploadify.swf",
+			  'uploader'  : '${pageContext.request.contextPath}/webContentManager/uploadFile',
+			  'queueId' : "fileQueue",
+			  'queueSizeLimit' : 100,//限制上传文件的数量
+			  'auto'  : false,
+			  'removeCompleted':true,
+			  "removeTimeout": 0,
+			  'fileSizeLimit':24307200,//上传文件大小
+			  'multi'  : true,//是否允许多文件上传
+			  'method'   :'post',
+			  'width'     : '65',  //按钮宽度    
+	          'height'    : '18',  //按钮高度  
+			  'simUploadLimit': 1,//同时运行上传的进程数量
+			  'buttonText': "选择数据",
+			  'fileObjName' : 'uploadFile',
+			  'onFallback':function(){      
+	                $.messager.alert("警告","您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");      
+	            },  
+	            'onUploadStart' : function(file) {
+	            	//$("#uploadify").uploadify("settings", "formData", {'id' : $("#updateDocId").val(),"docTitle":choosedDocTitle() ,"docTag":choosedDocTags(),"imgNum":imgs,"isPush":isPush,"jsessionid":$("#sessionId").val()});   
+	            },
+	            'onQueueComplete' : function (queueData){
+	            	
+            		//关闭对话框
+            		closeFileUploadWindow();
+            		//刷新数据,带参数刷新资源列表
+        			var node = $('#tree').tree('getSelected');
+        			if(node != null && node != ""){
+               	   		flashSourceList(node.id);
+        			}
+					/* //调用队列上传成功后的方法
+					uploadSuccess();
+					//清空缓存中后台传的错误信息
+					errorMsg = "";
+					//清空缓存中后台传的成功信息
+					successMsg = "";
+					//上传文件总数赋初值
+					imgs=0; */
+	            },
+	            'onUploadSuccess' : function(file, data, response){
+	            	/* if(data.indexOf("flag") >= 0){
+	            		  uploadComplete++;
+          			  }
+          			  if(data.indexOf("msg") >= 0 && data.indexOf("flag") < 0){
+        				  errorMsg += "错误文件名:"+file.name +",错误信息:"+ data.substring(data.indexOf("msg")+4,data.length-1)+";";
+        			  } */
+	            },
+	            'onSelect':function(file){
+	            	//每选择一个文件就会触发 
+	            	//imgs++;
+	            },
+	           'onCancel':function(file){
+	        	   //imgs--;
+	           },
+		 }); 
+		
 		//点击已关联按钮
 		$("#associatedButton").click(function(){
 			//var flag = myFrame.window.dataHandle();
@@ -241,8 +307,11 @@ var columns = [
 		});
 		//点击资源列表
 		$("#sourceListButton").click(function(){
-			//调用子页面的方法，刷新doclist
-			//myFrame.window.docmentListFlash();
+			 //带参数刷新资源列表
+			var node = $('#tree').tree('getSelected');
+			if(node != null && node != ""){
+       	   		flashSourceList(node.id);
+			}
 			$(this).removeClass("commonNode").addClass("chooseNode");
 			$("#associatedButton").removeClass("chooseNode").addClass("commonNode");
 			$("#associatedList").css("display","none");
@@ -256,6 +325,14 @@ var columns = [
 	/* 资源列表   打开添加资源窗口*/
 	function addData(){
 		$("#addWindow").window("open");
+	}
+	/* 资源列表   刷新列表*/
+	function flashSourceList(obj){
+	 	$('#sourceGrid').datagrid({
+		  queryParams: {
+			  nodeID: obj
+		  }  
+		});
 	}
 	/* 资源列表   搜索*/
 	function doSearch(){
@@ -275,13 +352,42 @@ var columns = [
 	}
 	/* 资源列表   添加资源*/
 	function addSource(param){
-		$("#chooseType").css("display","none");
+/* 		$("#chooseType").css("display","none");
 		if(param == "video"){
 			$("#addVideo").css("display","block");
 		}else if(param == "artical"){
 			$("#addArtical").css("display","block");
-		}
+		} */
+		$('#addWindow').window("close");
+		fileUpload(param);
 	}
+	/* 关联列表，删除关联 */
+	 function deleteAssociated(i){
+    	 var docId = docIds[i];
+    	 var node = $('#tree').tree('getSelected');
+	     var dataVo = { sourceAssociatedID : docId, moduleID : node.id};
+	     $.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/webContentManager/delAssociated',
+	    	 data:JSON.stringify(dataVo),
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") { 
+	    			$("#showAssociatedList li").remove("li[title ='"+data.sourceTitle+"']");
+					$.messager.alert("成功",data.msg,'info');
+					if ( $("#showAssociatedList li").length == 0 ) { 
+						$("#showTip").css("display","block");
+						$("#showAssociatedList").empty();
+						}else{
+							$("#showTip").css("display","none");
+						}  
+				} else {
+					$.messager.alert('失败', data.msg,'error');
+				}
+	    	 }
+	     });
+     }
 </script>
 <style type="text/css">
 .chooseNode{
@@ -299,6 +405,16 @@ var columns = [
 	border:1px solid #D3D3D3;
 	padding:6px 10px;
 	margin-right:30px;
+}
+#mask{
+	width: 100%;
+	height: 200%;
+	position: absolute;
+	background-color: #000;
+	left: 0;
+	opacity:0.5;
+	top: 0;
+	z-index: 2;
 }
 </style>
 </head>
@@ -320,7 +436,6 @@ var columns = [
 				<span class="commonNode" onclick="addData();" style="float:right;margin-right:20px;margin-top:-7px">添加资源</span>
 			</div>
     	</div>
-	   <!--  <div  data-options="region:'center'" style="padding:5px;background:#eee;"> -->
 	    	<!-- 资源列表  start -->
 			<div data-options="region:'center'"  class="easyui-layout"   id="sourceList" >
 				<div data-options="region:'north',split:true" style="height:80px;">
@@ -344,7 +459,7 @@ var columns = [
 					<br/><br/>
 				</div>
 				<div data-options="region:'center'" style="padding: 6px; background: #eee;" id="centerShow">
-					<table id="sourceGrid"></table>
+					<table id="sourceGrid" ></table>
 				</div>
 			</div>
 			<!-- 资源列表  end -->
@@ -363,11 +478,10 @@ var columns = [
 			    		</div>
 			    </div>
 			    <div >
-			    	<ul id="showAssociatedList" style="margin-top:15px"></ul>
+			    	<ul id="showAssociatedList" style="margin:40px 10px 15px 10px"></ul>
 			    </div>
 			</div>
 			<!-- 关联列表  end -->
-	   <!--  </div> -->
     </div>
     <!-- 右侧资源区域，包含两个部分(与前台页面关联部分，资源列表)   end -->
     
@@ -380,6 +494,26 @@ var columns = [
     	<div id="addVideo" style="display:none">添加视频</div>
     	<div id="addArtical" style="display:none">添加文档</div>
 	</div>
+	
+	<!-- 上传开始 -->
+	<div  id="fileUpload" style=" display: none; position: absolute; left: 30%; top: 20%;width:450px;border:3px solid #98999D;padding:12px;border-radius:10px;z-index:10;background-color:white">
+		<br>
+			<div style="min-height:200px;max-height:300px;overflow-y:scroll">
+			<div style="padding:1px 0px 20px 5px">
+				 <span>文件标题</span>&nbsp;&nbsp;<input style="width:280px" type="text" id="sourceTitle_FileUpload"/><br/><br/>
+				 <span>文件类型</span>&nbsp;&nbsp;<input style="width:285px" class="easyui-combobox" id="sourceType_FileUpload" multiple="true" data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/document/getDocumentTagList',editable:false" /><br/>
+			</div>
+			 <input id="uploadify" type="file" name="uploadify" style="height:auto"/>
+			 <input type="hidden" name="id" id="updateDocId"/>
+			 <input id="sessionId" type="hidden" value="${pageContext.session.id}"/>
+			 <span onclick="closeFileUploadWindow()" style="position:absolute;left:390px;top:10px" class="commonNode">关闭</span>
+		</div>
+		<div style="height:30px;padding-top:10px">
+          	 <a href="javascript:$('#uploadify').uploadify('upload','*')"  class="commonNode">开始上传</a>    
+   			<a href="javascript:$('#uploadify').uploadify('cancel','*')" class="commonNode">取消上传</a>    
+		</div>
+	</div>
+	<div id="mask" style="display:none"></div>
 	<!-- 资源添加窗口   end -->
 	<script type="text/javascript">
 		/* 转到资源列表 */
@@ -389,7 +523,37 @@ var columns = [
 			$("#associatedList").css("display","none");
 			$("#sourceList").css("display","block");
 		}
+		//转到关联列表
 		function toAssociatedList(){
+			var node = $('#tree').tree('getSelected');
+			var dataVo = {id : node.id};
+ 			 $.ajax({
+ 					type : 'post',
+ 					url : '${pageContext.request.contextPath}/webContentManager/getAssociatedListById',
+ 					data : JSON.stringify(dataVo),
+ 					dataType : 'json',
+ 					contentType : "application/json; charset=utf-8",
+ 					success : function(data) {
+						if (data.success == "true") {
+							$("#showAssociatedList").empty();
+							if(data.pmcl != null && data.pmcl != ""){
+								$("#showTip").css("display","none");
+								$("#showAssociatedList").css("display","block");
+	   							for(var i = 0; i< data.pmcl.length ;i++){
+	   								docIds[i] = String(data.pmcl[i].id);
+	   								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:100px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 15px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px; overflow:auto;letter-spacing:6px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
+									"<span style='position:absolute;top:-10px;left:90px;background-color:#7F99BE;padding:2px;font-size:0.9em'>"+data.pmcl[i].sourceType+"</span></li>"
+									$("#showAssociatedList").append(optionHtml);
+	   							}
+							}else{
+								$("#showTip").css("display","block");
+								$("#showAssociatedList").empty();
+							}
+						} else {
+							$.messager.alert('关联失败',data.msg,"error");
+						}
+					}
+ 				});
 			$("#associatedButton").removeClass("commonNode").addClass("chooseNode");
 			$("#sourceListButton").removeClass("chooseNode").addClass("commonNode");
 			$("#sourceList").css("display","none");
@@ -437,13 +601,79 @@ var columns = [
 					if (data.success == "true") {
 						//转到关联列表
 						toAssociatedList();
-						//$('#sourceGrid').datagrid('reload');
+						//$("#sourceGrid").datagrid('reload');
 					} else {
 						$.messager.alert('关联失败',data.msg,"error");
 						//$('#sourceGrid').datagrid('reload');
 					}
 				}
 			});
+		}
+		/**
+		*关闭上传窗口
+		*/
+		function closeFileUploadWindow(){
+			$("#mask").hide();
+			$("#fileUpload").css("display","none");
+			$('#uploadify').uploadify('cancel','*');
+			$("#docTitle").val("");
+			$("#docTag").combobox("setValue","");
+			
+		}
+		/**
+		*打开文件上传窗口
+		*/
+		function fileUpload(obj){
+			$('#sourceType_FileUpload').combobox('clear');//清除逗号
+			$("#mask").show();
+		/* 	if(document.getElementById("updateNoFiles") != null){
+				document.getElementById("updateNoFiles").style.display = 'none';
+			} */
+			//更新时使用
+/* 			if(id != null && id != ""){
+				//数据回显
+				$.ajax({
+					type : 'post',
+					url : '${pageContext.request.contextPath}/document/getDocumentDataById',
+					data : JSON.stringify({id:id}),
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					success : function(data) {
+						//赋值
+						$("#docTitle").val(data.docTitle);
+						//$('#docTag').combobox("setValue",data.docTag);
+						var taglist = data.docTag.split(",");
+						for(var x =0;x<taglist.length;x++){
+							//alert(taglist[x])
+							var temp = taglist[x];
+							//$("#docTag").combobox("select",taglist[i]);
+									var data = $("#docTag").combobox('getData');
+								    if (data.length > 0) {
+								    	//alert(data)
+								    	if(temp != null && temp != ""){
+								        	for(var i =0 ;i<data.length;i++){
+								        		//alert(data[i].text +"=="+temp)
+								            	if(data[i].text==temp){
+								        		//alert(data[i].id);
+								        		$("#docTag").combobox('select', data[i].id);
+								            	}
+								            }
+								         }
+								     }
+						}
+					}
+				});
+				//无文件上传
+				if(document.getElementById("updateNoFiles") == null || document.getElementById("updateNoFiles") == "" ){
+					var htmls = "<button id='updateNoFiles' onclick='updateNoFile()'>无文件更新</button>";
+					$("#fileUpload").append(htmls);
+				}else{
+					document.getElementById("updateNoFiles").style.display = 'block';
+				}
+			} */
+			
+			$("#fileUpload").css("display","block");
+			//$("#updateDocId").val(id);
 		}
 	</script>
 </body>

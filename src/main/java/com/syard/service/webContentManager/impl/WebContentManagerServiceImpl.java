@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.abel533.entity.Example;
@@ -38,6 +38,14 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		Map<String, Object> result = new HashMap<String, Object>();
 		//slist用于存放所有资料数据
 		List<Object> slist = new ArrayList<Object>();
+		//是否传递了模块ID，若有则向后台查询该模块是否关联了资源，有则取出，用于后台管理页面初加载自动勾选其关联文件
+		List<PreModuleContentLink> associatedList = null;
+		if(StringUtils.isNoneBlank(pageBean.getNodeID())){
+			Example example = new Example(PreModuleContentLink.class);
+			example.createCriteria().andEqualTo("moduleId", pageBean.getNodeID());
+			associatedList = preModuleContentLinkDao.selectByExample(example);
+		}
+		
 		
 		Map<String, Object> map;
 		//首先获取商品信息
@@ -52,6 +60,16 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			map.put("createTime", ele.getCreateTime());
 			map.put("updateTime", ele.getUpdateTime());
 			map.put("status", ele.getStatus());
+			//关联加选中
+			if(associatedList != null && associatedList.size() > 0 ){
+				for(PreModuleContentLink pm:associatedList){
+					if(!StringUtils.equals(pm.getSourceType(), "产品"))continue;
+					if(StringUtils.equals(pm.getSourceTitle(), ele.getTitle())){
+						map.put("checked", "true");
+						break;
+					}
+				}
+			}
 			slist.add(map);
 		}
 		
@@ -125,6 +143,12 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 	public Map<String, String> addAssociated(Map<String, Object> param) {
 		Map<String, String> results = new HashMap<String, String>();
 		JSONArray parseArray = JSONArray.parseArray(param.get("dataList").toString());
+		//检查该模块是否已存在关联，有则清空关联，重新添加
+		Example example = new Example(PreModuleContentLink.class);
+		example.createCriteria().andEqualTo("moduleId", param.get("nodeId").toString());
+		example.createCriteria().andEqualTo("moduleName", param.get("nodeName").toString());
+		preModuleContentLinkDao.deleteByExample(example);
+		
 		Iterator<Object> iterator = parseArray.iterator();
 		while(iterator.hasNext()){
 			Object next = iterator.next();
@@ -143,6 +167,28 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		}
 		results.put("success", "true");
 		return results;
+	}
+
+	@Override
+	public Map<String, Object> getAssociatedListById(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Example example = new Example(PreModuleContentLink.class);
+		example.createCriteria().andEqualTo("moduleId", param.get("id").toString());
+		List<PreModuleContentLink> selectByExample = preModuleContentLinkDao.selectByExample(example);
+		result.put("success", "true");
+		result.put("pmcl", selectByExample);
+		return result;
+	}
+
+	@Override
+	public Map<String, String> delAssociated(Map<String, Object> param) {
+		Map<String, String> result = new HashMap<String, String>();
+		PreModuleContentLink selectByPrimaryKey = preModuleContentLinkDao.selectByPrimaryKey(param.get("sourceAssociatedID").toString());
+		preModuleContentLinkDao.deleteByPrimaryKey(param.get("sourceAssociatedID").toString());
+		result.put("success", "true");
+		result.put("sourceTitle", selectByPrimaryKey.getSourceTitle());
+		result.put("msg", "删除成功");
+		return result;
 	}
 
 }

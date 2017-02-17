@@ -166,13 +166,13 @@ public class CategoryServiceImpl extends BaseService<Category> implements Catego
 	}
 	public Map<String, String> delAssociate(Map<String, Object> param) {
 		Map<String, String> result = new HashMap<String, String>();
-		CategorySpecificationLink record = new CategorySpecificationLink();
-		record.setCategoryId(param.get("categoryId").toString());
-		record.setCategorySpecificationId(param.get("specificationId").toString());
+		Example example = new Example(CategorySpecificationLink.class);
+		example.createCriteria().andEqualTo("categoryId", param.get("categoryId").toString());
+		example.createCriteria().andEqualTo("categorySpecificationId", param.get("specificationId").toString());
 		//先查，取出规格名称
-		List<CategorySpecificationLink> selectByExample = categorySpecificationLinkDao.selectByExample(record);
+		List<CategorySpecificationLink> selectByExample = categorySpecificationLinkDao.selectByExample(example);
 		//删除该条记录
-		categorySpecificationLinkDao.delete(record);
+		categorySpecificationLinkDao.deleteByExample(example);
 		result.put("success", "true");
 		result.put("msg", "删除成功");
 		result.put("specificationName", selectByExample.get(0).getCateforySpecificationName());

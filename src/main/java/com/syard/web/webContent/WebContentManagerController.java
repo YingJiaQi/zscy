@@ -42,4 +42,22 @@ public class WebContentManagerController {
 	public ResponseEntity<?> addAssociated(@RequestBody Map<String, Object> param){
 		return new ResponseEntity<Object>(webContentManagerService.addAssociated(param),HttpStatus.OK);
 	}
+	/**
+	 * 根据前台功能模块ID获取其关联的数据
+	 * @param param 前台功能模块ID
+	 * @return
+	 */
+	@RequestMapping(value="/getAssociatedListById", method = RequestMethod.POST)
+	public ResponseEntity<?> getAssociatedListById(@RequestBody Map<String, Object> param){
+		return new ResponseEntity<Object>(webContentManagerService.getAssociatedListById(param),HttpStatus.OK);
+	}
+	/**
+	 * 根据模块ID和数据ID，删除关联
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/delAssociated", method = RequestMethod.POST)
+	public ResponseEntity<?> delAssociated(@RequestBody Map<String, Object> param){
+		return new ResponseEntity<Object>(webContentManagerService.delAssociated(param),HttpStatus.OK);
+	}
 }
