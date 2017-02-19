@@ -60,4 +60,13 @@ public class WebContentManagerController {
 	public ResponseEntity<?> delAssociated(@RequestBody Map<String, Object> param){
 		return new ResponseEntity<Object>(webContentManagerService.delAssociated(param),HttpStatus.OK);
 	}
+	/**
+	 * 添加资源数据
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/addSourceData", method = RequestMethod.POST)
+	public ResponseEntity<?> addSourceData(@RequestBody Map<String, Object> param){
+		return new ResponseEntity<Object>(webContentManagerService.addSourceData(param),HttpStatus.OK);
+	}
 }

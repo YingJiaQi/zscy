@@ -19,9 +19,10 @@
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/ext/jquery.portal.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/ext/jquery.cookie.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/easyui/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/datajs/WdatePicker.js"></script>
-<link rel="stylesheet" type="text/css" 	href="${pageContext.request.contextPath }/static/js/uploadify/uploadify.css">
-<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/uploadify/jquery.uploadify.min.js"></script>  
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/datajs/WdatePicker.js"></script> 
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
 /* 用于保存之前的节点 */
 var preNode = null;
@@ -228,62 +229,6 @@ var columns = [
 		/**
 		*资源列表上传文件，视频，图片
 		*/
-		 $("#uploadify").uploadify({  
-			 'swf' : "${pageContext.request.contextPath}/static/js/uploadify/uploadify.swf",
-			  'uploader'  : '${pageContext.request.contextPath}/webContentManager/uploadFile',
-			  'queueId' : "fileQueue",
-			  'queueSizeLimit' : 100,//限制上传文件的数量
-			  'auto'  : false,
-			  'removeCompleted':true,
-			  "removeTimeout": 0,
-			  'fileSizeLimit':24307200,//上传文件大小
-			  'multi'  : true,//是否允许多文件上传
-			  'method'   :'post',
-			  'width'     : '65',  //按钮宽度    
-	          'height'    : '18',  //按钮高度  
-			  'simUploadLimit': 1,//同时运行上传的进程数量
-			  'buttonText': "选择数据",
-			  'fileObjName' : 'uploadFile',
-			  'onFallback':function(){      
-	                $.messager.alert("警告","您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");      
-	            },  
-	            'onUploadStart' : function(file) {
-	            	//$("#uploadify").uploadify("settings", "formData", {'id' : $("#updateDocId").val(),"docTitle":choosedDocTitle() ,"docTag":choosedDocTags(),"imgNum":imgs,"isPush":isPush,"jsessionid":$("#sessionId").val()});   
-	            },
-	            'onQueueComplete' : function (queueData){
-	            	
-            		//关闭对话框
-            		closeFileUploadWindow();
-            		//刷新数据,带参数刷新资源列表
-        			var node = $('#tree').tree('getSelected');
-        			if(node != null && node != ""){
-               	   		flashSourceList(node.id);
-        			}
-					/* //调用队列上传成功后的方法
-					uploadSuccess();
-					//清空缓存中后台传的错误信息
-					errorMsg = "";
-					//清空缓存中后台传的成功信息
-					successMsg = "";
-					//上传文件总数赋初值
-					imgs=0; */
-	            },
-	            'onUploadSuccess' : function(file, data, response){
-	            	/* if(data.indexOf("flag") >= 0){
-	            		  uploadComplete++;
-          			  }
-          			  if(data.indexOf("msg") >= 0 && data.indexOf("flag") < 0){
-        				  errorMsg += "错误文件名:"+file.name +",错误信息:"+ data.substring(data.indexOf("msg")+4,data.length-1)+";";
-        			  } */
-	            },
-	            'onSelect':function(file){
-	            	//每选择一个文件就会触发 
-	            	//imgs++;
-	            },
-	           'onCancel':function(file){
-	        	   //imgs--;
-	           },
-		 }); 
 		
 		//点击已关联按钮
 		$("#associatedButton").click(function(){
@@ -317,10 +262,11 @@ var columns = [
 			$("#associatedList").css("display","none");
 			$("#sourceList").css("display","block");
 		});
-	})
+		setInterval(isFocus,500);//使视频上传组件失焦
+	});
 	/* 资源列表   判断是否修改关联 */
 	function judgeAssociated(checkOrUncheck){
-		alert(checkOrUncheck)
+		alert(checkOrUncheck);
 	}
 	/* 资源列表   打开添加资源窗口*/
 	function addData(){
@@ -498,19 +444,18 @@ var columns = [
 	<!-- 上传开始 -->
 	<div  id="fileUpload" style=" display: none; position: absolute; left: 30%; top: 20%;width:450px;border:3px solid #98999D;padding:12px;border-radius:10px;z-index:10;background-color:white">
 		<br>
-			<div style="min-height:200px;max-height:300px;overflow-y:scroll">
+		<div style="min-height:200px;max-height:300px;overflow-y:scroll">
 			<div style="padding:1px 0px 20px 5px">
 				 <span>文件标题</span>&nbsp;&nbsp;<input style="width:280px" type="text" id="sourceTitle_FileUpload"/><br/><br/>
-				 <span>文件类型</span>&nbsp;&nbsp;<input style="width:285px" class="easyui-combobox" id="sourceType_FileUpload" multiple="true" data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath }/document/getDocumentTagList',editable:false" /><br/>
 			</div>
-			 <input id="uploadify" type="file" name="uploadify" style="height:auto"/>
-			 <input type="hidden" name="id" id="updateDocId"/>
-			 <input id="sessionId" type="hidden" value="${pageContext.session.id}"/>
+			<div style="width:300px;" >
+				<script  type="text/plain" name="sourceUpload" id="sourceUpload"></script>
+			</div>
+			 <input type="hidden" name="id" id="updateSourceId"/>
 			 <span onclick="closeFileUploadWindow()" style="position:absolute;left:390px;top:10px" class="commonNode">关闭</span>
 		</div>
 		<div style="height:30px;padding-top:10px">
-          	 <a href="javascript:$('#uploadify').uploadify('upload','*')"  class="commonNode">开始上传</a>    
-   			<a href="javascript:$('#uploadify').uploadify('cancel','*')" class="commonNode">取消上传</a>    
+          	 <a href="#" onclick="allTypeSourceUplaod();"  class="commonNode">开始上传</a>    
 		</div>
 	</div>
 	<div id="mask" style="display:none"></div>
@@ -601,10 +546,8 @@ var columns = [
 					if (data.success == "true") {
 						//转到关联列表
 						toAssociatedList();
-						//$("#sourceGrid").datagrid('reload');
 					} else {
 						$.messager.alert('关联失败',data.msg,"error");
-						//$('#sourceGrid').datagrid('reload');
 					}
 				}
 			});
@@ -626,54 +569,57 @@ var columns = [
 		function fileUpload(obj){
 			$('#sourceType_FileUpload').combobox('clear');//清除逗号
 			$("#mask").show();
-		/* 	if(document.getElementById("updateNoFiles") != null){
-				document.getElementById("updateNoFiles").style.display = 'none';
-			} */
-			//更新时使用
-/* 			if(id != null && id != ""){
-				//数据回显
-				$.ajax({
-					type : 'post',
-					url : '${pageContext.request.contextPath}/document/getDocumentDataById',
-					data : JSON.stringify({id:id}),
-					dataType : 'json',
-					contentType : "application/json; charset=utf-8",
-					success : function(data) {
-						//赋值
-						$("#docTitle").val(data.docTitle);
-						//$('#docTag').combobox("setValue",data.docTag);
-						var taglist = data.docTag.split(",");
-						for(var x =0;x<taglist.length;x++){
-							//alert(taglist[x])
-							var temp = taglist[x];
-							//$("#docTag").combobox("select",taglist[i]);
-									var data = $("#docTag").combobox('getData');
-								    if (data.length > 0) {
-								    	//alert(data)
-								    	if(temp != null && temp != ""){
-								        	for(var i =0 ;i<data.length;i++){
-								        		//alert(data[i].text +"=="+temp)
-								            	if(data[i].text==temp){
-								        		//alert(data[i].id);
-								        		$("#docTag").combobox('select', data[i].id);
-								            	}
-								            }
-								         }
-								     }
-						}
-					}
-				});
-				//无文件上传
-				if(document.getElementById("updateNoFiles") == null || document.getElementById("updateNoFiles") == "" ){
-					var htmls = "<button id='updateNoFiles' onclick='updateNoFile()'>无文件更新</button>";
-					$("#fileUpload").append(htmls);
-				}else{
-					document.getElementById("updateNoFiles").style.display = 'block';
-				}
-			} */
-			
 			$("#fileUpload").css("display","block");
-			//$("#updateDocId").val(id);
+			var sourceUploads =UE.getEditor('sourceUpload',{
+			    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
+			    toolbars:[['insertvideo', 'Undo', 'Redo']],  
+			    //focus时自动清空初始化时的内容  
+			    autoClearinitialContent:true,  
+			    //关闭字数统计  
+			    wordCount:false, 
+			    //禁用浮动
+			    autoFloatEnabled: false,
+			    //不可以编辑
+			  	//readonly:true,
+			    //关闭elementPath
+			    elementPathEnabled:false,
+			    autoClearEmptyNode:true,
+			    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+			    scaleEnabled :true,
+			    //默认的编辑区域高度  
+			    initialFrameHeight:160,
+			    initialFrameWidth:360
+			    //更多其他参数，请参考ueditor.config.js中的配置项  
+			});
+		}
+		//资源上传  开始上传
+		function allTypeSourceUplaod(){
+			var title = $("#sourceTitle_FileUpload").val();
+			var videoSource = UE.getEditor('sourceUpload').getContent();
+			videoSource = videoSource.replace(/=/g, "|f|");
+			var datas = "title="+title + "&" +"videoSource="+videoSource;
+			alert(datas)
+			$.ajax({
+				type : 'post',
+				url : "${pageContext.request.contextPath }/webContentManager/addSourceData",
+				data : JSON.stringify(conveterParamsToJson(datas)),
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					if (data.success == "true") {
+						$("#sourceTitle_FileUpload").val("");
+						videoSource.execCommand("cleardoc");
+						$.messager.alert('成功',data.msg,"info");
+					} else {
+						$.messager.alert('失败',data.msg,"error");
+					}
+				}
+			});
+		}
+		function isFocus(){
+		    if(sourceUploads.isFocus()){
+		    	sourceUploads.blur();
+		    }
 		}
 	</script>
 </body>

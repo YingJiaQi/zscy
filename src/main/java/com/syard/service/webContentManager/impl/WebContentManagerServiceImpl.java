@@ -191,4 +191,12 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		return result;
 	}
 
+	@Override
+	public Map<String, String> addSourceData(Map<String, Object> param) {
+		String title = (String) param.get("title");
+		String videoSource = (String)param.get("videoSource");
+		videoSource = videoSource.replaceAll("\\|f\\|", "=");
+		return null;
+	}
+
 }

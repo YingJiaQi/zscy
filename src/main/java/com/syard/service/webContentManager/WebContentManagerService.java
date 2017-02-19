@@ -3,6 +3,8 @@ package com.syard.service.webContentManager;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.MultiValueMap;
+
 import com.syard.vo.PageBean;
 import com.syard.vo.VEasyuiTree;
 
@@ -35,5 +37,11 @@ public interface WebContentManagerService {
 	 * @return
 	 */
 	Map<String, String> delAssociated(Map<String, Object> param);
+	/**
+	 * 添加资源数据
+	 * @param param
+	 * @return
+	 */
+	Map<String, String> addSourceData(Map<String, Object> param);
 
 }

@@ -34,7 +34,7 @@ $(function(){
 			//必须转换，要不后台拿不到数据 
 			aa = aa.replace(/=/g, "|f|");
 			imageUrls = imageUrls.replace(/=/g, "|f|");
-			alert(data)
+			//alert(data)
 		/* 	var arr = data.split("&");
 			var datas = '';
 			for(var i=0;i<arr.length;i++){
