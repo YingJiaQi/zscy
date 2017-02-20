@@ -48,7 +48,7 @@ $(function(){
 					datas += arr[i]+"&";
 			}  */
 			datas = data + "&commodityDesc="+aa+"&"+"category_id="+category+"&"+"imageUrls="+imageUrls;
-			alert(datas)
+			//alert(datas)
 			$.ajax({
 				type : 'post',
 				url : "${pageContext.request.contextPath }/Commodity/addCommodity",

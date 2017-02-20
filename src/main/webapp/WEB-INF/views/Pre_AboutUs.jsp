@@ -30,6 +30,22 @@
 		$('#myTab li:eq(0) a').tab('show');
 	});
 	function companyProfile(){
+		var dataVo = {moduleName : "公司简介", modulePage : "关于我们"};
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/webContentManager/getAboutUsCommponyProfile',
+	    	 data:JSON.stringify(dataVo),
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") { 
+	    			var dynamicData = data.datas;
+	    			$("#showDataPanal").append(dynamicData);
+				} else {
+					
+				}
+	    	 }
+	     });
 		$("#companyProfile").css("display","block");
 		$("#developmentHistory").css("display","none");
 		$("#companyCulture").css("display","none");
@@ -134,11 +150,7 @@
 								<span class="btn pull-left">公司简介</span>
 							</div>
 						</div>
-						<div class="row" style="padding:20px">
-							<p id="companyProfile" >  十多年的发展历程，公司始终坚持“创新，品质，服务，节约，敬业，感恩”12字理念。吸收新创意，严把质量关口，全方位的服务跟踪，坚持做出高品质产品。本着“追求、员工、技术、精神、利益”10字宗旨。现拥有一批精干的管理人员和一支高素质的专业技术队伍，舒适优雅的办公环境和拥有60多亩的全新现代化标准厂房。我们以质量为生命、时间为信誉、价格为竞争力的经营信念，立足于珠江三角洲</p>
-							<p id="developmentHistory" style="display:none">  作为专业的包装一体化服务供应商，东福深知精良的生产设备对于保证产品质量、为客户提供高品质服务的重要性，所以XX采用了当前XX行业的各项最先进技术，购置了XXX机、XXX机、XX机、XXXX生产线等国内外最先进的印刷包装生产设备，全面采用全自动机械化生产，倡导XX，节省大量人力物力的同时，更为XX的高、精、尖XX服务提供了有力的设备保障</p>
-							<p id="companyCulture" style="display:none">  作为专业的包装一体化服务供应商，东福深知精良的生产设备对于保证产品质量、为客户提供高品质服务的重要性，所以XX采用了当前XX行业的各项最先进技术，购置了XXX机、XXX机、XX机、XXXX生产线等国内外最先进的印刷包装生产设备，全面采用全自动机械化生产，倡导XX，节省大量人力物力的同时，更为XX的高、精、尖XX服务提供了有力的设备保障</p>
-							<p id="touchUs" style="display:none">  作为专业的包装一体化服务供应商，东福深知精良的生产设备对于保证产品质量、为客户提供高品质服务的重要性，所以XX采用了当前XX行业的各项最先进技术，购置了XXX机、XXX机、XX机、XXXX生产线等国内外最先进的印刷包装生产设备，全面采用全自动机械化生产，倡导XX，节省大量人力物力的同时，更为XX的高、精、尖XX服务提供了有力的设备保障</p>
+						<div class="row" id="showDataPanal" style="padding:20px">
 						</div>
 					</div>
 				</div>

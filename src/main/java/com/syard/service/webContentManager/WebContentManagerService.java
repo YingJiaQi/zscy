@@ -43,5 +43,11 @@ public interface WebContentManagerService {
 	 * @return
 	 */
 	Map<String, String> addSourceData(Map<String, Object> param);
+	/**
+	 * 删除资源数据
+	 * @param param
+	 * @return
+	 */
+	Map<String, String> deleteSourceDataById(Map<String, String> param);
 
 }

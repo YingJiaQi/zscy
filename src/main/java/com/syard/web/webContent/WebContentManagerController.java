@@ -69,4 +69,13 @@ public class WebContentManagerController {
 	public ResponseEntity<?> addSourceData(@RequestBody Map<String, Object> param){
 		return new ResponseEntity<Object>(webContentManagerService.addSourceData(param),HttpStatus.OK);
 	}
+	/**
+	 * 删除资源数据
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/deleteSourceDataById", method = RequestMethod.POST)
+	public ResponseEntity<?> deleteSourceDataById(@RequestBody Map<String, String> param){
+		return new ResponseEntity<Object>(webContentManagerService.deleteSourceDataById(param),HttpStatus.OK);
+	}
 }

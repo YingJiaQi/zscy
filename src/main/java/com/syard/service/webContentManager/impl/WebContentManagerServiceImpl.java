@@ -243,6 +243,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		String SourceData = (String)param.get("SourceData");
 		SourceData = SourceData.replaceAll("\\|f\\|", "=");
 		String dataType = param.get("sourceTypes").toString();
+		//视频资源存储
 		if(StringUtils.equals(dataType, "video")){
 			String[] split = SourceData.split("<video");
 			//储存视频地址
@@ -288,13 +289,55 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			ose.setUpdateTime(ose.getCreateTime());
 			ose.setStatus(2);
 			otherSourceDao.insert(ose);
-		}else 
-		if(StringUtils.equals(dataType, "artical")){
-			System.out.println("add artical");
-			System.out.println(SourceData);
+		}else if(StringUtils.equals(dataType, "artical")){
+		//文档文件存储
+			OtherSource osa = new OtherSource();
+			osa.setCreateTime(new Date());
+			osa.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			osa.setIsDel(0);
+			osa.setSourceContent(SourceData);
+			osa.setSourceTitle(title);
+			osa.setSourceType("文档");
+			osa.setStatus(2);
+			osa.setUpdateTime(osa.getCreateTime());
+			otherSourceDao.insert(osa);
 		}
 		result.put("success", "true");
 		result.put("msg", "添加成功");
+		return result;
+	}
+
+	@Override
+	public Map<String, String> deleteSourceDataById(Map<String, String> param) {
+		Map<String, String> result = new HashMap<String, String>();
+		String id = param.get("id").toString();
+		OtherSource os = otherSourceDao.selectByPrimaryKey(id);
+		if(os != null){
+			os.setUpdateTime(new Date());
+			os.setIsDel(1);
+			os.setStatus(3);
+			os.setSourceTitle(os.getSourceTitle()+"deleted");
+			int updateByPrimaryKeySelective = otherSourceDao.updateByPrimaryKey(os);
+			if(updateByPrimaryKeySelective > 0){
+				result.put("success", "true");
+				result.put("msg", "删除成功");
+			}else{
+				result.put("msg", "删除失败");
+			}
+		}else{
+			Commodity cy = commodityDao.selectByPrimaryKey(id);
+			cy.setUpdateTime(new Date());
+			cy.setIsDel(1);
+			cy.setStatus(3);
+			cy.setTitle(cy.getTitle()+"deleted");
+			int updateByPrimaryKey = commodityDao.updateByPrimaryKey(cy);
+			if(updateByPrimaryKey > 0){
+				result.put("success", "true");
+				result.put("msg", "删除成功");
+			}else{
+				result.put("msg", "删除失败");
+			}
+		}
 		return result;
 	}
 

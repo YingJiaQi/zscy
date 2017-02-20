@@ -71,7 +71,7 @@ var columns = [
 			width: 100,
 			align: 'center',
 			formatter: function(data, row, index) {
-				if(data == 1) {
+		/* 		if(data == 1) {
 					var opHtml_recovery = "<a href=\"javascript:void(0);\"  style=\"text-decoration:none;font-size:12px;height:100%;width:50%;color:green\"><b>已关联</b></a>"+
 					"<a href=\"javascript:void(0);\" onclick=\"edit('" + row.id + "'," +index +
 					")\" class=\"easyui-linkbutton\"  plain=\"true\" style=\"text-decoration:none;font-size:12px;height:100%;width:50%\"><b>更新</b></a>"
@@ -85,7 +85,10 @@ var columns = [
 						index +
 						")\" class=\"easyui-linkbutton deleteNewsNotic\" plain=\"true\"  style=\"text-decoration:none;font-size:13px;height:100%;width:50%\"><b>删除</b></a>";
 					return opHtml;
-				}
+				} */
+				var opHtml = "<a href=\"javascript:void(0);\" onclick=\"deleteIndexFrequency('" + row.id + "'," + index +
+				")\" class=\"easyui-linkbutton deleteNewsNotic\" plain=\"true\"  style=\"text-decoration:none;font-size:13px;height:100%;width:50%\"><b>删除</b></a>";
+				return opHtml;
 			},
 		}]
 	];
@@ -339,6 +342,32 @@ var columns = [
 	    	 }
 	     });
      }
+	 function deleteIndexFrequency(id, index) {
+		$.messager.confirm('提示:','你确认要删除吗?',function(event) {
+				if(event) {
+					var dataVo = {
+						id: id
+					};
+					$.ajax({
+						type: 'post',
+						url: '${pageContext.request.contextPath}/webContentManager/deleteSourceDataById',
+						data: JSON.stringify(dataVo),
+						dataType: 'json',
+						contentType: "application/json; charset=utf-8",
+						success: function(data) {
+							if(data.success == "true") {
+								$('#sourceGrid').datagrid('reload');
+								$.messager.alert('提示', data.msg, "info");
+							} else {
+								$.messager.alert('提示', data.msg, "error");
+							}
+						}
+					});
+				} else {
+					return;
+				}
+			});
+		}
 </script>
 <style type="text/css">
 .chooseNode{
@@ -634,9 +663,9 @@ var columns = [
 		function allTypeSourceUplaod(){
 			var title = $("#sourceTitle_FileUpload").val();
 			var SourceData = UE.getEditor('sourceUpload').getContent();
-			SourceData = videoSource.replace(/=/g, "|f|");
+			SourceData = SourceData.replace(/=/g, "|f|");
 			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes;
-			/* //alert(datas) */
+			//alert(datas)
 			$.ajax({
 				type : 'post',
 				url : "${pageContext.request.contextPath }/webContentManager/addSourceData",
@@ -646,7 +675,8 @@ var columns = [
 				success : function(data) {
 					if (data.success == "true") {
 						$("#sourceTitle_FileUpload").val("");
-						videoUploads.execCommand("cleardoc");
+						articalUploads.execCommand("cleardoc");
+						$('#sourceGrid').datagrid("reload");
 						$.messager.alert('成功',data.msg,"info");
 					} else {
 						$.messager.alert('失败',data.msg,"error");
