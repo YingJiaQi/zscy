@@ -16,9 +16,11 @@ import com.github.pagehelper.PageInfo;
 import com.syard.dao.CommodityDao;
 import com.syard.dao.CommodityDescDao;
 import com.syard.dao.CommoditySpecificationContentDao;
+import com.syard.dao.OtherSourceDao;
 import com.syard.pojo.Commodity;
 import com.syard.pojo.CommodityDesc;
 import com.syard.pojo.CommoditySpecificationContent;
+import com.syard.pojo.OtherSource;
 import com.syard.service.BaseService;
 import com.syard.service.commodity.CommodityService;
 import com.syard.vo.CommodityVo;
@@ -31,6 +33,8 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	private CommoditySpecificationContentDao commoditySpecificationContentDao;
 	@Autowired
 	private CommodityDescDao commodityDescDao;
+	@Autowired
+	private OtherSourceDao otherSourceDao;
 	
 	public Boolean addCommodity(Commodity cy) {
 		cy.setCreateTime(new Date());
@@ -175,7 +179,11 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	public Boolean checkRepeatWithTitle(String title) {
 		Example example = new Example(Commodity.class);
 		example.createCriteria().andEqualTo("title", title);
-		return commodityDao.selectByExample(example).size() > 0 ? true:false;
+		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		Example os = new Example(OtherSource.class);
+		os.createCriteria().andEqualTo("sourceTitle", title);
+		List<OtherSource> selectByExample2 = otherSourceDao.selectByExample(os);
+		return selectByExample.size() > 0 || selectByExample2.size() >0 ? true:false;
 	}
 
 }

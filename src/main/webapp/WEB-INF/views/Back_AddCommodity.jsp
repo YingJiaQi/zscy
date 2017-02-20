@@ -20,6 +20,13 @@
     <script type="text/javascript" charset="utf-8" src="${pageContext.request.contextPath }/static/js/ueditor/lang/zh-cn/zh-cn.js"></script>
 
 <script type="text/javascript">
+//编辑器实体
+//商品描述编辑器
+var descEditor =  null;
+//商品编辑器
+var commodityImage = null;
+
+
 $(function(){
 	// 先将body隐藏，再显示，不会出现页面刷新效果
 	$("body").css({visibility:"visible"});
@@ -51,8 +58,8 @@ $(function(){
 				success : function(data) {
 					if (data.flag) {
 						$("#addCommodityForm")[0].reset();
-						editor.execCommand("cleardoc");
-						image.execCommand("cleardoc");
+						descEditor.execCommand("cleardoc");
+						commodityImage.execCommand("cleardoc");
 						$.messager.alert('更新成功',data.msg,"info");
 					} else {
 						$.messager.alert('更新失败',data.msg,"error");
@@ -164,7 +171,7 @@ function delSpecification(re){
 			
 		</div>
 <script type="text/javascript">
-var descEditor =UE.getEditor('editor',{
+descEditor =UE.getEditor('editor',{
 	 //默认的编辑区域高度  
    initialFrameHeight:500 ,
    emotionLocalization:true,
@@ -173,7 +180,7 @@ var descEditor =UE.getEditor('editor',{
    autoClearEmptyNode:true,
 });
 
-var commodityImage= UE.getEditor('imageEditor',{  
+commodityImage= UE.getEditor('imageEditor',{  
     //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
     toolbars:[['insertimage', 'Undo', 'Redo']],  
     //focus时自动清空初始化时的内容  

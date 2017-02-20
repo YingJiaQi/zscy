@@ -1,5 +1,7 @@
 package com.syard.service.webContentManager.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,13 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.abel533.entity.Example;
+import com.syard.common.utils.PropsUtil;
 import com.syard.dao.CommodityDao;
+import com.syard.dao.OtherSourceDao;
 import com.syard.dao.PreModuleContentLinkDao;
 import com.syard.dao.PreSystemComponentsDao;
 import com.syard.pojo.Commodity;
+import com.syard.pojo.OtherSource;
 import com.syard.pojo.PreModuleContentLink;
 import com.syard.pojo.PreSystemComponents;
 import com.syard.service.webContentManager.WebContentManagerService;
@@ -33,6 +39,8 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 	private PreSystemComponentsDao preSystemComponentsDao;
 	@Autowired
 	private PreModuleContentLinkDao preModuleContentLinkDao;
+	@Autowired
+	private OtherSourceDao otherSourceDao;
 	
 	public Map<String, Object> getDataList(PageBean pageBean) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -65,6 +73,30 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 				for(PreModuleContentLink pm:associatedList){
 					if(!StringUtils.equals(pm.getSourceType(), "产品"))continue;
 					if(StringUtils.equals(pm.getSourceTitle(), ele.getTitle())){
+						map.put("checked", "true");
+						break;
+					}
+				}
+			}
+			slist.add(map);
+		}
+		//获取其它数据信息
+		Example os = new Example(OtherSource.class);
+		os.createCriteria().andNotEqualTo("status", 3);
+		List<OtherSource> osList = otherSourceDao.selectByExample(os);
+		for(OtherSource ele: osList){
+			map = new HashMap<String, Object>();
+			map.put("id",ele.getId());
+			map.put("sourceType", ele.getSourceType());
+			map.put("sourceTitle", ele.getSourceTitle());
+			map.put("createTime", ele.getCreateTime());
+			map.put("updateTime", ele.getUpdateTime());
+			map.put("status", ele.getStatus());
+			//关联加选中
+			if(associatedList != null && associatedList.size() > 0 ){
+				for(PreModuleContentLink pm:associatedList){
+					if(!StringUtils.equals(pm.getSourceType(), ele.getSourceType()))continue;
+					if(StringUtils.equals(pm.getSourceTitle(), ele.getSourceTitle())){
 						map.put("checked", "true");
 						break;
 					}
@@ -193,10 +225,77 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 
 	@Override
 	public Map<String, String> addSourceData(Map<String, Object> param) {
+		Map<String, String> result = new HashMap<String, String>();
 		String title = (String) param.get("title");
-		String videoSource = (String)param.get("videoSource");
-		videoSource = videoSource.replaceAll("\\|f\\|", "=");
-		return null;
+		//首先查看标题是否重复
+		Example example = new Example(Commodity.class);
+		example.createCriteria().andEqualTo("title", title);
+		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		Example os = new Example(OtherSource.class);
+		os.createCriteria().andEqualTo("sourceTitle", title);
+		List<OtherSource> selectByExample2 = otherSourceDao.selectByExample(os);
+		if(selectByExample.size() > 0 || selectByExample2.size() >0){
+			result.put("success", "false");
+			result.put("msg", "标题名重复");
+			return result;
+		}
+		
+		String SourceData = (String)param.get("SourceData");
+		SourceData = SourceData.replaceAll("\\|f\\|", "=");
+		String dataType = param.get("sourceTypes").toString();
+		if(StringUtils.equals(dataType, "video")){
+			String[] split = SourceData.split("<video");
+			//储存视频地址
+			String videoUrl = "";
+			for(int i=0;i<split.length;i++){
+				if(i == 1){
+					int startVideoUrl = split[i].indexOf("src=\"");
+					String urls = split[i].substring(startVideoUrl+5);
+					videoUrl = urls.substring(0, urls.indexOf('"'));
+				}
+			}
+			//文件重命名
+			String oldVideoName = videoUrl.substring(videoUrl.lastIndexOf("/"));
+			String newVideoName = UUID.randomUUID().toString().replaceAll("-", "");
+			String newVideoUrl = PropsUtil.get("uploadVideoPath") +"/"+newVideoName+".mp4";
+//			重新存储视频
+			File DestVideoUrl = new File(PropsUtil.get("uploadVideoPath"));
+			if(!DestVideoUrl.exists()){
+				DestVideoUrl.mkdirs();
+			}
+			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+			File sourceVideoUrl = new File(rootPath+videoUrl);
+			try {
+				FileUtils.copyFile(sourceVideoUrl, new File(newVideoUrl));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			//清空源视频
+			try {
+				FileUtils.deleteDirectory(new File(rootPath+"/ueditor/jsp/upload/video"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			//保存视频信息
+			OtherSource ose = new OtherSource();
+			ose.setId(newVideoName);
+			ose.setCreateTime(new Date());
+			ose.setIsDel(0);
+			ose.setSourceTitle(title);
+			ose.setSourceType("视频");
+			ose.setSourceUrl(newVideoUrl);
+			ose.setUpdateTime(ose.getCreateTime());
+			ose.setStatus(2);
+			otherSourceDao.insert(ose);
+		}else 
+		if(StringUtils.equals(dataType, "artical")){
+			System.out.println("add artical");
+			System.out.println(SourceData);
+		}
+		result.put("success", "true");
+		result.put("msg", "添加成功");
+		return result;
 	}
 
 }

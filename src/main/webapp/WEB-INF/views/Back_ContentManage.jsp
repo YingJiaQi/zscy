@@ -28,6 +28,11 @@
 var preNode = null;
 //用于存放关联文件的id,在删除关联时使用
 var docIds = new Array();
+//编辑器实体
+var videoUploads = null;
+var articalUploads = null;
+//标记选择上传数据类型
+var sourceTypes = "";
 
 
 /* 资源列表初始化加载 列配置*/
@@ -570,35 +575,68 @@ var columns = [
 			$('#sourceType_FileUpload').combobox('clear');//清除逗号
 			$("#mask").show();
 			$("#fileUpload").css("display","block");
-			var sourceUploads =UE.getEditor('sourceUpload',{
-			    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
-			    toolbars:[['insertvideo', 'Undo', 'Redo']],  
-			    //focus时自动清空初始化时的内容  
-			    autoClearinitialContent:true,  
-			    //关闭字数统计  
-			    wordCount:false, 
-			    //禁用浮动
-			    autoFloatEnabled: false,
-			    //不可以编辑
-			  	//readonly:true,
-			    //关闭elementPath
-			    elementPathEnabled:false,
-			    autoClearEmptyNode:true,
-			    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
-			    scaleEnabled :true,
-			    //默认的编辑区域高度  
-			    initialFrameHeight:160,
-			    initialFrameWidth:360
-			    //更多其他参数，请参考ueditor.config.js中的配置项  
-			});
+			if(obj == "video"){
+				sourceTypes = "video";
+				//添加视频
+				videoUploads =UE.getEditor('sourceUpload',{
+				    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
+				    toolbars:[['insertvideo', 'Undo', 'Redo']],  
+				    //focus时自动清空初始化时的内容  
+				    autoClearinitialContent:true,  
+				    //关闭字数统计  
+				    wordCount:false, 
+				    //禁用浮动
+				    autoFloatEnabled: false,
+				    //不可以编辑
+				  	//readonly:true,
+				    //关闭elementPath
+				    elementPathEnabled:false,
+				    autoClearEmptyNode:true,
+				    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+				    scaleEnabled :true,
+				    //默认的编辑区域高度  
+				    initialFrameHeight:160,
+				    initialFrameWidth:360
+				    //更多其他参数，请参考ueditor.config.js中的配置项  
+				});
+			}else if(obj == "artical"){
+				sourceTypes = "artical";
+				//添加文档
+				articalUploads =UE.getEditor('sourceUpload',{
+				    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
+				    toolbars:[[
+						'fullscreen', 'source', '|', 'undo', 'redo', '|',
+						'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+						'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+						'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+						'directionalityltr', 'directionalityrtl', 'indent', '|',
+						'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+						'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+						'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
+						'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+						'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+						'print', 'preview', 'searchreplace', 'drafts', 'help'
+				    ]], 
+				    //focus时自动清空初始化时的内容  
+				    autoClearinitialContent:true,  
+				    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+				    scaleEnabled :true,
+				    //默认的编辑区域高度  
+				    initialFrameHeight:160,
+				    //启用表情，默认关闭
+				    emotionLocalization:true,
+				    initialFrameWidth:360
+				    //更多其他参数，请参考ueditor.config.js中的配置项  
+			   })
+			}
 		}
 		//资源上传  开始上传
 		function allTypeSourceUplaod(){
 			var title = $("#sourceTitle_FileUpload").val();
-			var videoSource = UE.getEditor('sourceUpload').getContent();
-			videoSource = videoSource.replace(/=/g, "|f|");
-			var datas = "title="+title + "&" +"videoSource="+videoSource;
-			alert(datas)
+			var SourceData = UE.getEditor('sourceUpload').getContent();
+			SourceData = videoSource.replace(/=/g, "|f|");
+			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes;
+			/* //alert(datas) */
 			$.ajax({
 				type : 'post',
 				url : "${pageContext.request.contextPath }/webContentManager/addSourceData",
@@ -608,7 +646,7 @@ var columns = [
 				success : function(data) {
 					if (data.success == "true") {
 						$("#sourceTitle_FileUpload").val("");
-						videoSource.execCommand("cleardoc");
+						videoUploads.execCommand("cleardoc");
 						$.messager.alert('成功',data.msg,"info");
 					} else {
 						$.messager.alert('失败',data.msg,"error");
@@ -617,8 +655,8 @@ var columns = [
 			});
 		}
 		function isFocus(){
-		    if(sourceUploads.isFocus()){
-		    	sourceUploads.blur();
+		    if(videoUploads.isFocus()){
+		    	videoUploads.blur();
 		    }
 		}
 	</script>

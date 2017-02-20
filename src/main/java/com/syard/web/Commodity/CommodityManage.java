@@ -131,9 +131,9 @@ public class CommodityManage {
 			DestcommodityImage.mkdirs();
 		}
 		//遍历商品图片
+		String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
 		for(Map<String, String> img : lmap){
-			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
-			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
@@ -142,7 +142,7 @@ public class CommodityManage {
 			}
 			
 		}
-		
+	
 		String hot = (String) param.get("hotCommodity");
 		String commodityDesc = (String) param.get("commodityDesc");
 		commodityDesc = commodityDesc.replaceAll("\\|f\\|", "=");
@@ -165,6 +165,12 @@ public class CommodityManage {
 		cy.setCategoryName(categoryName);
 		Boolean flag = commodityService.addCommodity(cy);
 		Boolean tag =commodityDescService.addCommodityDesc(commodityDesc,commodityId);
+		//删除源文件
+		try {
+			FileUtils.deleteDirectory(new File(rootPath+"/ueditor/jsp/upload/image"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		if(flag && tag && flags){
 			result.put("msg", "添加成功");
 			result.put("flag", "success");
