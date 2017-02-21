@@ -155,7 +155,7 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	 */
 	private CommodityVo getBasicCommodityData(String id, CommodityVo cv) {
 		Commodity cc = commodityDao.selectByPrimaryKey(id);
-		cv.setBarcode(cc.getBarcode()==null?"":cc.getBarcode());
+		cv.setBarcode(cc.getUsedType()==null?"":cc.getUsedType());
 		cv.setCategoryName(cc.getCategoryName()==null?"":cc.getCategoryName());
 		cv.setCreateTime(cc.getCreateTime());
 		cv.setHot(cc.getHot()==null?0:cc.getHot());

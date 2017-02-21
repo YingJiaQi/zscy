@@ -55,7 +55,7 @@ public class CommodityManage {
 		String sellPoint = (String) param.get("sellPoint");
 		String priceView = (String) param.get("priceView");
 		String num = (String) param.get("num");
-		String barcode = (String) param.get("barcode");
+		String usedType = (String) param.get("usedType");
 		String imageUrls = (String) param.get("imageUrls");
 		String categoryName = (String) param.get("category_id");
 		/*资源数据标题都不能重复，检测标题是否重复*/
@@ -147,7 +147,7 @@ public class CommodityManage {
 		String commodityDesc = (String) param.get("commodityDesc");
 		commodityDesc = commodityDesc.replaceAll("\\|f\\|", "=");
 		Commodity cy = new Commodity();
-		cy.setBarcode(barcode);
+		cy.setUsedType(usedType);
 		if(StringUtils.isNotBlank(hot)){
 			cy.setHot(Integer.parseInt(hot));
 		}

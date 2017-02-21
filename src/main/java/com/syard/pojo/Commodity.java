@@ -13,8 +13,8 @@ public class Commodity  extends BasePojo{
 	private Double price;
 	@Column(name="num")
 	private Integer num;
-	@Column(name="barcode")
-	private String barcode;
+	@Column(name="used_type")
+	private String usedType;//用途分类
 	@Column(name="hot")
 	private Integer hot;
 	@Column(name="image")
@@ -50,11 +50,11 @@ public class Commodity  extends BasePojo{
 	public void setNum(Integer num) {
 		this.num = num;
 	}
-	public String getBarcode() {
-		return barcode;
+	public String getUsedType() {
+		return usedType;
 	}
-	public void setBarcode(String barcode) {
-		this.barcode = barcode;
+	public void setUsedType(String usedType) {
+		this.usedType = usedType;
 	}
 	public Integer getHot() {
 		return hot;

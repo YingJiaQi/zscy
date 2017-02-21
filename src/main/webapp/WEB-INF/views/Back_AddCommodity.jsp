@@ -141,8 +141,16 @@ function delSpecification(re){
 						<th><input type="text"  class="easyui-numberbox"  name="num" data-options="min:1,max:99999999,precision:0,required:true"/></th>
 					</tr>
 					<tr>
-						<th style="height: 40px">条形码:</th>
-						<th><input type="text" name="barcode" class="easyui-validatebox" data-options="validType:'length[1,30]'"  invalidMessage="1-30个字符"/></th>
+						<th style="height: 40px">商品用途:</th>
+						<th>
+							<input type="checkbox" name="usedType" value="五金类"/>五金类
+							<input type="checkbox" name="usedType" value="电机类"/>电机类
+							<input type="checkbox" name="usedType" value="皮套类"/>皮套类
+							<input type="checkbox" name="usedType" value="喇叭磁铁"/>喇叭磁铁
+							<input type="checkbox" name="usedType" value="玩具类"/>玩具类
+							<input type="checkbox" name="usedType" value="真空膜机类"/>真空膜机类
+							<input type="checkbox" name="usedType" value="LED磁铁"/>LED磁铁
+						</th>
 					</tr>
 					
 				</table>

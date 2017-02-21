@@ -15,7 +15,14 @@ public class OtherSource  extends BasePojo{
 	private String sourceContent;
 	@Column(name="status")
 	private Integer status;
-	
+	@Column(name="view_count")
+	private Integer viewCount;
+	public Integer getViewCount() {
+		return viewCount;
+	}
+	public void setViewCount(Integer viewCount) {
+		this.viewCount = viewCount;
+	}
 	public Integer getStatus() {
 		return status;
 	}
