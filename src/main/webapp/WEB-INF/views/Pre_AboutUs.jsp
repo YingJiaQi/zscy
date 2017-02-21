@@ -3,14 +3,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>My JSP 'Pre_AboutUs.jsp' starting page</title>
+    <title>智晟磁业</title>
    <!--移动设置优先 -->
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 	<meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
-	<script src="${pageContext.request.contextPath }/static/js/bootstrap/js/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/scripts.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">
     <!--[if lt IE 9]>
@@ -27,47 +26,42 @@
 	</style>
 <script type="text/javascript">
 	$(function () {
-		$('#myTab li:eq(0) a').tab('show');
+		//$('#myTab li:eq(0) a').tab('show');
+		aboutUsFunction(1)
 	});
-	function companyProfile(){
-		var dataVo = {moduleName : "公司简介", modulePage : "关于我们"};
+	function aboutUsFunction(obj){
+		$("#showDataPanal").empty();
+		if(obj == "1"){
+			var dataVo = {moduleName : "公司简介", modulePage : "关于我们"};
+			$("#moduleTitle").html("公司简介");
+		}else if(obj == "2"){
+			var dataVo = {moduleName : "发展历程", modulePage : "关于我们"};
+			$("#moduleTitle").html("发展历程");
+		}else if(obj == "3"){
+			var dataVo = {moduleName : "公司文化", modulePage : "关于我们"};
+			$("#moduleTitle").html("公司文化");
+		}else if(obj == "4"){
+			var dataVo = {moduleName : "联系我们", modulePage : "关于我们"};
+			$("#moduleTitle").html("联系我们");
+		}
 		$.ajax({
 	    	 type:'post',
-	    	 url:'${pageContext.request.contextPath}/webContentManager/getAboutUsCommponyProfile',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getAboutUsCommponyProfile',
 	    	 data:JSON.stringify(dataVo),
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
-	    		if (data.success == "true") { 
-	    			var dynamicData = data.datas;
-	    			$("#showDataPanal").append(dynamicData);
+	    		if (data.success == "true") {
+	    			for(var i = 0; i< data.datas.length ;i++){
+						var optionHtml = "<div style='padding:3px 3px 3px 15px;font-size:1.1em;text-indent: 2em;'>"+data.datas[i].sourceContent+"</div>"
+						$("#showDataPanal").append(optionHtml);
+					}
 				} else {
-					
+					var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+					$("#showDataPanal").append(optionHtml);
 				}
 	    	 }
 	     });
-		$("#companyProfile").css("display","block");
-		$("#developmentHistory").css("display","none");
-		$("#companyCulture").css("display","none");
-		$("#touchUs").css("display","none");
-	}
-	function developmentHistory(){
-		$("#companyProfile").css("display","none");
-		$("#developmentHistory").css("display","block");
-		$("#companyCulture").css("display","none");
-		$("#touchUs").css("display","none");
-	}
-	function companyCulture(){
-		$("#companyProfile").css("display","none");
-		$("#developmentHistory").css("display","none");
-		$("#companyCulture").css("display","block");
-		$("#touchUs").css("display","none");
-	}
-	function touchUs(){
-		$("#companyProfile").css("display","none");
-		$("#developmentHistory").css("display","none");
-		$("#companyCulture").css("display","none");
-		$("#touchUs").css("display","block");
 	}
 	</script>
   </head>
@@ -93,7 +87,7 @@
 								  <li><a href="#">强力磁铁</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
 								  <li><a href="#">采购报价</a></li>
-								  <li><a href="#">新闻中心</a></li>
+								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li  class="active"><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
 						</div>
@@ -110,10 +104,10 @@
 						<div class="caption">
 							<h4 style="background-color:#1a54b1;padding:5px;color:white">&nbsp;&nbsp;关于我们</h4>
 							<ul class="list-unstyled classification">
-								<li><a href="#" onclick="companyProfile();">公司简介</a></li>
-								<li><a href="#" onclick="developmentHistory();">发展历程</a></li>
-								<li><a href="#" onclick="companyCulture();">公司文化</a></li>
-								<li><a href="#" onclick="touchUs();">联系我们</a></li>
+								<li><a href="#" onclick="aboutUsFunction('1');">公司简介</a></li>
+								<li><a href="#" onclick="aboutUsFunction('2');">发展历程</a></li>
+								<li><a href="#" onclick="aboutUsFunction('3');">公司文化</a></li>
+								<li><a href="#" onclick="aboutUsFunction('4');">联系我们</a></li>
 							</ul>
 							<h4 style="background-color:#1a54b1;padding:5px;color:white">&nbsp;&nbsp;联系我们</h4>
 							<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/contactUs.png" class="img-responsive">
@@ -147,7 +141,7 @@
 							<div class="row" style="height:3px;background-color:#1a54b1;margin-top:10px;margin-left:1px">
 							</div>
 							<div style="height:32px;background-color:#dce4f3;padding:0px;">
-								<span class="btn pull-left">公司简介</span>
+								<span class="btn pull-left" id="moduleTitle">公司简介</span>
 							</div>
 						</div>
 						<div class="row" id="showDataPanal" style="padding:20px">

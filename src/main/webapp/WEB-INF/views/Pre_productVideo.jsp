@@ -4,7 +4,7 @@
 <html>
   <head>
     
-    <title>My JSP 'Pre_productVideo.jsp' starting page</title>
+    <title>智晟磁业</title>
      <!--移动设置优先 -->
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 	<meta name="author" content="LayoutIt!">
@@ -42,7 +42,7 @@
 								  <li><a href="#">强力磁铁</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
 								  <li><a href="#">采购报价</a></li>
-								  <li><a href="#">新闻中心</a></li>
+								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
 						</div>

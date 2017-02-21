@@ -10,4 +10,8 @@ public class MessageInfo {
 	public String toAboutUs(){
 		return "Pre_AboutUs";
 	}
+	@RequestMapping("/newsCentor")
+	public String toNewsCentor(){
+		return "Pre_NewsCentor";
+	}
 }

@@ -5,7 +5,7 @@
    <!--移动设置优先 -->
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 
-    <title>Bootstrap 3, from LayoutIt!</title>
+    <title>智晟磁业</title>
     <meta name="description" content="Source code generated using layoutit.com">
     <meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
@@ -49,7 +49,7 @@
 								  <li><a href="#">强力磁铁</a></li>
 								  <li  class="active"><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
 								  <li><a href="#">采购报价</a></li>
-								  <li><a href="#">新闻中心</a></li>
+								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
 						</div>

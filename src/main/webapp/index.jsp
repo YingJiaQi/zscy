@@ -5,7 +5,7 @@
 	<!--移动设置优先 -->
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 
-    <title>Bootstrap 3, from LayoutIt!</title>
+    <title>智晟磁业</title>
     <meta name="description" content="Source code generated using layoutit.com">
     <meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
