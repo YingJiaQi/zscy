@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.abel533.entity.Example;
+import com.syard.dao.CategoryDao;
+import com.syard.dao.CommodityDao;
 import com.syard.dao.OtherSourceDao;
 import com.syard.dao.PreModuleContentLinkDao;
 import com.syard.dao.PreSystemComponentsDao;
+import com.syard.pojo.Category;
+import com.syard.pojo.Commodity;
 import com.syard.pojo.OtherSource;
 import com.syard.pojo.PreModuleContentLink;
 import com.syard.pojo.PreSystemComponents;
@@ -25,6 +29,10 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 	private PreModuleContentLinkDao preModuleContentLinkDao;
 	@Autowired
 	private OtherSourceDao otherSourceDao;
+	@Autowired
+	private CategoryDao categoryDao;
+	@Autowired
+	private CommodityDao commodityDao;
 	
 	@Override
 	public Map<String, Object> getAboutUsCommponyProfile(Map<String, Object> param) {
@@ -83,6 +91,49 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		if(osList.size() >0){
 			result.put("success", "true");
 			result.put("datas", osList);
+		}else{
+			result.put("success", "false");
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getMagnetClassficationData() {
+		Map<String, Object> result = new HashMap<String,Object>();
+		Example example = new Example(Category.class);
+		example.setOrderByClause("componentpriority ASC");
+		List<Category> selectByExample = categoryDao.selectByExample(example);
+		result.put("success", "true");
+		result.put("datas", selectByExample);
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getMagnetClassficationDataByTitle(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Example example = new Example(Commodity.class);
+		example.setOrderByClause("createTime DESC");
+		example.createCriteria().andLike("categoryName", "%"+param.get("categoryTitle").toString()+"%");
+		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		if(selectByExample.size()>0){
+			result.put("success", "true");
+			result.put("datas",selectByExample);
+		}else{
+			result.put("success", "false");
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getMagnetDataByUsedName(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Example example = new Example(Commodity.class);
+		example.setOrderByClause("createTime DESC");
+		example.createCriteria().andLike("usedType", "%"+param.get("usedFunction").toString()+"%");
+		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		if(selectByExample.size()>0){
+			result.put("success", "true");
+			result.put("datas",selectByExample);
 		}else{
 			result.put("success", "false");
 		}

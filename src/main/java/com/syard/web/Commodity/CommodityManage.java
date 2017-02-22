@@ -55,7 +55,7 @@ public class CommodityManage {
 		String sellPoint = (String) param.get("sellPoint");
 		String priceView = (String) param.get("priceView");
 		String num = (String) param.get("num");
-		String usedType = (String) param.get("usedType");
+		String usedType = (String) param.get("usedTypes");
 		String imageUrls = (String) param.get("imageUrls");
 		String categoryName = (String) param.get("category_id");
 		/*资源数据标题都不能重复，检测标题是否重复*/

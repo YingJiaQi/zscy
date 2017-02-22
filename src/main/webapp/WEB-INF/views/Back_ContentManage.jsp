@@ -158,9 +158,9 @@ var columns = [
 		        								$("#showAssociatedList").css("display","block");
 			        							for(var i = 0; i< data.pmcl.length ;i++){
 			        								docIds[i] = String(data.pmcl[i].id);
-			        								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:100px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 15px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px; overflow:auto;letter-spacing:6px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
-			        								"<span style='position:absolute;top:-10px;left:90px;background-color:#7F99BE;padding:2px;font-size:0.9em'>"+data.pmcl[i].sourceType+"</span></li>"
-			        								$("#showAssociatedList").append(optionHtml);
+			        								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:150px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 10px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px;width:150px; overflow:auto;letter-spacing:4px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
+			    									"<span style='position:absolute;top:-10px;left:90px;background-color:#7F99BE;padding:2px;font-size:0.9em'>"+data.pmcl[i].sourceType+"</span></li>"
+			    									$("#showAssociatedList").append(optionHtml);
 			        							}
 		        							}else{
 		        								$("#showTip").css("display","block");
@@ -458,7 +458,7 @@ var columns = [
 			    		</div>
 			    </div>
 			    <div >
-			    	<ul id="showAssociatedList" style="margin:40px 10px 15px 10px"></ul>
+			    	<ul id="showAssociatedList" style="margin:30px 10px 15px 10px"></ul>
 			    </div>
 			</div>
 			<!-- 关联列表  end -->
@@ -483,13 +483,14 @@ var columns = [
 				 <span>文件标题</span>&nbsp;&nbsp;<input style="width:280px" type="text" id="sourceTitle_FileUpload"/><br/><br/>
 			</div>
 			<div style="width:300px;" >
-				<script  type="text/plain" name="sourceUpload" id="sourceUpload"></script>
+				<script  type="text/plain" id="sourceUpload"></script>
+				<script  type="text/plain" id="sourceVideoUpload"></script>
 			</div>
 			 <input type="hidden" name="id" id="updateSourceId"/>
 			 <span onclick="closeFileUploadWindow()" style="position:absolute;left:390px;top:10px" class="commonNode">关闭</span>
 		</div>
 		<div style="height:30px;padding-top:10px">
-          	 <a href="#" onclick="allTypeSourceUplaod();"  class="commonNode">开始上传</a>    
+          	 <a href="#" onclick="allTypeSourceUplaod();"  class="commonNode">开始上传</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <input type="radio" name="hot" value="1"/>热门
 		</div>
 	</div>
 	<div id="mask" style="display:none"></div>
@@ -520,7 +521,7 @@ var columns = [
 								$("#showAssociatedList").css("display","block");
 	   							for(var i = 0; i< data.pmcl.length ;i++){
 	   								docIds[i] = String(data.pmcl[i].id);
-	   								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:100px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 15px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px; overflow:auto;letter-spacing:6px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
+	   								var optionHtml = "<li title='"+data.pmcl[i].sourceTitle+"' style='width:150px;height:50px;float:left;border:1px solid green;list-style-type:none;margin:5px 10px;padding:3px 3px 3px 10px;font-size:10px;line-height:1.3;position:relative'><div style='height:50px;width:150px; overflow:auto;letter-spacing:4px;'>"+data.pmcl[i].sourceTitle+"</div><a onclick='deleteAssociated("+i+");' href='javascript:void(0);' style='position:absolute;top:0px;left:0px;text-decoration:none;font-size:1.2em'><b>删</b></a>"+
 									"<span style='position:absolute;top:-10px;left:90px;background-color:#7F99BE;padding:2px;font-size:0.9em'>"+data.pmcl[i].sourceType+"</span></li>"
 									$("#showAssociatedList").append(optionHtml);
 	   							}
@@ -605,9 +606,15 @@ var columns = [
 			$("#mask").show();
 			$("#fileUpload").css("display","block");
 			if(obj == "video"){
+				//先隐藏文档编辑器，再显示视频编辑器
+				//UE.getEditor('sourceUpload').setHide();
+				$("#sourceUpload").css("display","none");
+				//UE.getEditor('sourceVideoUpload').setShow()
+				$("#sourceVideoUpload").css("display","block");
+				//UM.getEditor('sourceUpload').destroy();
 				sourceTypes = "video";
 				//添加视频
-				videoUploads =UE.getEditor('sourceUpload',{
+				videoUploads =UE.getEditor('sourceVideoUpload',{
 				    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
 				    toolbars:[['insertvideo', 'Undo', 'Redo']],  
 				    //focus时自动清空初始化时的内容  
@@ -629,6 +636,10 @@ var columns = [
 				    //更多其他参数，请参考ueditor.config.js中的配置项  
 				});
 			}else if(obj == "artical"){
+				//先隐藏视频编辑器，再显示文档编辑器
+				$("#sourceUpload").css("display","block");
+				//UE.getEditor('sourceVideoUpload').setShow()
+				$("#sourceVideoUpload").css("display","none");
 				sourceTypes = "artical";
 				//添加文档
 				articalUploads =UE.getEditor('sourceUpload',{

@@ -288,6 +288,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			ose.setSourceUrl(newVideoUrl);
 			ose.setUpdateTime(ose.getCreateTime());
 			ose.setStatus(2);
+			ose.setViewCount(param.get("hot").toString() == "1"? 1:null);//本是用来记录，文件被浏览次数，这是暂且用于标记是否是执门商品
 			otherSourceDao.insert(ose);
 		}else if(StringUtils.equals(dataType, "artical")){
 		//文档文件存储

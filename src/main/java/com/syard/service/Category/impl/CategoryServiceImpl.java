@@ -35,6 +35,7 @@ public class CategoryServiceImpl extends BaseService<Category> implements Catego
 		List<VEasyuiTree> vtList = new ArrayList<VEasyuiTree>();
 		List<VEasyuiTree> childList = new ArrayList<VEasyuiTree>();
 		Example example = new Example(Category.class);
+		example.setOrderByClause("componentPriority ASC");
 		example.createCriteria().andEqualTo("isDel", 0);
 		List<Category> selectByExample = categoryDao.selectByExample(example);
 		VEasyuiTree root = new VEasyuiTree();
@@ -181,6 +182,7 @@ public class CategoryServiceImpl extends BaseService<Category> implements Catego
 	public List<VEasyuiTree> getCategoryListWithCommodity() {
 		List<VEasyuiTree> vtList = new ArrayList<VEasyuiTree>();
 		Example example = new Example(Category.class);
+		example.setOrderByClause("componentPriority ASC");
 		example.createCriteria().andEqualTo("isDel", 0);
 		List<Category> selectByExample = categoryDao.selectByExample(example);
 		if(selectByExample.size() >0){

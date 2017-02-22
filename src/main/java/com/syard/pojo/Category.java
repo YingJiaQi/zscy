@@ -7,6 +7,17 @@ import javax.persistence.Table;
 public class Category  extends BasePojo{
 	@Column(name="category_name")
 	private String categoryName;
+	@Column(name="component_priority")
+	private Integer componentPriority;
+	
+
+	public Integer getComponentPriority() {
+		return componentPriority;
+	}
+
+	public void setComponentPriority(Integer componentPriority) {
+		this.componentPriority = componentPriority;
+	}
 
 	public String getCategoryName() {
 		return categoryName;

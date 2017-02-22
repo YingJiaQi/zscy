@@ -200,7 +200,7 @@ function deleteIndexFrequencys(id, index){
 		contentType : "application/json; charset=utf-8",
 		success : function (data){
 			if(data.success == "true"){
-				flushData();
+				$('#grid').datagrid('reload');
 				$.messager.alert("成功",data.msg);
 			}else{
 				$.messager.alert("失败",data.msg);

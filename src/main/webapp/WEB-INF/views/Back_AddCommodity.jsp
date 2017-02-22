@@ -34,7 +34,19 @@ $(function(){
 	$("#saveCommodity").click(function() {
 		
 		if ($("#addCommodityForm").form("validate")) {
+			var usedTypes = "";
 			var data = $("#addCommodityForm").serialize();
+			//遍历参数，重新生成usedType数据格式 
+			//alert(data)
+			var arrs = data.split("&");
+			for(var i=0;i<arrs.length;i++){
+				if(arrs[i].indexOf("usedType")==0){
+					//alert(arrs[i])
+					var childs = arrs[i].split("=");
+					usedTypes = usedTypes + childs[1]+",";
+				}
+			}
+			//alert(usedTypes)
 			var category = $('#category').combobox('getText');
 			var aa = UE.getEditor('editor').getContent();
 			var imageUrls = UE.getEditor('imageEditor').getContent();
@@ -47,7 +59,7 @@ $(function(){
 			for(var i=0;i<arr.length;i++){
 					datas += arr[i]+"&";
 			}  */
-			datas = data + "&commodityDesc="+aa+"&"+"category_id="+category+"&"+"imageUrls="+imageUrls;
+			datas = data + "&commodityDesc="+aa+"&"+"category_id="+category+"&"+"imageUrls="+imageUrls+"&usedTypes="+usedTypes.substring(0,usedTypes.length-1);
 			//alert(datas)
 			$.ajax({
 				type : 'post',
