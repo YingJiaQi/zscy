@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.syard.dao.CategoryDao;
 import com.syard.dao.CommodityDao;
 import com.syard.dao.OtherSourceDao;
@@ -126,14 +128,41 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 
 	@Override
 	public Map<String, Object> getMagnetDataByUsedName(Map<String, Object> param) {
+		int page = Integer.parseInt(param.get("pageIndex").toString());
+		int rows = Integer.parseInt(param.get("pageSize").toString());
 		Map<String, Object> result = new HashMap<String, Object>();
 		Example example = new Example(Commodity.class);
 		example.setOrderByClause("createTime DESC");
 		example.createCriteria().andLike("usedType", "%"+param.get("usedFunction").toString()+"%");
 		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		
+		//分页
+		int size = 0;
+		if((page-1)*rows > selectByExample.size()){
+			//开始行大于总记录数，此时无数据
+			size = 0;
+		}else{
+			if((page-1)*rows+rows < selectByExample.size()){
+				//前面所有页数总和 + 当前页数 < 总记录数，
+				size = (page-1)*rows+rows;
+			}else{
+				//此时取集合大小
+				size = selectByExample.size();
+			}
+		}
+		//分页
+		List<Commodity> resultList = new ArrayList<Commodity>();
+		for(int j =0; j < selectByExample.size(); j++){
+			if(j >= (page-1)*rows && j <= size-1){
+				resultList.add(selectByExample.get(j));
+			}
+		}
+		
+		
 		if(selectByExample.size()>0){
 			result.put("success", "true");
-			result.put("datas",selectByExample);
+			result.put("datas",resultList);
+			result.put("pageCount", selectByExample.size());
 		}else{
 			result.put("success", "false");
 		}
