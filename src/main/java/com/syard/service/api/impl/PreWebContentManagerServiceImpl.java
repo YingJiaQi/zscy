@@ -162,7 +162,7 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		if(selectByExample.size()>0){
 			result.put("success", "true");
 			result.put("datas",resultList);
-			result.put("pageCount", selectByExample.size());
+			result.put("total", selectByExample.size());
 		}else{
 			result.put("success", "false");
 		}
