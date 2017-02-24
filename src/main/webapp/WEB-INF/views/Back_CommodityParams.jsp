@@ -5,7 +5,7 @@
   <head>
 <title>智晟</title>
 <!-- 导入jquery核心类库 -->
-<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/common.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/utils.js"></script>

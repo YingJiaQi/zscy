@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>eHealthRep</title>
 <!-- 导入jquery核心类库 -->
-<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/utils.js"></script>
 <link id="easyuiTheme" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/js/easyui/themes/default/easyui.css">

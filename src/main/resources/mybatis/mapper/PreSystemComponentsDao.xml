@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace： 名称空间 可以随意命名 -->
+<mapper namespace="com.syard.dao.PreSystemComponentsDao">
+	
+	<select id="getNewsID" resultType="PreSystemComponents" parameterType="java.lang.String">
+		select * from tbl_pre_sys_components where  module_name=#{moduleName} and is_deleted =0
+	</select>
+</mapper>

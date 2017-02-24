@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 	<meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
-	<script src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">
@@ -42,8 +42,13 @@
 		    			for(var i = 0; i< data.datas.length ;i++){
 		    				newsIDs[i] = String(data.datas[i].sourceContent);
 		    				newsTitles[i] = String(data.datas[i].sourceTitle);
-							var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;新闻标题："+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a></div>"
-							$("#showDataPanal").append(optionHtml);
+		    				if(data.datas[i].viewCount == 1){
+		    					var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;新闻标题："+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a><img src='${pageContext.request.contextPath }/static/image/hot.png' width='30px' height='30px' style='margin-top:-8px;margin-left:20px'/></div>"
+								$("#showDataPanal").append(optionHtml);
+		    				}else{
+								var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;新闻标题："+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a></div>"
+								$("#showDataPanal").append(optionHtml);
+		    				}
 						}
 					} else {
 						var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"

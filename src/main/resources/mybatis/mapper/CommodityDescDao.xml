@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace： 名称空间 可以随意命名 -->
-<mapper namespace="com.syard.pojo.CommodityDesc">
+<mapper namespace="com.syard.dao.CommodityDescDao">
 	
 	<!-- <select id="queryUserAll" resultType="User" parameterType="PageBean">
 		select * from tbl_s_user where 1=1 

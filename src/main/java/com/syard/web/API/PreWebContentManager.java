@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.syard.service.api.PreWebContentManagerService;
 
@@ -17,6 +20,20 @@ import com.syard.service.api.PreWebContentManagerService;
 public class PreWebContentManager {
 	@Autowired
 	private PreWebContentManagerService webContentManagerService;
+	
+	/**
+	 * 跳转到其它页面
+	 * 
+	 * @param value
+	 * @param cate 用于取get方式的值
+	 * @return
+	 */
+	@RequestMapping(value = "{value}")
+	public ModelAndView pageJump(@PathVariable("value") String value, String cate) {
+		ModelAndView mv = new ModelAndView(value);
+		mv.addObject("indexParam", cate);//将参数传递到页面
+		return  mv;
+	}
 	/**
 	 * 前台页面获取关于我们数据
 	 * @param param
@@ -59,5 +76,13 @@ public class PreWebContentManager {
 	@RequestMapping(value="/getMagnetDataByUsedName", method = RequestMethod.POST)
 	public ResponseEntity<?> getMagnetDataByUsedName(@RequestBody Map<String, Object> param){
 		return new ResponseEntity<Object>(webContentManagerService.getMagnetDataByUsedName(param),HttpStatus.OK);
+	}
+	/**
+	 * 前台主页，头条推荐获取数据
+	 * @return
+	 */
+	@RequestMapping(value="/getHeadlinePromoteData",method = RequestMethod.POST)
+	public ResponseEntity<?> getHeadlinePromoteData(){
+		return new ResponseEntity<Object>(webContentManagerService.getHeadlinePromoteData(),HttpStatus.OK);
 	}
 }

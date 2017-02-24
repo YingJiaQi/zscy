@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>zmcy</title>
 <!-- 导入jquery核心类库 -->
-<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/utils.js"></script>
 <!-- 导入easyui类库 -->
@@ -458,7 +458,7 @@ var columns = [
 			    		</div>
 			    </div>
 			    <div >
-			    	<ul id="showAssociatedList" style="margin:30px 10px 15px 10px"></ul>
+			    	<ul id="showAssociatedList" style="margin:50px 10px 15px 10px"></ul>
 			    </div>
 			</div>
 			<!-- 关联列表  end -->
@@ -490,7 +490,7 @@ var columns = [
 			 <span onclick="closeFileUploadWindow()" style="position:absolute;left:390px;top:10px" class="commonNode">关闭</span>
 		</div>
 		<div style="height:30px;padding-top:10px">
-          	 <a href="#" onclick="allTypeSourceUplaod();"  class="commonNode">开始上传</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <input type="radio" name="hot" value="1"/>热门
+          	 <a href="#" onclick="allTypeSourceUplaod();"  class="commonNode">开始上传</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <input type="radio" name="hot" value="1" id="hot" />热门
 		</div>
 	</div>
 	<div id="mask" style="display:none"></div>
@@ -673,9 +673,10 @@ var columns = [
 		//资源上传  开始上传
 		function allTypeSourceUplaod(){
 			var title = $("#sourceTitle_FileUpload").val();
+			var hot = $("#hot").val();
 			var SourceData = UE.getEditor('sourceUpload').getContent();
 			SourceData = SourceData.replace(/=/g, "|f|");
-			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes;
+			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes+"&hot="+hot;
 			//alert(datas)
 			$.ajax({
 				type : 'post',
@@ -686,6 +687,7 @@ var columns = [
 				success : function(data) {
 					if (data.success == "true") {
 						$("#sourceTitle_FileUpload").val("");
+						$("#hot").removeAttr("checked");
 						articalUploads.execCommand("cleardoc");
 						$('#sourceGrid').datagrid("reload");
 						$.messager.alert('成功',data.msg,"info");

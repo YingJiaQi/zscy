@@ -175,27 +175,29 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 	public Map<String, String> addAssociated(Map<String, Object> param) {
 		Map<String, String> results = new HashMap<String, String>();
 		JSONArray parseArray = JSONArray.parseArray(param.get("dataList").toString());
-		//检查该模块是否已存在关联，有则清空关联，重新添加
-		Example example = new Example(PreModuleContentLink.class);
-		example.createCriteria().andEqualTo("moduleId", param.get("nodeId").toString());
-		example.createCriteria().andEqualTo("moduleName", param.get("nodeName").toString());
-		preModuleContentLinkDao.deleteByExample(example);
-		
 		Iterator<Object> iterator = parseArray.iterator();
 		while(iterator.hasNext()){
 			Object next = iterator.next();
 			JSONObject parseObject = JSONObject.parseObject(next+"");
-			PreModuleContentLink pmcl = new PreModuleContentLink();
-			pmcl.setCreateTime(new Date());
-			pmcl.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-			pmcl.setIsDel(0);
-			pmcl.setModuleId(param.get("nodeId").toString());
-			pmcl.setModuleName(param.get("nodeName").toString());
-			pmcl.setSourceId(parseObject.get("id")+"");
-			pmcl.setSourceTitle(parseObject.get("title")+"");
-			pmcl.setSourceType(parseObject.get("sourceType")+"");
-			pmcl.setUpdateTime(pmcl.getCreateTime());
-			preModuleContentLinkDao.insert(pmcl);
+			//检查该关联是否已存在
+			String moduleId = param.get("nodeId").toString();
+			String moduleName = param.get("nodeName").toString();
+			String sourceTitle = parseObject.get("title")+"";
+			String sourceId = parseObject.get("id")+"";
+			PreModuleContentLink pmc = preModuleContentLinkDao.getAssociatedData(moduleId,sourceId);
+			if(pmc == null){
+				PreModuleContentLink pmcl = new PreModuleContentLink();
+				pmcl.setCreateTime(new Date());
+				pmcl.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				pmcl.setIsDel(0);
+				pmcl.setModuleId(moduleId);
+				pmcl.setModuleName(moduleName);
+				pmcl.setSourceId(sourceId);
+				pmcl.setSourceTitle(sourceTitle);
+				pmcl.setSourceType(parseObject.get("sourceType")+"");
+				pmcl.setUpdateTime(pmcl.getCreateTime());
+				preModuleContentLinkDao.insert(pmcl);
+			}
 		}
 		results.put("success", "true");
 		return results;
@@ -300,6 +302,9 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			osa.setSourceTitle(title);
 			osa.setSourceType("文档");
 			osa.setStatus(2);
+			if(StringUtils.isNoneBlank(param.get("hot").toString())){
+				osa.setViewCount(Integer.parseInt(param.get("hot").toString()));//本是用来记录，文件被浏览次数，这是暂且用于标记是否是执门商品
+			}
 			osa.setUpdateTime(osa.getCreateTime());
 			otherSourceDao.insert(osa);
 		}

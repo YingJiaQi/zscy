@@ -16,8 +16,9 @@ function pagination(totalPageNum, curr, leftRight, showPageLocation, requestMeth
 	//调用后台获取数据方法
 	//alert(oldCurrParam +"===" +curr)
 	if(oldCurrParam != null && oldCurrParam != curr){//防止重复提交
-		//requestMethodName(curr);
-		getDataWithUsed(curr);//调用请求数据方法
+		var func = eval(requestMethodName);
+		new func(curr);//调用请求数据方法
+		//getDataWithUsed(curr);//调用请求数据方法
 	}
 	
 	//参数赋值
@@ -54,11 +55,11 @@ function pagination(totalPageNum, curr, leftRight, showPageLocation, requestMeth
 							if(j == curr + leftRight){
 								//最右侧加省略号
 								//右侧加省略号
-								var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li><li style='float:left;height:30px;width:120px;margin-right:5px;padding-top:5px'><b>&nbsp;&nbsp;......</b><b><a href='javascript:void(0);' onclick='upPage("+(curr+1)+")' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>下一页</a></b></li>"; 
+								var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")'  style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li><li style='float:left;height:30px;width:120px;margin-right:5px;padding-top:5px'><b>&nbsp;&nbsp;......</b><b><a href='javascript:void(0);' onclick='upPage("+(curr+1)+")' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>下一页</a></b></li>"; 
 								showPageLocation.append(htmls);
 							}else{
 								//正常不加
-								var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+								var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 								showPageLocation.append(htmls);
 							}
 					}
@@ -73,11 +74,11 @@ function pagination(totalPageNum, curr, leftRight, showPageLocation, requestMeth
 					}else{
 						if(j == curr - leftRight-1){
 							//最左侧加省略号
-							var htmls = "<li style='float:left;height:30px;width:120px;padding:5px'><a href='javascript:void(0);' onclick='downPage("+(curr-1)+");' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>上一页</a><b>......</b></li><li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+							var htmls = "<li style='float:left;height:30px;width:120px;padding:5px'><a href='javascript:void(0);' onclick='downPage("+(curr-1)+");' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>上一页</a><b>......</b></li><li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 							showPageLocation.append(htmls);
 						}else{
 							//正常不加
-							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 							showPageLocation.append(htmls);
 						}
 					}
@@ -88,7 +89,7 @@ function pagination(totalPageNum, curr, leftRight, showPageLocation, requestMeth
 						var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px;background-color:blue'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px;color:white'>"+(j+1)+"</a></li>"; 
 						showPageLocation.append(htmls);
 					}else{
-						var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+						var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 						showPageLocation.append(htmls);
 					}
 				}
@@ -103,15 +104,15 @@ function pagination(totalPageNum, curr, leftRight, showPageLocation, requestMeth
 					}else{
 						//左侧加省略号
 						if(j == curr-leftRight-1){
-							var htmls = "<li style='float:left;height:30px;width:120px;padding:5px'><a href='javascript:void(0);' onclick='downPage("+(curr-1)+");' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>上一页</a><b>......</b></li><li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+							var htmls = "<li style='float:left;height:30px;width:120px;padding:5px'><a href='javascript:void(0);' onclick='downPage("+(curr-1)+");' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>上一页</a><b>......</b></li><li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 							showPageLocation.append(htmls);
 						}else if(j == curr+leftRight-1){
 							//右侧加省略号
-							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li><li style='float:left;height:30px;width:120px;margin-right:5px;padding-top:5px'><b>&nbsp;&nbsp;......</b><b><a href='javascript:void(0);' onclick='upPage("+(curr+1)+")' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>下一页</a></b></li>"; 
+							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li><li style='float:left;height:30px;width:120px;margin-right:5px;padding-top:5px'><b>&nbsp;&nbsp;......</b><b><a href='javascript:void(0);' onclick='upPage("+(curr+1)+")' style='padding:6px;background-color:grey;color:white;margin:1px 5px 0px 10px'>下一页</a></b></li>"; 
 							showPageLocation.append(htmls);
 						}else{
 							//正常情况
-							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
+							var htmls = "<li style='float:left;height:30px;width:30px;border:1px solid blue;margin-right:5px'><a  href='javascript:void(0);' onclick='onclickPage("+(j+1)+")' style='width: 30px;height: 30px;display:block;text-align:center;cursor:pointer;padding-top:5px'>"+(j+1)+"</a></li>"; 
 							showPageLocation.append(htmls);
 						}
 						
@@ -129,6 +130,10 @@ function upPage(obj){
 }
 //上一页
 function downPage(obj){
+	currParam = obj;
+	pagination(totalPageNumParam, currParam, leftRightParam, showPageLocationParam,requestMethodNameParam);
+}
+function onclickPage(obj){
 	currParam = obj;
 	pagination(totalPageNumParam, currParam, leftRightParam, showPageLocationParam,requestMethodNameParam);
 }

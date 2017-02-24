@@ -8260,7 +8260,16 @@ jQuery.ajaxSetup({
 		}
 	}
 });
+jQuery.ajaxSetup({
+	type:'post',
+	complete:function(xhr, ts){ //XMLHttpRequest, textStatus
+		var sessionStatus = xhr.getResponseHeader('sessionstatus');
+		if(sessionStatus == 'timeout') {
 
+			window.top.location.href = '../static/index.jsp';
+		}
+	}
+});
 // Handle cache's special case and global
 jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {

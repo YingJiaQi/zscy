@@ -2,6 +2,7 @@ package com.syard.service.api;
 
 import java.util.Map;
 
+
 public interface PreWebContentManagerService {
 	/**
 	 * 前台页面获取关于我们数据
@@ -31,5 +32,10 @@ public interface PreWebContentManagerService {
 	 * @return
 	 */
 	Map<String, Object> getMagnetDataByUsedName(Map<String, Object> param);
+	/**
+	 * 前台主页，头条推荐获取数据
+	 * @return
+	 */
+	Map<String, Object> getHeadlinePromoteData();
 
 }

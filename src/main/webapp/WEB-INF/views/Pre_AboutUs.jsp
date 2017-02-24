@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 	<meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
-	<script src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">

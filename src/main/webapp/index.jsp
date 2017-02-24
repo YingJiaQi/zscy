@@ -34,7 +34,51 @@
 	<script type="text/javascript">
 	$(function () {
 		$('#myTab li:eq(0) a').tab('show');
+		//获取头条推荐数据
+		$("#hotMsg").empty();
+		$("#newsMsg").empty();
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getHeadlinePromoteData',
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") {
+	    			//热门信息
+	    			if(data.hotMsgData != null){
+		    			for(var i = 0; i< data.hotMsgData.length ;i++){
+							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.hotMsgData[i].sourceTitle+"</a></div>"
+							$("#hotMsg").append(optionHtml);
+						}
+	    			}else{
+	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+	    					$("#hotMsg").append(optionHtml);
+	    			}
+	    			//新信息
+	    			if(data.newsMsgData != null){
+	    				for(var i = 0; i< data.newsMsgData.length ;i++){
+							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.newsMsgData[i].sourceTitle+"</a></div>"
+							$("#newsMsg").append(optionHtml);
+						}
+	    			}else{
+	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+	    					$("#newsMsg").append(optionHtml);
+	    			}
+	    			var optionHtml = "<div style='padding:3px 3px 2px 10px'>&gt;&gt;&gt;&nbsp;&nbsp;<a href='${pageContext.request.contextPath }/PreWebContentManager/Pre_NewsCentor'>查看更多</a></div>";
+	    			$("#newsMsg").append(optionHtml);
+					$("#hotMsg").append(optionHtml);
+				} else {
+					var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+					$("#newsMsg").append(optionHtml);
+					$("#hotMsg").append(optionHtml);
+				}
+	    	 }
+	     });
 	});
+	function toNewsCenter(obj){
+		alert($(obj).html())
+		//$(obj).html();
+	}
 	</script>
   </head>
   <body>
@@ -93,10 +137,10 @@
 						<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png">
 						<div class="caption">
 							<p><span class="label label-danger">圆形磁铁分类</span></p>
-							<p><a href="#">圆片磁铁</a></p>
-							<p><a href="#">圆环磁铁</a></p>
-							<p><a href="#">圆柱磁铁</a></p>
-							<p><a href="#">圆形沉头孔磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='圆片磁铁'">圆片磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='圆环磁铁'">圆环磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='圆柱磁铁'">圆柱磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='圆形沉头孔磁铁'">圆形沉头孔磁铁</a></p>
 						</div>
 					</div>
 				</div>
@@ -105,10 +149,10 @@
 						<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_fxImg.png">
 						<div class="caption">
 							<p><span class="label label-danger">方形磁铁分类</span></p>
-							<p><a href="#">方形磁铁</a></p>
-							<p><a href="#">长方形磁铁</a></p>
-							<p><a href="#">方形沉头孔磁铁</a></p>
-							<p><a href="#" style="visibility:hidden">other</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='方形磁铁'">方形磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='长方形磁铁'">长方形磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='方形沉头孔磁铁'">方形沉头孔磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='other'" style="visibility:hidden">other</a></p>
 						</div>
 					</div>
 				</div>
@@ -117,10 +161,10 @@
 						<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_yixImg.png">
 						<div class="caption">
 							<p><span class="label label-danger">异形磁铁分类</span></p>
-							<p><a href="#">异型磁铁</a></p>
-							<p><a href="#">梯形磁铁</a></p>
-							<p><a href="#">瓦形磁铁</a></p>
-							<p><a href="#">大小头磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='异型磁铁'">异型磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='梯形磁铁'">梯形磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='瓦形磁铁'">瓦形磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='大小头磁铁'">大小头磁铁</a></p>
 						</div>
 					</div>
 				</div>
@@ -130,14 +174,14 @@
 						<div class="caption">
 							<p><span class="label label-danger">按用途分类</span></p>
 							<ul class="list-inline" id="ownClassfication">
-							  <li><a herf="#"  class="label label-primary">五金类</a></li>
-							  <li><a herf="#"  class="label label-primary">电机类</a></li>
-							  <li><a herf="#"  class="label label-primary">皮套类</a></li>
-							  <li><a herf="#"  class="label label-primary">喇叭磁铁</a></li>
-							   <li><a herf="#"  class="label label-primary">玩具类</a></li>
-							  <li><a herf="#"  class="label label-primary">真空模机类</a></li>
-							  <li><a herf="#"  class="label label-primary">LED磁铁</a></li>
-							  <p><a href="#" style="visibility:hidden">other</a></p>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='五金类'"  class="label label-primary">五金类</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='电机类'"  class="label label-primary">电机类</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='皮套类'"  class="label label-primary">皮套类</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='喇叭磁铁'"  class="label label-primary">喇叭磁铁</a></li>
+							   <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='玩具类'"  class="label label-primary">玩具类</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='真空模机类'"  class="label label-primary">真空模机类</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='LED磁铁'"  class="label label-primary">LED磁铁</a></li>
+							  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='other'" class="label label-primary">其它</a></li>
 							</ul>
 						</div>
 					</div>
@@ -174,25 +218,18 @@
 					
 				</div>
 				<div class="col-md-8">
-						<div class="row">
+					<div class="row">
 						<div class="col-md-6">
 							<img alt="img"  src="${pageContext.request.contextPath }/static/image/zs_tttj_pic.png"  width="376px" height="273px" >
 						</div>
 						<div class="col-md-3">
 							<p><span class="label label-danger">热门信息</span></p>
-							<p><a href="#">异型磁铁</a></p>
-							<p><a href="#">梯形磁铁</a></p>
-							<p><a href="#">瓦形磁铁</a></p>
-							<p><a href="#">大小头磁铁</a></p>
+							<div id="hotMsg" style="overflow:hidden"></div>
 						</div>
 						<div class="col-md-3">
 							<p><span class="label btn-info">最新信息</span></p>
-							<p><a href="#">异型磁铁</a></p>
-							<p><a href="#">梯形磁铁</a></p>
-							<p><a href="#">瓦形磁铁</a></p>
-							<p><a href="#">大小头磁铁</a></p>
+							<div id="newsMsg" style="overflow:hidden"></div>
 						</div>
-					</div>
 					</div>
 				</div>
 				<div class="col-md-2">

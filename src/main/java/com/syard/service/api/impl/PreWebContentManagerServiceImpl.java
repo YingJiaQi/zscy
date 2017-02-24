@@ -113,13 +113,18 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 	@Override
 	public Map<String, Object> getMagnetClassficationDataByTitle(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		int page = Integer.parseInt(param.get("pageIndex").toString());
+		int rows = Integer.parseInt(param.get("pageSize").toString());
+		int start = (page-1)*rows;
+		int size = start + rows;
+		List<Commodity> clist = commodityDao.getMagnetClassficationDataByName(start, size, param.get("categoryTitle").toString());
 		Example example = new Example(Commodity.class);
-		example.setOrderByClause("createTime DESC");
 		example.createCriteria().andLike("categoryName", "%"+param.get("categoryTitle").toString()+"%");
-		List<Commodity> selectByExample = commodityDao.selectByExample(example);
-		if(selectByExample.size()>0){
+		int cCount = commodityDao.selectCountByExample(example);
+		if(cCount>0){
 			result.put("success", "true");
-			result.put("datas",selectByExample);
+			result.put("datas",clist);
+			result.put("total", cCount);
 		}else{
 			result.put("success", "false");
 		}
@@ -166,6 +171,49 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		}else{
 			result.put("success", "false");
 		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getHeadlinePromoteData() {
+		List<OtherSource> osList = new ArrayList<OtherSource>();
+		//获取与新闻中心关联的数据
+		Example example = new Example(PreSystemComponents.class);
+		example.createCriteria().andEqualTo("moduleName", "新闻");
+		List<PreSystemComponents> pscs = preSystemComponentsDao.selectByExample(example);
+		//从tbl_pre_module_content_link表中获取关联资源集合，根据moduleID
+		Example plinkExample = new Example(PreModuleContentLink.class);
+		plinkExample.createCriteria().andEqualTo("moduleId", pscs.get(0).getId());
+		List<PreModuleContentLink> plists = preModuleContentLinkDao.selectByExample(plinkExample);
+		//遍历关联集合，从资源表中获取详细数据
+		for(PreModuleContentLink ele: plists){
+			OtherSource os = otherSourceDao.selectByPrimaryKey(ele.getSourceId());
+			osList.add(os);
+		}
+		//遍历获取分类新闻
+		List<OtherSource> hotList = new ArrayList<OtherSource>();
+		List<OtherSource> newsList = new ArrayList<OtherSource>();
+		int i = 0;
+		int j = 0;
+		for(OtherSource os:osList){
+			if(os.getViewCount() == 1){
+				//是热门新闻
+				if(i<=8){
+					hotList.add(os);
+					i++;
+				}
+			}
+			if(j<=8){
+				newsList.add(os);
+				j++;
+			}
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		/*List<OtherSource> hotList = otherSourceDao.getHotMsgData();
+		List<OtherSource> newsList = otherSourceDao.getNewsMsgData();*/
+		result.put("hotMsgData", hotList);
+		result.put("newsMsgData", newsList);
+		result.put("success", "true");
 		return result;
 	}
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace： 名称空间 可以随意命名 -->
+<mapper namespace="com.syard.dao.CommodityDao">
+	
+	<select id="getMagnetClassficationDataByName" resultType="Commodity">
+		select * from tbl_s_commodity where  category_name like '%${categoryName}%' and is_deleted =0  limit #{start, jdbcType=INTEGER},#{size, jdbcType=INTEGER} 
+	</select>
+<!-- 	<insert id="insertEntity" parameterType="CommodityDesc"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO tbl_s_commodity_desc (
+			id,
+			creat_time,
+			updat_time
+		)VALUES(
+			null,
+			NOW(),
+			NOW()
+	);
+	</insert> -->
+	<!-- <delete id="deleteUsers" parameterType="java.util.List">
+		delete from tb_user where id in 
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+	<select id="getMaxUserCode"  resultType="java.lang.String">
+		select max(user_code) from tbl_s_user
+	</select> -->
+</mapper>

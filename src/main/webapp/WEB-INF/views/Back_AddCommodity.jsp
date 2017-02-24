@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>eHealthRep</title>
 <!-- 导入jquery核心类库 -->
-<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/json2.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/utils.js"></script>
 <script type="text/javascript"
@@ -162,6 +162,7 @@ function delSpecification(re){
 							<input type="checkbox" name="usedType" value="玩具类"/>玩具类
 							<input type="checkbox" name="usedType" value="真空膜机类"/>真空膜机类
 							<input type="checkbox" name="usedType" value="LED磁铁"/>LED磁铁
+							<input type="checkbox" name="usedType" value="其它"/>其它
 						</th>
 					</tr>
 					
