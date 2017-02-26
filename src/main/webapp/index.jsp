@@ -44,25 +44,26 @@
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
 	    		if (data.success == "true") {
-	    			//热门信息
-	    			if(data.hotMsgData != null){
-		    			for(var i = 0; i< data.hotMsgData.length ;i++){
-							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.hotMsgData[i].sourceTitle+"</a></div>"
-							$("#hotMsg").append(optionHtml);
-						}
-	    			}else{
-	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
-	    					$("#hotMsg").append(optionHtml);
-	    			}
+	    		
 	    			//新信息
 	    			if(data.newsMsgData != null){
 	    				for(var i = 0; i< data.newsMsgData.length ;i++){
-							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.newsMsgData[i].sourceTitle+"</a></div>"
+							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.newsMsgData[i].sourceTitle+"</a></div>";
 							$("#newsMsg").append(optionHtml);
 						}
 	    			}else{
-	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>";
 	    					$("#newsMsg").append(optionHtml);
+	    			}
+	    			//热门信息
+	    			if(data.hotMsgData != null){
+		    			for(var i = 0; i< data.hotMsgData.length ;i++){
+							var optionHtml = "<div style='padding:3px;font-size:1.1em;'><a href='javascript:void(0);' onclick='toNewsCenter(this)'>"+data.hotMsgData[i].sourceTitle+"</a></div>";
+							$("#hotMsg").append(optionHtml);
+						}
+	    			}else{
+	    				var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>";
+	    					$("#hotMsg").append(optionHtml);
 	    			}
 	    			var optionHtml = "<div style='padding:3px 3px 2px 10px'>&gt;&gt;&gt;&nbsp;&nbsp;<a href='${pageContext.request.contextPath }/PreWebContentManager/Pre_NewsCentor'>查看更多</a></div>";
 	    			$("#newsMsg").append(optionHtml);
@@ -74,10 +75,163 @@
 				}
 	    	 }
 	     });
+		//页面加载时获取产品中心方形磁铁数据
+		var categoryNames = $("#myTab .active").text();
+		//alert(categoryNames);
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getProductCentorData',
+	    	 data:JSON.stringify({categoryName : categoryNames}),
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") {
+	    			if(data.datas.length > 0){
+		    			if(categoryNames =="方形磁铁"){
+		    				$("#fxctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#fxctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="圆形磁铁"){
+		    				$("#yxctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#yxctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="异形磁铁"){
+		    				$("#yixingctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#yixingctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="磁性制品"){
+		    				$("#cxzpPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#cxzpPanel").append(optionHtml);
+		    				}
+		    			}
+	    				
+	    			}else{
+	    				$("#fxctPanel").empty();
+						$("#yxctPanel").empty();
+						$("#yixingctPanel").empty();
+						$("#cxzpPanel").empty();
+						var htmls = "<div><h2>暂无数据</h2></div>" ;
+						$("#fxctPanel").append(htmls);
+						$("#yxctPanel").append(htmls);
+						$("#yixingctPanel").append(htmls);
+						$("#cxzpPanel").append(htmls);
+	    			}
+	    			
+				} else {
+				
+				}
+	    	 }
+	     });
+		//页面加载时获取我们的优势数据
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getOurAdviceData',
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") {
+	    			if(data.datas.length >0){
+	    				for(var i=0;i< data.datas.length;i++){
+	    					//alert(data.datas[i].picture.sourceUrl);
+		    				var optionHtml = "<div class='col-md-6'><div  class='row'> <div class='col-md-6'><div class='thumbnail'>"+
+										"<img alt='Bootstrap Thumbnail First' src='http://localhost:8080/"+data.datas[i].picture.sourceUrl+"'>"+
+									"</div>	</div><div class='col-md-6'><div class='caption'><h3>"+data.datas[i].artical.sourceTitle+"</h3><p>"+data.datas[i].artical.sourceContent+
+									"</p></div></div></div></div>";
+	    					if(i>1){
+	    						$("#ourAdviceOne").append(optionHtml);
+	    					}else{
+	    						$("#ourAdviceTwo").append(optionHtml);
+	    					}
+	    				}
+	    			}
+				} else {
+					var optionHtml = "<div style='width:100px;height:50px;margin:5px 10px;padding:3px 3px 3px 15px;font-size:1.1em;line-height:1.3'>暂无数据</div>"
+					$("#ourAdviceOne").append(optionHtml);
+					$("#ourAdviceTwo").append(optionHtml);
+				}
+	    	 }
+	     });
 	});
 	function toNewsCenter(obj){
 		alert($(obj).html())
 		//$(obj).html();
+	}
+	function productGetData(obj){
+		var categoryNames = $(obj).text();
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getProductCentorData',
+	    	 data:JSON.stringify({categoryName : categoryNames}),
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		if (data.success == "true") {
+	    			if(data.datas.length > 0){
+		    			if(categoryNames =="方形磁铁"){
+		    				$("#fxctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#fxctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="圆形磁铁"){
+		    				$("#yxctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#yxctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="异形磁铁"){
+		    				$("#yixingctPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#yixingctPanel").append(optionHtml);
+		    				}
+		    			}
+		    			if(categoryNames =="磁性制品"){
+		    				$("#cxzpPanel").empty();
+		    				for(var i=0;i<data.datas.length;i++){
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
+			    				$("#cxzpPanel").append(optionHtml);
+		    				}
+		    			}
+	    				
+	    			}else{
+	    				$("#fxctPanel").empty();
+						$("#yxctPanel").empty();
+						$("#yixingctPanel").empty();
+						$("#cxzpPanel").empty();
+						var htmls = "<div><h2>暂无数据</h2></div>" ;
+						$("#fxctPanel").append(htmls);
+						$("#yxctPanel").append(htmls);
+						$("#yixingctPanel").append(htmls);
+						$("#cxzpPanel").append(htmls);
+	    			}
+	    			
+				} else {
+				
+				}
+	    	 }
+	     });
 	}
 	</script>
   </head>
@@ -100,10 +254,10 @@
 								<ul class="nav nav-pills">
 								  <li class="active"><a href="#">首页</a></li>
 								  <li><a href="${pageContext.request.contextPath }/productVideo/toProductJsp">生产视频</a></li>
-								  <li><a href="#">强力磁铁</a></li>
+								 <!--  <li><a href="#">强力磁铁</a></li> -->
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
-								  <li><a href="#">采购报价</a></li>
-								  <li><a href="#">新闻中心</a></li>
+								  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
+								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
 						</div>
@@ -254,10 +408,10 @@
 				</div>
 			</div>
 			<ul id="myTab" class="nav nav-tabs">
-			<li class="active"><a href="#fxct" data-toggle="tab">方形磁铁</a></li>
-			<li><a href="#yxct" data-toggle="tab">圆形磁铁</a></li>
-			<li><a href="#yixingct" data-toggle="tab">异型磁铁</a></li>
-			<li><a href="#cxzp" data-toggle="tab">磁性制品</a></li>
+			<li class="active"><a href="#fxct" onclick="productGetData(this)"  data-toggle="tab">方形磁铁</a></li>
+			<li><a href="#yxct" onclick="productGetData(this)" data-toggle="tab">圆形磁铁</a></li>
+			<li><a href="#yixingct" onclick="productGetData(this)"  data-toggle="tab">异型磁铁</a></li>
+			<li><a href="#cxzp" onclick="productGetData(this)"  data-toggle="tab">用途磁铁</a></li>
 			</ul>
 		</div>
 		<div class="col-md-2">
@@ -269,8 +423,8 @@
 				<div class="col-md-2">
 				</div>
 				<div class="col-md-8">
-					<div class="row">
-						<div class="col-md-3">
+					<div class="row" id="fxctPanel">
+						<%-- <div class="col-md-3">
 							<div class="thumbnail">
 								<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png">
 								<div class="caption">
@@ -281,49 +435,7 @@
 									<p><a href="#">圆形沉头孔磁铁</a></p>
 								</div>
 							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="thumbnail">
-								<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_fxImg.png">
-								<div class="caption">
-									<p><span class="label label-danger">方形磁铁分类</span></p>
-									<p><a href="#">方形磁铁</a></p>
-									<p><a href="#">长方形磁铁</a></p>
-									<p><a href="#">方形沉头孔磁铁</a></p>
-									<p><a href="#" style="visibility:hidden">other</a></p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="thumbnail">
-								<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_yixImg.png">
-								<div class="caption">
-									<p><span class="label label-danger">异形磁铁分类</span></p>
-									<p><a href="#">异型磁铁</a></p>
-									<p><a href="#">梯形磁铁</a></p>
-									<p><a href="#">瓦形磁铁</a></p>
-									<p><a href="#">大小头磁铁</a></p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="thumbnail">
-								<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_other.png">
-								<div class="caption">
-									<p><span class="label label-danger">按用途分类</span></p>
-									<ul class="list-inline" id="ownClassfication">
-									  <li><a herf="#"  class="label label-primary">五金类</a></li>
-									  <li><a herf="#"  class="label label-primary">电机类</a></li>
-									  <li><a herf="#"  class="label label-primary">皮套类</a></li>
-									  <li><a herf="#"  class="label label-primary">喇叭磁铁</a></li>
-									   <li><a herf="#"  class="label label-primary">玩具类</a></li>
-									  <li><a herf="#"  class="label label-primary">真空模机类</a></li>
-									  <li><a herf="#"  class="label label-primary">LED磁铁</a></li>
-									  <p><a href="#" style="visibility:hidden">other</a></p>
-									</ul>
-								</div>
-							</div>
-						</div>
+						</div> --%>
 					</div>
 				</div>
 				<div class="col-md-2">
@@ -335,7 +447,9 @@
 				<div class="col-md-2">
 				</div>
 				<div class="col-md-8">
-					<p>圆形磁铁</p>
+					<div class="row" id="yxctPanel">
+<!-- 					<p>圆形磁铁</p> -->
+					</div>
 				</div>
 				<div class="col-md-2">
 				</div>
@@ -346,7 +460,9 @@
 				<div class="col-md-2">
 				</div>
 				<div class="col-md-8">
-					<p>异型磁铁</p>
+					<div class="row" id="yixingctPanel">
+					<!-- <p>异型磁铁</p> -->
+					</div>
 				</div>
 				<div class="col-md-2">
 				</div>
@@ -357,7 +473,9 @@
 				<div class="col-md-2">
 				</div>
 				<div class="col-md-8">
-					<p>磁性制品</p>
+					<div class="row" id="cxzpPanel">
+					<!-- <p>磁性制品</p> -->
+					</div>
 				</div>
 				<div class="col-md-2">
 				</div>
@@ -381,8 +499,8 @@
 							<hr style="height:1px;border:none;border-top:1px solid #555555;"/>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6">
+					<div class="row" id="ourAdviceOne">
+						<!-- <div class="col-md-6">
 							
 								<div  class="row">
 									<div class="col-md-6">
@@ -421,48 +539,68 @@
 										</div>
 									</div>
 								</div>
-						</div>
+						</div> -->
 					</div>
+					<div class="row" id="ourAdviceTwo">
+					</div>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12" style="background-color:#302d27;color:white;padding:30px 20px">
+			<div class="row">
+				<div class="col-md-2">
+				</div>
+				<div class="col-md-8">
 					<div class="row">
-						<div class="col-md-6">
-							
-								<div  class="row">
-									<div class="col-md-6">
-										<div class="thumbnail">
-											<img alt="Bootstrap Thumbnail First" src="http://lorempixel.com/output/people-q-c-600-200-1.jpg">
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="caption">
-											<h3>
-												Thumbnail label
-											</h3>
-											<p>
-												Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-											</p>
-										</div>
-									</div>
+						<div class="col-md-8">
+							<div class="row">
+								<div class="col-md-7">
+									<h3>网站地图</h3>
+									<ol class="list-unstyled" style="color:white;font-size:13px;margin-top:20px">
+										<li style="margin-bottom:10px">
+											<a href="#">网站首页</a>
+										</li>
+										<li style="margin-bottom:10px">
+											<a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a>
+										</li>
+										<li style="margin-bottom:10px">
+											专家顾问
+										</li>
+										<li style="margin-bottom:10px">
+											政策解读
+										</li>
+										<li style="margin-bottom:10px">
+											加入我们
+										</li>
+									</ol>
 								</div>
+								<div class="col-md-5">
+									<h3>联系我们</h3>
+									<ol class="list-unstyled" style="color:white;font-size:15px;margin-top:20px">
+										<li style="margin-bottom:10px">
+											电话: 0516-83898529
+										</li>
+										<li style="margin-bottom:10px">
+											传真: 0516-83898529
+										</li>
+										<li style="margin-bottom:10px">
+											Email: HR@86516.com
+										</li>
+										<li style="margin-bottom:10px">
+											网址: http://www.###.com
+										</li>
+										<li style="margin-bottom:10px">
+											地址: 徐州市泉山区黄河南路
+										</li>
+									</ol>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-6">
-							
-								<div  class="row">
-									<div class="col-md-6">
-										<div class="thumbnail">
-											<img alt="Bootstrap Thumbnail First" src="http://lorempixel.com/output/people-q-c-600-200-1.jpg">
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="caption">
-											<h3>
-												Thumbnail label
-											</h3>
-											<p>
-												Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-											</p>
-										</div>
-									</div>
-								</div>
+						<div class="col-md-4">
 						</div>
 					</div>
 				</div>
@@ -472,50 +610,21 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12" style="background-color:#302d27;color:white">
+		<div class="col-md-12" style="background-color:#26231c;color:white;">
 			<div class="row">
 				<div class="col-md-2">
 				</div>
 				<div class="col-md-8">
-					<div class="row">
-						<div class="col-md-6">
-							<ol class="list-unstyled">
-								<li>
-									Lorem ipsum dolor sit amet
-								</li>
-								<li>
-									Consectetur adipiscing elit
-								</li>
-								<li>
-									Integer molestie lorem at massa
-								</li>
-								<li>
-									Facilisis in pretium nisl aliquet
-								</li>
-								<li>
-									Nulla volutpat aliquam velit
-								</li>
-								<li>
-									Faucibus porta lacus fringilla vel
-								</li>
-								<li>
-									Aenean sit amet erat nunc
-								</li>
-								<li>
-									Eget porttitor lorem
-								</li>
-							</ol>
-						</div>
-						<div class="col-md-6">
-						</div>
-					</div>
+					<br/>
+					<span style="margin-right:280px"></span>
+					徐州智晟磁业科技有限公司&nbsp;&nbsp;&copy;copyright&nbsp;版权所有&nbsp;&nbsp;ICP证:alw
+					<br/><br/>
 				</div>
 				<div class="col-md-2">
 				</div>
 			</div>
 		</div>
 	</div>
-
   
   </body>
 </html>

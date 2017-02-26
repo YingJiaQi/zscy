@@ -58,7 +58,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		Map<String, Object> map;
 		//首先获取商品信息
 		Example example = new Example(Commodity.class);
-		example.createCriteria().andNotEqualTo("status", 3);
+		example.createCriteria().andNotEqualTo("isDel", 1);
 		List<Commodity> selectByExample = commodityDao.selectByExample(example);
 		for(Commodity ele:selectByExample){
 			map = new HashMap<String, Object>();
@@ -67,7 +67,6 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			map.put("sourceTitle", ele.getTitle());
 			map.put("createTime", ele.getCreateTime());
 			map.put("updateTime", ele.getUpdateTime());
-			map.put("status", ele.getStatus());
 			//关联加选中
 			if(associatedList != null && associatedList.size() > 0 ){
 				for(PreModuleContentLink pm:associatedList){
@@ -82,7 +81,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		}
 		//获取其它数据信息
 		Example os = new Example(OtherSource.class);
-		os.createCriteria().andNotEqualTo("status", 3);
+		os.createCriteria().andNotEqualTo("isDel", 1);
 		List<OtherSource> osList = otherSourceDao.selectByExample(os);
 		for(OtherSource ele: osList){
 			map = new HashMap<String, Object>();
@@ -91,7 +90,6 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			map.put("sourceTitle", ele.getSourceTitle());
 			map.put("createTime", ele.getCreateTime());
 			map.put("updateTime", ele.getUpdateTime());
-			map.put("status", ele.getStatus());
 			//关联加选中
 			if(associatedList != null && associatedList.size() > 0 ){
 				for(PreModuleContentLink pm:associatedList){
@@ -138,7 +136,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 	@Override
 	public List<VEasyuiTree> getModuleList() {
 		List<VEasyuiTree> resultList = new ArrayList<VEasyuiTree>();
-		List<VEasyuiTree> lchild = new ArrayList<VEasyuiTree>();
+		List<VEasyuiTree> root_child = new ArrayList<VEasyuiTree>();
 		VEasyuiTree root = new VEasyuiTree();
 		root.setId("2");
 		root.setText("根");
@@ -149,25 +147,46 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		List<PreSystemComponents> selectByExample = preSystemComponentsDao.selectByExample(example);
 		//遍历每个父元素，获取其所有子元素
 		for(PreSystemComponents pc: selectByExample){
-			VEasyuiTree vts = new VEasyuiTree();
-			vts.setId(pc.getId());
-			vts.setText(pc.getModuleName());
+			VEasyuiTree et_first = new VEasyuiTree();
+			et_first.setId(pc.getId());
+			et_first.setText(pc.getModuleName());
 			//获取子元素
 			Example exampleChild =  new Example(PreSystemComponents.class);
 			exampleChild.createCriteria().andEqualTo("moduleParentId", pc.getId());
-			List<PreSystemComponents> selectByExampleChild = preSystemComponentsDao.selectByExample(exampleChild);
-			if(selectByExampleChild.size()>0)vts.setState("closed");
-			List<VEasyuiTree> lchilds = new ArrayList<VEasyuiTree>();
-			for(PreSystemComponents pcChild: selectByExampleChild){
-				VEasyuiTree vtChild = new VEasyuiTree();
-				vtChild.setId(pcChild.getId());
-				vtChild.setText(pcChild.getModuleName());
-				lchilds.add(vtChild);
+			List<PreSystemComponents> pc_first_list = preSystemComponentsDao.selectByExample(exampleChild);
+			List<VEasyuiTree> et_first_child = null;
+			if(pc_first_list.size()>0){
+				et_first.setState("closed");
+				et_first_child = new ArrayList<VEasyuiTree>();
+				
+				for(PreSystemComponents pc_first: pc_first_list){
+					VEasyuiTree et_second = new VEasyuiTree();
+					et_second.setId(pc_first.getId());
+					et_second.setText(pc_first.getModuleName());
+					//获取第二子元素
+					Example exampleChilds =  new Example(PreSystemComponents.class);
+					exampleChilds.createCriteria().andEqualTo("moduleParentId", pc_first.getId());
+					List<PreSystemComponents> pc_second_list = preSystemComponentsDao.selectByExample(exampleChilds);
+					List<VEasyuiTree> et_second_child = null;
+					if(pc_second_list.size()>0){
+						et_second.setState("closed");
+						et_second_child = new ArrayList<VEasyuiTree>();
+						for(PreSystemComponents pc_second: pc_second_list){
+							VEasyuiTree et_third = new VEasyuiTree();
+							et_third.setId(pc_second.getId());
+							et_third.setText(pc_second.getModuleName());
+							et_third.setChildren(null);
+							et_second_child.add(et_third);
+						}
+					}
+					et_second.setChildren(et_second_child);
+					et_first_child.add(et_second);
+				}
 			}
-			vts.setChildren(lchilds);
-			lchild.add(vts);
+			et_first.setChildren(et_first_child);
+			root_child.add(et_first);
 		}
-		root.setChildren(lchild);
+		root.setChildren(root_child);
 		return resultList;
 	}
 
@@ -186,6 +205,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			String sourceId = parseObject.get("id")+"";
 			PreModuleContentLink pmc = preModuleContentLinkDao.getAssociatedData(moduleId,sourceId);
 			if(pmc == null){
+				//不存在时就添加
 				PreModuleContentLink pmcl = new PreModuleContentLink();
 				pmcl.setCreateTime(new Date());
 				pmcl.setId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -287,9 +307,8 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			ose.setIsDel(0);
 			ose.setSourceTitle(title);
 			ose.setSourceType("视频");
-			ose.setSourceUrl(newVideoUrl);
+			ose.setSourceUrl("videos/"+newVideoName+".mp4");
 			ose.setUpdateTime(ose.getCreateTime());
-			ose.setStatus(2);
 			ose.setViewCount(param.get("hot").toString() == "1"? 1:null);//本是用来记录，文件被浏览次数，这是暂且用于标记是否是执门商品
 			otherSourceDao.insert(ose);
 		}else if(StringUtils.equals(dataType, "artical")){
@@ -301,12 +320,60 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			osa.setSourceContent(SourceData);
 			osa.setSourceTitle(title);
 			osa.setSourceType("文档");
-			osa.setStatus(2);
 			if(StringUtils.isNoneBlank(param.get("hot").toString())){
 				osa.setViewCount(Integer.parseInt(param.get("hot").toString()));//本是用来记录，文件被浏览次数，这是暂且用于标记是否是执门商品
 			}
 			osa.setUpdateTime(osa.getCreateTime());
 			otherSourceDao.insert(osa);
+		} else if(StringUtils.equals(dataType, "picture")){
+			//图片上传
+			OtherSource ose = new OtherSource();
+			ose.setCreateTime(new Date());
+			ose.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			ose.setIsDel(0);
+			ose.setSourceTitle(title);
+			ose.setSourceType("图片");
+			//用于存储商品图片信息
+			List<Map<String, String>> lmap = new ArrayList<Map<String, String>>();
+			String[] split = SourceData.split("img");
+			for(int i=0;i<split.length;i++){
+				Map<String, String> map = new HashMap<String, String>();
+				if(split[i].contains("http") && !split[i].contains("dialogs")){
+					//包含图片
+					String path = split[i].substring(6, split[i].indexOf("title")-2);
+					String substrings = split[i].substring(split[i].indexOf("title")+7);
+					String titles = substrings.substring(0, substrings.indexOf('"'));
+					map.put("path", path);
+					map.put("title", titles);
+					lmap.add(map);
+				}
+			}
+			File destPicture = new File(PropsUtil.get("picturePath"));
+			if(!destPicture.exists()){
+				destPicture.mkdirs();
+			}
+			//遍历商品图片
+			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+			int j =0;
+			for(Map<String, String> img : lmap){
+				if(j ==1){
+					continue;
+				}
+				File sourcePicture = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
+				try {
+					FileUtils.copyFile(sourcePicture, new File(destPicture+File.separator+ose.getId()+".png"));
+					//删除原文件
+					FileUtils.deleteQuietly(sourcePicture);
+					j++;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			ose.setSourceUrl("pictures"+"/"+ose.getId()+".png");
+			ose.setUpdateTime(ose.getCreateTime());
+			otherSourceDao.insert(ose);
 		}
 		result.put("success", "true");
 		result.put("msg", "添加成功");
@@ -321,7 +388,6 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		if(os != null){
 			os.setUpdateTime(new Date());
 			os.setIsDel(1);
-			os.setStatus(3);
 			os.setSourceTitle(os.getSourceTitle()+"deleted");
 			int updateByPrimaryKeySelective = otherSourceDao.updateByPrimaryKey(os);
 			if(updateByPrimaryKeySelective > 0){
@@ -334,7 +400,6 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			Commodity cy = commodityDao.selectByPrimaryKey(id);
 			cy.setUpdateTime(new Date());
 			cy.setIsDel(1);
-			cy.setStatus(3);
 			cy.setTitle(cy.getTitle()+"deleted");
 			int updateByPrimaryKey = commodityDao.updateByPrimaryKey(cy);
 			if(updateByPrimaryKey > 0){

@@ -427,6 +427,7 @@ var columns = [
 							<option value="产品">产品</option>
 							<option value="视频">视频</option>
 							<option value="文档">文档</option>
+							<option value="文档">图片</option>
 						</select>&nbsp;
 					标题关键字:<input type="text" name="titleKey" style="width:80px;"/>
 					排序:<select name="order" id="order">
@@ -467,12 +468,14 @@ var columns = [
     
     <!-- 资源添加窗口   start -->
     <div class="easyui-window" title="添加资源" id="addWindow"  closed="true" draggable="false" style="top: 100px; left: 390px">
-    	<div id="chooseType" style="margin-top:100px;margin-left:110px">
+    	<div id="chooseType" style="margin-top:80px;margin-left:90px">
 	    	<span class="commonNode" onmouseover="changeToChoosed(this);" onmouseout="changeToCommon(this);" onclick="addSource('video');">添加视频</span>
-	    	<span class="commonNode" onmouseover="changeToChoosed(this);" onmouseout="changeToCommon(this);" onclick="addSource('artical');">添加文档</span>
+	    	<span class="commonNode" onmouseover="changeToChoosed(this);" onmouseout="changeToCommon(this);" onclick="addSource('artical');">添加文档</span><br/><br/><br/><br/>
+	    	<span class="commonNode" onmouseover="changeToChoosed(this);" onmouseout="changeToCommon(this);" onclick="addSource('picture');">添加图片</span>
     	</div>
     	<div id="addVideo" style="display:none">添加视频</div>
     	<div id="addArtical" style="display:none">添加文档</div>
+    	<div id="addPicture" style="display:none">添加图片</div>
 	</div>
 	
 	<!-- 上传开始 -->
@@ -485,6 +488,7 @@ var columns = [
 			<div style="width:300px;" >
 				<script  type="text/plain" id="sourceUpload"></script>
 				<script  type="text/plain" id="sourceVideoUpload"></script>
+				<script  type="text/plain" id="sourcePicture"></script>
 			</div>
 			 <input type="hidden" name="id" id="updateSourceId"/>
 			 <span onclick="closeFileUploadWindow()" style="position:absolute;left:390px;top:10px" class="commonNode">关闭</span>
@@ -609,6 +613,7 @@ var columns = [
 				//先隐藏文档编辑器，再显示视频编辑器
 				//UE.getEditor('sourceUpload').setHide();
 				$("#sourceUpload").css("display","none");
+				$("#sourcePicture").css("display","none");
 				//UE.getEditor('sourceVideoUpload').setShow()
 				$("#sourceVideoUpload").css("display","block");
 				//UM.getEditor('sourceUpload').destroy();
@@ -640,6 +645,7 @@ var columns = [
 				$("#sourceUpload").css("display","block");
 				//UE.getEditor('sourceVideoUpload').setShow()
 				$("#sourceVideoUpload").css("display","none");
+				$("#sourcePicture").css("display","none");
 				sourceTypes = "artical";
 				//添加文档
 				articalUploads =UE.getEditor('sourceUpload',{
@@ -652,7 +658,7 @@ var columns = [
 						'directionalityltr', 'directionalityrtl', 'indent', '|',
 						'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
 						'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-						'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
+						'emotion', 'scrawl', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
 						'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
 						'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
 						'print', 'preview', 'searchreplace', 'drafts', 'help'
@@ -668,13 +674,46 @@ var columns = [
 				    initialFrameWidth:360
 				    //更多其他参数，请参考ueditor.config.js中的配置项  
 			   })
+			}else if(obj == "picture"){
+				//先隐藏视频编辑器，再显示文档编辑器
+				$("#sourcePicture").css("display","block");
+				//UE.getEditor('sourceVideoUpload').setShow()
+				$("#sourceVideoUpload").css("display","none");
+				$("#sourceUpload").css("display","none");
+				sourceTypes = "picture";
+				articalUploads =UE.getEditor('sourcePicture',{
+					 toolbars:[[
+						'fullscreen',  'undo', 'redo', '|',
+						'insertimage'
+				    ]], 
+				    //focus时自动清空初始化时的内容  
+				    autoClearinitialContent:true,  
+				    //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+				    scaleEnabled :true,
+				    //默认的编辑区域高度  
+				    initialFrameHeight:160,
+				    //关闭字数统计  
+				    wordCount:false, 
+				    initialFrameWidth:360
+				    //更多其他参数，请参考ueditor.config.js中的配置项  
+				});
+				
+				
 			}
 		}
 		//资源上传  开始上传
 		function allTypeSourceUplaod(){
 			var title = $("#sourceTitle_FileUpload").val();
+			var SourceData = null;
 			var hot = $("#hot").val();
-			var SourceData = UE.getEditor('sourceUpload').getContent();
+			if(sourceTypes == "artical"){
+				SourceData = UE.getEditor('sourceUpload').getContent();
+			}else if(sourceTypes == "picture"){
+				SourceData = UE.getEditor('sourcePicture').getContent();
+			}else if(sourceTypes == "video"){
+				SourceData = UE.getEditor('sourceVideoUpload').getContent();
+			}
+			
 			SourceData = SourceData.replace(/=/g, "|f|");
 			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes+"&hot="+hot;
 			//alert(datas)

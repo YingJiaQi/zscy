@@ -64,20 +64,6 @@ var columns = [
 						}
 					}
 				},{
-					field: 'status',
-					title: '商品状态',
-					width: 50,
-					align: 'center',
-					formatter: function(data, rows, index) {
-						if(data == "1") {
-							return "<b style='color:green'>已上架</b>";
-						} else if(data == "2"){
-							return "<b style='color:orange'>待上架</b>";
-						}else {
-							return "<b style='color:red'>已删除</b>";
-						}
-					}
-				},{
 					field: 'barcode',
 					title: '商品条形码',
 					width: 100,
@@ -347,10 +333,9 @@ function edit(id, index) {
 			&nbsp;
 			<span>商品状态:</span>
 				<select id="commodityStatus" class="easyui-combobox" style="width: 80px;" data-options="editable:false">
-					<option value="1">上架商品</option>
-					<option value="2">待上架商品</option>
-					<option value="3">已删除</option>
-					<option value="all" selected>所有商品</option>
+					<option value="0" selected>未删除</option>
+					<option value="1">已删除</option>
+					<option value="all" >所有商品</option>
 			</select>
 			<span onclick="doSearch()" class="buttonStyle">搜索</span>&nbsp;
 		</form>

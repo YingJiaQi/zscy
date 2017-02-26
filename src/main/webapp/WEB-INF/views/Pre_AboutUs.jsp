@@ -84,9 +84,9 @@
 								<ul class="nav nav-pills">
 								  <li><a href="${pageContext.request.contextPath }">首页</a></li>
 								  <li><a href="${pageContext.request.contextPath }/productVideo/toProductJsp">生产视频</a></li>
-								  <li><a href="#">强力磁铁</a></li>
+								  <!-- <li><a href="#">强力磁铁</a></li> -->
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
-								  <li><a href="#">采购报价</a></li>
+								  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li  class="active"><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>

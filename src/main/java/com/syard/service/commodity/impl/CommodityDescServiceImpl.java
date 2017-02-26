@@ -62,6 +62,7 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
+				FileUtils.deleteQuietly(sourceCommodityImage);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

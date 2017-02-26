@@ -21,8 +21,6 @@ public class Commodity  extends BasePojo{
 	private String image;
 	@Column(name="category_name")
 	private String categoryName;
-	@Column(name="status")//商品状态，1-上架，2-待上架，3-删除
-	private Integer status;
 	
 	
 	
@@ -73,12 +71,6 @@ public class Commodity  extends BasePojo{
 	}
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 	
 }

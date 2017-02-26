@@ -137,6 +137,8 @@ public class CommodityManage {
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
+				//删除原文件
+				FileUtils.deleteQuietly(sourceCommodityImage);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -161,8 +163,7 @@ public class CommodityManage {
 		cy.setSell_point(sellPoint);
 		cy.setId(commodityId);
 		cy.setTitle(title);
-		cy.setStatus(2);
-		cy.setCategoryName(categoryName);
+		cy.setCategoryName("images/commodityImage"+cy.getId()+"/commodityImages");
 		Boolean flag = commodityService.addCommodity(cy);
 		Boolean tag =commodityDescService.addCommodityDesc(commodityDesc,commodityId);
 		//删除源文件

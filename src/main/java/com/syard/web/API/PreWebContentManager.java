@@ -85,4 +85,22 @@ public class PreWebContentManager {
 	public ResponseEntity<?> getHeadlinePromoteData(){
 		return new ResponseEntity<Object>(webContentManagerService.getHeadlinePromoteData(),HttpStatus.OK);
 	}
+	/**
+	 * 前台主页，获取产品中心数据
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/getProductCentorData", method = RequestMethod.POST)
+	public ResponseEntity<?> getProductCentorData(@RequestBody Map<String,Object> param){
+		return new ResponseEntity<Object>(webContentManagerService.getProductCentorData(param),HttpStatus.OK);
+	}
+	/**
+	 * 前台主页，获取我们的优势数据
+	 * @return
+	 */
+	@RequestMapping(value="/getOurAdviceData", method = RequestMethod.POST)
+	public ResponseEntity<?> getOurAdviceData(){
+		return new ResponseEntity<Object>(webContentManagerService.getOurAdviceData(),HttpStatus.OK);
+	}
+
 }

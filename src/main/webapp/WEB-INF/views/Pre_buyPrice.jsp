@@ -90,10 +90,10 @@
 								<ul class="nav nav-pills">
 								  <li><a href="${pageContext.request.contextPath }">首页</a></li>
 								  <li><a href="${pageContext.request.contextPath }/productVideo/toProductJsp">生产视频</a></li>
-								  <!-- <li><a href="#">强力磁铁</a></li> -->
+								 <!--  <li><a href="#">强力磁铁</a></li> -->
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
-								  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
-								  <li class="active"><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
+								  <li class="active"><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
+								  <li ><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
 						</div>
@@ -106,7 +106,7 @@
 			<div class="col-md-2"></div>
 			<div class="col-md-8" id="showDataPanal">
 				<div style="height:32px;background-color:#dce4f3;padding:0px;">
-					<span class="btn pull-left">公司新闻</span>
+					<span class="btn pull-left">采购报价</span>
 				</div><br/>
 			</div>
 			<div class="col-md-2"></div>

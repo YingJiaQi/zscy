@@ -17,7 +17,6 @@ public class CommodityVo  extends BasePojo{
 	private Integer num;
 	private String barcode;
 	private String image;
-	private Integer status;//商品状态，1-上架，2-待上架，3-删除
 	private CommodityDesc describe;
 	private List<CommoditySpecificationContent> categorySpecification;
 	public String getCategoryName() {
@@ -67,12 +66,6 @@ public class CommodityVo  extends BasePojo{
 	}
 	public void setImage(String image) {
 		this.image = image;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 	public CommodityDesc getDescribe() {
 		return describe;

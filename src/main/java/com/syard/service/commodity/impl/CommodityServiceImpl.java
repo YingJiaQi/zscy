@@ -53,13 +53,13 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		if(StringUtils.isNoneBlank(pageBean.getKey()))example.createCriteria().andLike("categoryName", "%"+pageBean.getKey()+"%");
 		if(StringUtils.isNoneBlank(pageBean.getStartTime()))example.createCriteria().andGreaterThanOrEqualTo("createTime", pageBean.getStartTime());
 		if(StringUtils.isNoneBlank(pageBean.getEndTime()))example.createCriteria().andLessThanOrEqualTo("createTime", pageBean.getEndTime());
+		example.createCriteria().andEqualTo("isDel", 0);
 		if(StringUtils.isNoneBlank(pageBean.getKey3()) && !StringUtils.equals(pageBean.getKey3(), "all")){
-			example.createCriteria().andEqualTo("status", pageBean.getKey3());
-		}else{
-			List<Object> slist = new ArrayList<Object>();
-			slist.add("1");
-			slist.add("2");
-			example.createCriteria().andIn("status", slist);
+			List<Object> count = new ArrayList<Object>();
+			count.add(1);count.add(0);
+			example.createCriteria().andIn("isDel", count);
+		}else if(StringUtils.isNoneBlank(pageBean.getKey3()) && !StringUtils.equals(pageBean.getKey3(), "1")){
+			example.createCriteria().andEqualTo("isDel", 1);
 		}
 		if(StringUtils.isNoneBlank(pageBean.getKey2()))example.createCriteria().andLike("title", "%"+pageBean.getKey2()+"%");
 		List<Commodity> selectByExample = commodityDao.selectByExample(example);
@@ -94,7 +94,6 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 	public Map<String, String> deleteCommodityById(Map<String, Object> param) {
 		Map<String, String> result = new HashMap<String, String>();
 		Commodity selectByPrimaryKey = commodityDao.selectByPrimaryKey(param.get("id").toString());
-		selectByPrimaryKey.setStatus(3);
 		selectByPrimaryKey.setIsDel(1);
 		selectByPrimaryKey.setTitle(selectByPrimaryKey.getTitle()+"deleted");
 		selectByPrimaryKey.setUpdateTime(new Date());
@@ -164,7 +163,6 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		cv.setNum(cc.getNum());
 		cv.setPrice(cc.getPrice());
 		cv.setSellPoint(cc.getSell_point()==null?"":cc.getSell_point());
-		cv.setStatus(cc.getStatus());
 		cv.setTitle(cc.getTitle()==null?"":cc.getTitle());
 		cv.setUpdateTime(cc.getUpdateTime());
 		/*StringBuffer sb = new StringBuffer();

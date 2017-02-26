@@ -13,8 +13,6 @@ public class OtherSource  extends BasePojo{
 	private String sourceUrl;	
 	@Column(name="source_content")
 	private String sourceContent;
-	@Column(name="status")
-	private Integer status;
 	@Column(name="view_count")
 	private Integer viewCount;//该字段用于记录文档被阅读次数，但此系统暂时由页面设定,用于数据hot标记
 	public Integer getViewCount() {
@@ -22,12 +20,6 @@ public class OtherSource  extends BasePojo{
 	}
 	public void setViewCount(Integer viewCount) {
 		this.viewCount = viewCount;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 	public String getSourceType() {
 		return sourceType;

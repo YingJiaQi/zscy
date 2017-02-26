@@ -36,8 +36,9 @@
 			/* 获取后台页面传递的参数，然后赋值给js变量 */
 			<%
 				String indexParamss = request.getAttribute("indexParam")+"";
+			     indexParamss = new String(indexParamss.getBytes("iso-8859-1"),"utf-8");
 			%>
-			indexParam = <%=indexParamss%>;
+			indexParam = <%=indexParamss %>;
 			//alert(indexParam)
 			if(indexParam != null){
 				var compareString = "五金类,电机类,皮套类,喇叭磁铁,玩具类,真空模机类,LED磁铁,其它";
@@ -189,9 +190,9 @@
 								<ul class="nav nav-pills">
 								  <li><a href="${pageContext.request.contextPath }">首页</a></li>
 								  <li><a href="${pageContext.request.contextPath }/productVideo/toProductJsp">生产视频</a></li>
-								  <li><a href="#">强力磁铁</a></li>
+								 <!--  <li><a href="#">强力磁铁</a></li> -->
 								  <li  class="active"><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
-								  <li><a href="#">采购报价</a></li>
+								  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>

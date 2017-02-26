@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.syard.dao.CategoryDao;
 import com.syard.dao.CommodityDao;
 import com.syard.dao.OtherSourceDao;
@@ -191,7 +190,8 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 			osList.add(os);
 		}
 		//遍历获取分类新闻
-		List<OtherSource> hotList = new ArrayList<OtherSource>();
+		List<Map<String, Object>> hotList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
 		List<OtherSource> newsList = new ArrayList<OtherSource>();
 		int i = 0;
 		int j = 0;
@@ -199,7 +199,14 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 			if(os.getViewCount() == 1){
 				//是热门新闻
 				if(i<=8){
-					hotList.add(os);
+					map = new HashMap<String, Object>();
+					map.put("sourceType", os.getSourceType());
+					map.put("sourceTitle", os.getSourceTitle());
+					map.put("sourceUrl", os.getSourceUrl());
+					map.put("sourceContent", os.getSourceContent());
+					map.put("viewCount", os.getViewCount());
+					map.put("id", os.getId());
+					hotList.add(map);
 					i++;
 				}
 			}
@@ -215,6 +222,63 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		result.put("newsMsgData", newsList);
 		result.put("success", "true");
 		return result;
+	}
+
+	@Override
+	public Map<String, Object> getProductCentorData(Map<String, Object> param) {
+		Map<String, Object>  result = new HashMap<String,Object>();
+		List<Commodity> cList = new ArrayList<Commodity>();
+		//先去关联表中取数据
+		Example example = new Example(PreModuleContentLink.class);
+		example.createCriteria().andEqualTo("moduleName", param.get("categoryName").toString());
+		List<PreModuleContentLink> pList = preModuleContentLinkDao.selectByExample(example);
+		//由于产品中心包含四个子类目，所以先取出产品中心的数据，然后再依次遍历，判断属于哪个类目
+		for(PreModuleContentLink ele:pList){
+			//因为该资源都是磁铁制品，所以只在commodity表中查找 
+			Commodity selectByPrimaryKey = commodityDao.selectByPrimaryKey(ele.getSourceId());
+			cList.add(selectByPrimaryKey);
+		}
+		result.put("success", "true");
+		result.put("datas", cList);
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getOurAdviceData() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Map<String, Object>> resultMap = new ArrayList<Map<String, Object>>();
+		//先到前后台关联表中查找关联数据
+		//获取优势1数据
+		getOurAdviceData(resultMap,  "优势1");
+		//获取优势2数据
+		getOurAdviceData(resultMap,  "优势2");
+		//获取优势3数据
+		getOurAdviceData(resultMap,  "优势3");
+		//获取优势4数据
+		getOurAdviceData(resultMap,  "优势4");
+		result.put("success", "true");
+		result.put("datas", resultMap);
+		return result;
+	}
+
+	private void getOurAdviceData(List<Map<String, Object>> resultMap, String advanceParam) {
+		
+		Example advance_one = new Example(PreModuleContentLink.class);
+		advance_one.createCriteria().andEqualTo("moduleName", advanceParam);
+		List<PreModuleContentLink> advanceOneList = preModuleContentLinkDao.selectByExample(advance_one);
+		if(advanceOneList.size() >0){
+			Map<String, Object> map = new HashMap<String, Object>();
+			for(PreModuleContentLink pcOne: advanceOneList){
+				if(StringUtils.equals(pcOne.getSourceType(),"图片")){
+					OtherSource osOne = otherSourceDao.selectByPrimaryKey(pcOne.getSourceId());
+					map.put("picture", osOne);
+				}else if(StringUtils.equals(pcOne.getSourceType(),"文档")){
+					OtherSource osOnes = otherSourceDao.selectByPrimaryKey(pcOne.getSourceId());
+					map.put("artical", osOnes);
+				}
+			}
+			resultMap.add(map);
+		}
 	}
 
 }

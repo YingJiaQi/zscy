@@ -38,9 +38,9 @@
 								<ul class="nav nav-pills">
 								  <li><a href="${pageContext.request.contextPath }">首页</a></li>
 								  <li  class="active"><a href="${pageContext.request.contextPath }/productVideo/toProductJsp">生产视频</a></li>
-								  <li><a href="#">强力磁铁</a></li>
+								  <!-- <li><a href="#">强力磁铁</a></li> -->
 								  <li><a href="${pageContext.request.contextPath }/MagnetClassification/getList">磁性制品</a></li>
-								  <li><a href="#">采购报价</a></li>
+								  <li><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_buyPrice">采购报价</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/newsCentor">新闻中心</a></li>
 								  <li><a href="${pageContext.request.contextPath }/MessageInfo/aboutUs">关于我们</a></li>
 								</ul>
@@ -54,7 +54,7 @@
     	<div class="col-md-2"></div>
     	<div class="col-md-8">
     		<div class="row" style="height:3px;background-color:#1a54b1"></div>
-    		<div class="row text-left" style="height:35px;background-color:#dce4f3"><button class="btn">&nbsp;&nbsp;生产视频</button></div>
+    		<div class="row text-left" style="height:35px;background-color:#dce4f3"><button class="btn" style="background-color:#dce4f3">&nbsp;&nbsp;生产视频</button></div>
     		<br/>
     		<div class="row">
     			<div class="col-md-3">
