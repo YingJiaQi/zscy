@@ -31,6 +31,7 @@ public class PreWebContentManager {
 	@RequestMapping(value = "{value}")
 	public ModelAndView pageJump(@PathVariable("value") String value, String cate) {
 		ModelAndView mv = new ModelAndView(value);
+		System.out.println(cate);
 		mv.addObject("indexParam", cate);//将参数传递到页面
 		return  mv;
 	}
@@ -75,7 +76,7 @@ public class PreWebContentManager {
 	 */
 	@RequestMapping(value="/getMagnetDataByUsedName", method = RequestMethod.POST)
 	public ResponseEntity<?> getMagnetDataByUsedName(@RequestBody Map<String, Object> param){
-		return new ResponseEntity<Object>(webContentManagerService.getMagnetDataByUsedName(param),HttpStatus.OK);
+		return new ResponseEntity<Object>(webContentManagerService.getMagnetClassficationDataByTitle(param),HttpStatus.OK);
 	}
 	/**
 	 * 前台主页，头条推荐获取数据

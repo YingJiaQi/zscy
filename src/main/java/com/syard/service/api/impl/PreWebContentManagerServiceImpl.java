@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.abel533.entity.Example;
+import com.syard.common.utils.CustomRuntimeException;
 import com.syard.dao.CategoryDao;
 import com.syard.dao.CommodityDao;
 import com.syard.dao.OtherSourceDao;
@@ -116,60 +117,68 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		int rows = Integer.parseInt(param.get("pageSize").toString());
 		int start = (page-1)*rows;
 		int size = start + rows;
-		List<Commodity> clist = commodityDao.getMagnetClassficationDataByName(start, size, param.get("categoryTitle").toString());
-		Example example = new Example(Commodity.class);
-		example.createCriteria().andLike("categoryName", "%"+param.get("categoryTitle").toString()+"%");
-		int cCount = commodityDao.selectCountByExample(example);
-		if(cCount>0){
-			result.put("success", "true");
-			result.put("datas",clist);
-			result.put("total", cCount);
-		}else{
-			result.put("success", "false");
-		}
-		return result;
-	}
-
-	@Override
-	public Map<String, Object> getMagnetDataByUsedName(Map<String, Object> param) {
-		int page = Integer.parseInt(param.get("pageIndex").toString());
-		int rows = Integer.parseInt(param.get("pageSize").toString());
-		Map<String, Object> result = new HashMap<String, Object>();
-		Example example = new Example(Commodity.class);
-		example.setOrderByClause("createTime DESC");
-		example.createCriteria().andLike("usedType", "%"+param.get("usedFunction").toString()+"%");
-		List<Commodity> selectByExample = commodityDao.selectByExample(example);
+		//圆形磁铁
+		String circleMagnet = "圆柱磁铁,圆环磁铁,圆形沉头孔磁铁,圆片磁铁";
+		//方形磁铁
+		String quartzMagnet = "方形沉头孔磁铁,长方形磁铁,方形磁铁";
+		//异形磁铁
+		String yxMagnet = "大小头磁铁,梯形磁铁,异形磁铁,瓦形磁铁";
+		//按用途分类
+		String usedMagnet = "五金类,电机类,皮套类,喇叭磁铁,玩具类,真空模机类,LED磁铁,其它";
 		
-		//分页
-		int size = 0;
-		if((page-1)*rows > selectByExample.size()){
-			//开始行大于总记录数，此时无数据
-			size = 0;
-		}else{
-			if((page-1)*rows+rows < selectByExample.size()){
-				//前面所有页数总和 + 当前页数 < 总记录数，
-				size = (page-1)*rows+rows;
-			}else{
-				//此时取集合大小
-				size = selectByExample.size();
+		String childTwo = "";//第二子节点
+		//先找到该模块的ID
+		String parentModuleName = param.get("parentModule").toString();//该模块名在数据库中是独一无二的
+		Example parent = new Example(PreSystemComponents.class);
+		parent.createCriteria().andEqualTo("moduleName", parentModuleName);
+		List<PreSystemComponents> pscs = preSystemComponentsDao.selectByExample(parent);
+		if(StringUtils.contains(circleMagnet, param.get("categoryName").toString())){
+			childTwo = "圆形磁铁";
+		}else if(StringUtils.contains(quartzMagnet, param.get("categoryName").toString())){
+			childTwo = "方形磁铁";
+		}else if(StringUtils.contains(yxMagnet, param.get("categoryName").toString())){
+			childTwo = "异形磁铁";
+		}else if(StringUtils.contains(usedMagnet, param.get("categoryName").toString())){
+			childTwo = "按用途分类";
+		}
+			//根据顶级父类id，和次级父类模块名，查找到次级父类
+		Example parentTwo = new Example(PreSystemComponents.class);
+		parentTwo.createCriteria().andEqualTo("moduleParentId", pscs.get(0).getId()).andEqualTo("moduleName", childTwo);
+		//parentTwo.createCriteria().andEqualTo("moduleName", childTwo);
+		List<PreSystemComponents> parentTwoObject = preSystemComponentsDao.selectByExample(parentTwo);
+			//根据二级父节点ID和目标模块名，获取目标模块ID
+		Example selfModule = new Example(PreSystemComponents.class);
+		selfModule.createCriteria().andEqualTo("moduleParentId", parentTwoObject.get(0).getId()).andEqualTo("moduleName", param.get("categoryName").toString());
+		//selfModule.createCriteria().andEqualTo("moduleName", param.get("categoryName").toString());
+		List<PreSystemComponents> selfObject = preSystemComponentsDao.selectByExample(selfModule);
+		String moduleID = selfObject.get(0).getId();//获取该模块的ID
+		
+		//从tbl_pre_module_content_link表中获取关联资源集合，根据moduleID
+		Example plinkExample = new Example(PreModuleContentLink.class);
+		plinkExample.setOrderByClause("createTime DESC");
+		plinkExample.createCriteria().andEqualTo("moduleId", moduleID);
+		List<PreModuleContentLink> plists = preModuleContentLinkDao.selectByExample(plinkExample);
+		
+		if(pscs.size() <=0){
+			new CustomRuntimeException("该模块暂时没有关联数据");
+			return result;
+		}
+		
+		//根据产品ID，到产品表中查找数据，该分类的数据，只存在commodity表中
+		//List<Commodity> clist = commodityDao.getMagnetClassficationDataByName(start, size, param.get("categoryTitle").toString());
+		List<Commodity> clist = new ArrayList<Commodity>();
+		int i = 0;
+		for(PreModuleContentLink ele:plists){
+			i++;
+			if(i>=start && i< size){
+				Commodity comm = commodityDao.selectByPrimaryKey(ele.getSourceId());
+				clist.add(comm);
 			}
 		}
-		//分页
-		List<Commodity> resultList = new ArrayList<Commodity>();
-		for(int j =0; j < selectByExample.size(); j++){
-			if(j >= (page-1)*rows && j <= size-1){
-				resultList.add(selectByExample.get(j));
-			}
-		}
 		
-		
-		if(selectByExample.size()>0){
-			result.put("success", "true");
-			result.put("datas",resultList);
-			result.put("total", selectByExample.size());
-		}else{
-			result.put("success", "false");
-		}
+		result.put("success", "true");
+		result.put("datas",clist);
+		result.put("total", clist.size());
 		return result;
 	}
 
@@ -228,9 +237,20 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 	public Map<String, Object> getProductCentorData(Map<String, Object> param) {
 		Map<String, Object>  result = new HashMap<String,Object>();
 		List<Commodity> cList = new ArrayList<Commodity>();
-		//先去关联表中取数据
+		//先找到该模块的ID
+		String parentModuleName = param.get("parentModule").toString();//该模块名在数据库中是独一无二的
+		Example parent = new Example(PreSystemComponents.class);
+		parent.createCriteria().andEqualTo("moduleName", parentModuleName);
+		List<PreSystemComponents> pscs = preSystemComponentsDao.selectByExample(parent);
+		String parentid = pscs.get(0).getId();
+		Example child = new Example(PreSystemComponents.class);
+		child.createCriteria().andEqualTo("moduleName", param.get("categoryName").toString()).andEqualTo("moduleParentId", parentid);
+		//child.createCriteria().andEqualTo("moduleParentId", parentid);
+		List<PreSystemComponents> pscsChild = preSystemComponentsDao.selectByExample(child);
+		String objectModuleID = pscsChild.get(0).getId();
+		//根据id去关联表中取数据
 		Example example = new Example(PreModuleContentLink.class);
-		example.createCriteria().andEqualTo("moduleName", param.get("categoryName").toString());
+		example.createCriteria().andEqualTo("moduleId", objectModuleID);
 		List<PreModuleContentLink> pList = preModuleContentLinkDao.selectByExample(example);
 		//由于产品中心包含四个子类目，所以先取出产品中心的数据，然后再依次遍历，判断属于哪个类目
 		for(PreModuleContentLink ele:pList){

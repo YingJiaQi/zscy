@@ -36,7 +36,7 @@
 			/* 获取后台页面传递的参数，然后赋值给js变量 */
 			<%
 				String indexParamss = request.getAttribute("indexParam")+"";
-			     indexParamss = new String(indexParamss.getBytes("iso-8859-1"),"utf-8");
+			    // indexParamss = new String(indexParamss.getBytes("iso-8859-1"),"utf-8");
 			%>
 			indexParam = <%=indexParamss %>;
 			//alert(indexParam)
@@ -78,7 +78,7 @@
 			var pageSize = 32;
 			var curr = 1;
 			if(typeof(obj) == "object"){
-				onclickCategoryName = $(obj).html();
+				onclickCategoryName = $(obj).text();
 				//onclickCategoryName = categoryNames[categoryIndex];
 			}else if(typeof(obj) == "string"){
 				onclickCategoryName = obj;
@@ -86,7 +86,7 @@
 				curr = obj;
 			}
 			$("#categoryTitlePanel").html(onclickCategoryName );//从数组中获取类目并放入相应位置
-			var dataVo = {categoryTitle:onclickCategoryName ,pageIndex: curr,pageSize: pageSize}
+			var dataVo = {categoryName:onclickCategoryName ,pageIndex: curr,pageSize: pageSize,parentModule:'磁性制品'}
 			/**
 			*根据分类名，到后台取出该分类下的所有数据
 			*/
@@ -132,7 +132,7 @@
 				//点击类目调用,onclickCategoryName是全局变量定义在方法外
 				onclickCategoryName = obj;
 			}
-			var dataVo = {usedFunction:onclickCategoryName,pageIndex: curr,pageSize: pageSize };
+			var dataVo = {categoryName:onclickCategoryName,pageIndex: curr,pageSize: pageSize, parentModule:'磁性制品'};
 			$.ajax({
 		    	 type:'post',
 		    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getMagnetDataByUsedName',

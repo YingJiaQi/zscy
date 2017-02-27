@@ -81,7 +81,7 @@
 		$.ajax({
 	    	 type:'post',
 	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getProductCentorData',
-	    	 data:JSON.stringify({categoryName : categoryNames}),
+	    	 data:JSON.stringify({categoryName : categoryNames, parentModule:'产品中心'}),
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
@@ -315,7 +315,7 @@
 						<img alt="圆形磁铁图片" src="${pageContext.request.contextPath }/static/image/zs_ctfl_yixImg.png">
 						<div class="caption">
 							<p><span class="label label-danger">异形磁铁分类</span></p>
-							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='异型磁铁'">异型磁铁</a></p>
+							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='异型磁铁'">异形磁铁</a></p>
 							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='梯形磁铁'">梯形磁铁</a></p>
 							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='瓦形磁铁'">瓦形磁铁</a></p>
 							<p><a href="${pageContext.request.contextPath }/PreWebContentManager/Pre_magnetClassification?cate='大小头磁铁'">大小头磁铁</a></p>
@@ -410,7 +410,7 @@
 			<ul id="myTab" class="nav nav-tabs">
 			<li class="active"><a href="#fxct" onclick="productGetData(this)"  data-toggle="tab">方形磁铁</a></li>
 			<li><a href="#yxct" onclick="productGetData(this)" data-toggle="tab">圆形磁铁</a></li>
-			<li><a href="#yixingct" onclick="productGetData(this)"  data-toggle="tab">异型磁铁</a></li>
+			<li><a href="#yixingct" onclick="productGetData(this)"  data-toggle="tab">异形磁铁</a></li>
 			<li><a href="#cxzp" onclick="productGetData(this)"  data-toggle="tab">用途磁铁</a></li>
 			</ul>
 		</div>
