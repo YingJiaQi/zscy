@@ -133,7 +133,9 @@ public class CommodityManage {
 		//遍历商品图片
 		String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
 		String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+		StringBuffer sb = new StringBuffer();
 		for(Map<String, String> img : lmap){
+			sb.append(img.get("title")+".png&");
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
@@ -153,7 +155,7 @@ public class CommodityManage {
 		if(StringUtils.isNotBlank(hot)){
 			cy.setHot(Integer.parseInt(hot));
 		}
-		cy.setImage(DestcommodityImage+"");
+		cy.setImage("images/commodityImage/"+commodityId+"/commodityImages?"+sb.toString());
 		if(StringUtils.isNotBlank(num)){
 			cy.setNum(Integer.parseInt(num));
 		}

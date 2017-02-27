@@ -81,7 +81,7 @@
 		$.ajax({
 	    	 type:'post',
 	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getProductCentorData',
-	    	 data:JSON.stringify({categoryName : categoryNames, parentModule:'产品中心'}),
+	    	 data:JSON.stringify({categoryName : categoryNames, parentModule:"产品中心"}),
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
@@ -176,7 +176,7 @@
 		$.ajax({
 	    	 type:'post',
 	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getProductCentorData',
-	    	 data:JSON.stringify({categoryName : categoryNames}),
+	    	 data:JSON.stringify({categoryName : categoryNames, parentModule:"产品中心"}),
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
