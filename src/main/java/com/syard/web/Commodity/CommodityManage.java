@@ -126,19 +126,23 @@ public class CommodityManage {
 			}
 			lmap.add(map);*/
 		}
-		File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityImages");
+		/*File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityImages");
 		if(!DestcommodityImage.exists()){
 			DestcommodityImage.mkdirs();
-		}
+		}*/
 		//遍历商品图片
 		String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
 		String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+		File DestcommodityImage = new File(t.substring(0, t.indexOf("ZSCY"))+"images/commodityImage/"+commodityId+"/commodityImages");
+		if(!DestcommodityImage.exists()){
+			DestcommodityImage.mkdirs();
+		}
 		StringBuffer sb = new StringBuffer();
 		for(Map<String, String> img : lmap){
-			sb.append(img.get("title")+".png&");
+			sb.append(img.get("title")+"&");
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
-				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
+				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")));
 				//删除原文件
 				FileUtils.deleteQuietly(sourceCommodityImage);
 			} catch (IOException e) {

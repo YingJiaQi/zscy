@@ -13,11 +13,15 @@ import com.github.abel533.entity.Example;
 import com.syard.common.utils.CustomRuntimeException;
 import com.syard.dao.CategoryDao;
 import com.syard.dao.CommodityDao;
+import com.syard.dao.CommodityDescDao;
+import com.syard.dao.CommoditySpecificationContentDao;
 import com.syard.dao.OtherSourceDao;
 import com.syard.dao.PreModuleContentLinkDao;
 import com.syard.dao.PreSystemComponentsDao;
 import com.syard.pojo.Category;
 import com.syard.pojo.Commodity;
+import com.syard.pojo.CommodityDesc;
+import com.syard.pojo.CommoditySpecificationContent;
 import com.syard.pojo.OtherSource;
 import com.syard.pojo.PreModuleContentLink;
 import com.syard.pojo.PreSystemComponents;
@@ -35,6 +39,10 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 	private CategoryDao categoryDao;
 	@Autowired
 	private CommodityDao commodityDao;
+	@Autowired
+	private CommoditySpecificationContentDao commoditySpecificationContentDao;
+	@Autowired
+	private CommodityDescDao commodityDescDao;
 	
 	@Override
 	public Map<String, Object> getAboutUsCommponyProfile(Map<String, Object> param) {
@@ -299,6 +307,32 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 			}
 			resultMap.add(map);
 		}
+	}
+
+	@Override
+	public Map<String, Object> getCommodityDetailByID(Map<String, String> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String commodityId = param.get("id").toString();
+		
+		//从产品表获取主要信息
+		Commodity comm = commodityDao.selectByPrimaryKey(commodityId);
+		
+		//从商品描述表中获取该商品的描述信息
+		Example desc = new Example(CommodityDesc.class);
+		desc.createCriteria().andEqualTo("commodityId", commodityId);
+		List<CommodityDesc> descList = commodityDescDao.selectByExample(desc);
+		CommodityDesc commodityDesc = descList.get(0);
+		
+		//从商品规格表中取出该 商品的规格参数
+		Example spec = new Example(CommoditySpecificationContent.class);
+		spec.createCriteria().andEqualTo("commodityId", commodityId);
+		List<CommoditySpecificationContent> specList = commoditySpecificationContentDao.selectByExample(spec);
+		
+		result.put("commodityMain", comm);
+		result.put("commodityDesc", commodityDesc);
+		result.put("commoditySpec", specList);
+		result.put("success", "true");
+		return result;
 	}
 
 }

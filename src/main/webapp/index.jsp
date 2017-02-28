@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.* " %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,6 +33,22 @@
 	}
 	</style>
 	<script type="text/javascript">
+	<%  
+	Properties pro = new Properties();   
+	 String realpath = request.getRealPath("/WEB-INF/classes");   
+	 try{    
+	     //读取配置文件  
+	     FileInputStream in = new FileInputStream(realpath+"/program.properties");   
+	     pro.load(in);   
+	 }catch(FileNotFoundException e){   
+	     out.println(e);   
+	 }catch(IOException e){out.println(e);}   
+	
+	//通过key获取配置文件  
+	String path = "'"+pro.getProperty("hostIpAddress")+"'";  
+	%>  
+	//主机IP地址
+	var hostIpAddress =<%=path%>;
 	$(function () {
 		$('#myTab li:eq(0) a').tab('show');
 		//获取头条推荐数据
@@ -90,7 +107,12 @@
 		    			if(categoryNames =="方形磁铁"){
 		    				$("#fxctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+		    					//alert(latestData)
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail' sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='方形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#fxctPanel").append(optionHtml);
 		    				}
@@ -98,7 +120,11 @@
 		    			if(categoryNames =="圆形磁铁"){
 		    				$("#yxctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='圆形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#yxctPanel").append(optionHtml);
 		    				}
@@ -106,15 +132,23 @@
 		    			if(categoryNames =="异形磁铁"){
 		    				$("#yixingctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='异形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#yixingctPanel").append(optionHtml);
 		    				}
 		    			}
-		    			if(categoryNames =="磁性制品"){
+		    			if(categoryNames =="功用磁铁"){
 		    				$("#cxzpPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='功用磁铁' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#cxzpPanel").append(optionHtml);
 		    				}
@@ -182,10 +216,15 @@
 	    	 success : function (data){
 	    		if (data.success == "true") {
 	    			if(data.datas.length > 0){
-		    			if(categoryNames =="方形磁铁"){
+	    				if(categoryNames =="方形磁铁"){
 		    				$("#fxctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+		    					//alert(latestData)
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='方形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#fxctPanel").append(optionHtml);
 		    				}
@@ -193,7 +232,11 @@
 		    			if(categoryNames =="圆形磁铁"){
 		    				$("#yxctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='圆形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#yxctPanel").append(optionHtml);
 		    				}
@@ -201,15 +244,23 @@
 		    			if(categoryNames =="异形磁铁"){
 		    				$("#yixingctPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='异形磁铁图片' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#yixingctPanel").append(optionHtml);
 		    				}
 		    			}
-		    			if(categoryNames =="磁性制品"){
+		    			if(categoryNames =="功用磁铁"){
 		    				$("#cxzpPanel").empty();
 		    				for(var i=0;i<data.datas.length;i++){
-				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'><img alt='圆形磁铁图片' src='${pageContext.request.contextPath }/static/image/zs_ctfl_yxImg.png'>"+
+		    					var initialData = data.datas[i].image;
+		    					var initialArray = initialData.split("?");
+		    					var secArray = initialArray[1].split("&");
+		    					var latestData = initialArray[0]+"/"+secArray[0];
+				    			var optionHtml = "<div class='col-md-3'><div class='thumbnail'  sourceId = '"+data.datas[i].id+"'  onclick='commodityDetail(this)' style='cursor:pointer'><img alt='功用磁铁' src='"+hostIpAddress+latestData+"'>"+
 									"<div class='caption'><p><span class='label label-danger'>"+data.datas[i].title+"</span></p></div></div></div>";
 			    				$("#cxzpPanel").append(optionHtml);
 		    				}
@@ -232,6 +283,35 @@
 				}
 	    	 }
 	     });
+	}
+	function commodityDetail(obj){
+		//根据ID查找资源
+		var dataVo = {id:$(obj).attr("sourceId")};
+		$.ajax({
+	    	 type:'post',
+	    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getCommodityDetailByID',
+	    	 data:JSON.stringify(dataVo),
+	    	 dataType : 'json',
+	    	 contentType : "application/json;charset=utf-8",
+	    	 success : function (data){
+	    		 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'><p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p><br/><br/><br/><br/><br/><div id='sourcePanel'>"+$(obj).attr("sourceId")+"</div></div>"; 
+	    		 $(document.body).append(windowPanel);
+	    		 if(data.success == "true"){
+	    			 var mainNews = data.commodityMain.title;
+	    			 $("#sourcePanel").append(mainNews);
+	    			 var desc = data.commodityDesc.content;
+	    			 $("#sourcePanel").append(desc);
+	    			 var spec = data.commoditySpec.length;
+	    			 $("#sourcePanel").append("<br/><br/>"+spec);
+	    		 }else{
+	    			 $("#sourcePanel").append("<h1>获取产品失败，请联系管理员</h1>");
+	    		 }
+	    	 }
+		})
+	    
+	}
+	function closedWindowPanel(target){
+		$(target).parent().parent().hide();
 	}
 	</script>
   </head>
@@ -411,7 +491,7 @@
 			<li class="active"><a href="#fxct" onclick="productGetData(this)"  data-toggle="tab">方形磁铁</a></li>
 			<li><a href="#yxct" onclick="productGetData(this)" data-toggle="tab">圆形磁铁</a></li>
 			<li><a href="#yixingct" onclick="productGetData(this)"  data-toggle="tab">异形磁铁</a></li>
-			<li><a href="#cxzp" onclick="productGetData(this)"  data-toggle="tab">用途磁铁</a></li>
+			<li><a href="#cxzp" onclick="productGetData(this)"  data-toggle="tab">功用磁铁</a></li>
 			</ul>
 		</div>
 		<div class="col-md-2">

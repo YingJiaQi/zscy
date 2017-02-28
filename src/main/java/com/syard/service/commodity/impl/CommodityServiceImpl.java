@@ -98,6 +98,24 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		selectByPrimaryKey.setTitle(selectByPrimaryKey.getTitle()+"deleted");
 		selectByPrimaryKey.setUpdateTime(new Date());
 		int updateByPrimaryKey = commodityDao.updateByPrimaryKey(selectByPrimaryKey);
+		//删除商品描述信息
+		Example desc = new Example(CommodityDesc.class);
+		desc.createCriteria().andEqualTo("commodityId", param.get("id").toString());
+		List<CommodityDesc> commDescList = commodityDescDao.selectByExample(desc);
+		CommodityDesc commDesc = commDescList.get(0);
+		commDesc.setIsDel(1);
+		commDesc.setUpdateTime(new Date());
+		commodityDescDao.updateByPrimaryKey(commDesc);
+		//删除该商品规格参数
+		Example specification = new Example(CommoditySpecificationContent.class);
+		specification.createCriteria().andEqualTo("commodityId", param.get("id").toString());
+		List<CommoditySpecificationContent> commSpecificationList = commoditySpecificationContentDao.selectByExample(specification);
+		CommoditySpecificationContent commSpecification = commSpecificationList.get(0);
+		commSpecification.setIsDel(1);
+		commSpecification.setUpdateTime(new Date());
+		commoditySpecificationContentDao.updateByPrimaryKey(commSpecification);
+		
+		
 		if(updateByPrimaryKey > 0){
 			result.put("success", "true");
 			result.put("msg", "删除成功");

@@ -1,6 +1,5 @@
 package com.syard.service.api;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PreWebContentManagerService {
@@ -42,5 +41,10 @@ public interface PreWebContentManagerService {
 	 * @return
 	 */
 	Map<String, Object> getOurAdviceData();
+	/**
+	 * 前台页面，获取产品详情
+	 * @return
+	 */
+	Map<String, Object> getCommodityDetailByID(Map<String, String> param);
 
 }

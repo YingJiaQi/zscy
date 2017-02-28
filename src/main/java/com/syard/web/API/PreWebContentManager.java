@@ -103,5 +103,12 @@ public class PreWebContentManager {
 	public ResponseEntity<?> getOurAdviceData(){
 		return new ResponseEntity<Object>(webContentManagerService.getOurAdviceData(),HttpStatus.OK);
 	}
-
+	/**
+	 * 前台页面，获取产品详情
+	 * @return
+	 */
+	@RequestMapping(value="/getCommodityDetailByID", method = RequestMethod.POST)
+	public ResponseEntity<?> getCommodityDetailByID(@RequestBody Map<String,String> param){
+		return new ResponseEntity<Object>(webContentManagerService.getCommodityDetailByID(param),HttpStatus.OK);
+	}
 }
