@@ -48,7 +48,8 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 					map.put("path", path);
 					map.put("title", title);
 					lmap.add(map);
-					sourceContent.append(split[i].substring(0, split[i].indexOf('"')+1)+DestcommodityImage+File.separator+title+" \""+split[i].substring(split[i].indexOf("title")-1)+"img");
+					String newPath = path.substring(0, path.indexOf("ZSCY"))+DestcommodityImage.toString().substring(DestcommodityImage.toString().indexOf("images"));
+					sourceContent.append(split[i].substring(0, split[i].indexOf('"')+1)+newPath+File.separator+title+" \""+split[i].substring(split[i].indexOf("title")-1)+"img");
 				}
 			}else{
 				sourceContent.append(split[i]+"img");
@@ -61,7 +62,7 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
-				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")+".png"));
+				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")));
 				FileUtils.deleteQuietly(sourceCommodityImage);
 			} catch (IOException e) {
 				e.printStackTrace();

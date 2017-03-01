@@ -19,7 +19,7 @@
 	
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
-	
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/picHandle.js"></script>
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
       <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -299,42 +299,68 @@
 	    		 if(data.success == "true"){
 	    			 var initialArray = data.commodityMain.image.split("?");
  					var secArray = initialArray[1].split("&");
- 					var latestData = initialArray[0]+"/"+secArray[0];
+ 					//var latestData = initialArray[0]+"/"+secArray[0];
+ 					var picArr = [];
+ 					for(var j=0;j<secArray.length-1;j++){
+ 						picArr[j] = hostIpAddress + initialArray[0]+"/"+secArray[j];
+ 					}
 		    		 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
 			    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
 			    			"<br/><br/><br/><br/><br/>"+
 			    			"<div class='row'>"+
 			    				"<div class='col-md-2'></div>"+
 			    				"<div class='col-md-8'>"+
-			    					"<div class='row' style='border:1px solid red;height:500px'>"+
-			    						"<div class='col-md-6' style='border:1px solid black'>"+
-				    						"<div class='row' style='heigth:400px;width:100%;padding:12px;border:1px solid orange'><img src='"+hostIpAddress+latestData+"' width='400px' height='400px'/></div>"+
-				    						"<div class='row' style='height:70px;width:100%;overflow:hidden'>"+
-				    							"<ul style='list-style-type:none;margin-left:10px'>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>1</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>2</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>3</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>4</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>5</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>6</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>7</li>"+
-				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>8</li>"+
-				    							"</ul>"+
-				    							"<div style='position:absolute;z-index:999' onclick='toLeft();'><img src='${pageContext.request.contextPath }/static/image/arrowhead_left.png'  width='60px' height='60px' style='opacity:0.5;'/></div>"+
-				    							"<div style='position:absolute;margin-left:390px;z-index:999' onclick='toRight();'><img src='${pageContext.request.contextPath }/static/image/arrowhead_right.png'  width='60px' height='60px' style='opacity:0.5;'/></div>"+
-				    						"</div>"+
+			    					"<div class='row' height:500px'>"+
+			    						"<div class='col-md-6' id='picsShowPanels' >"+
 			    						"</div>"+
-			    						"<div class='col-md-6' style='border:1px solid black'>454</div>"+
-			    					"</div>"+
-			    					"<div class='row' style='border:1px solid black;height:500px'>"+
-			    						"<div class='col-md-4' style='border:1px solid red'></div>"+
-			    						"<div class='col-md-8' style='border:1px solid red'></div>"+
-			    					"</div>"+
+			    						"<div class='col-md-6'  id='basicInfos'></div>"+
+			    					"</div><br/><br/><hr/>"+
+			    					"<div class='row'  id='specification'>"+
+			    					"<h3>规格参数</h3><br/></div><br/><br/><hr/>"+
+			    					"<div class='row'  id='commodityDesc'>"+
+			    					"<h3>产品详情</h3><br/></div>"+
 			    				"</div>"+
 			    				"<div class='col-md-2'></div>"+
 			    			"</div>"+
 			    		"</div>";
 		    		 $(document.body).append(windowPanel);
+		    		 //调用方法，显示图片
+		    		 picDisplayCommodity(picArr,$("#picsShowPanels"));
+		    		 //显示产品基本信息
+		    		 $("#basicInfos").empty();
+				    var basicInfo = "<table class='table'>"+
+				    		  "<thead>"+
+				    		    "<tr>"+
+				    		      "<th>"+data.commodityMain.title+"</th>"+
+				    		    "</tr>"+
+				    		  "</thead>"+
+				    		  "<tbody>"+
+				    		   "<tr>"+
+				    		      "<td>卖点:&nbsp;&nbsp;"+data.commodityMain.sellPoint+"</td>"+
+				    		    "</tr>"+
+				    		    "<tr>"+
+				    		   	   "<td>价格:&nbsp;&nbsp;"+data.commodityMain.price+"&nbsp;<b style='color:red'>元</b></td>"+
+				    		    "</tr>"+
+				    		    "<tr>"+
+				    		   	   "<td>数量:&nbsp;&nbsp;"+data.commodityMain.num+"</td>"+
+				    		    "</tr>"+
+				    		    "<tr>"+
+				    		   	   "<td>可作用途:&nbsp;&nbsp;"+data.commodityMain.usedType+"</td>"+
+				    		    "</tr>"+
+				    		    "<tr>"+
+				    		   	   "<td>所属分类:&nbsp;&nbsp;"+data.commodityMain.categoryName+"</td>"+
+				    		    "</tr>"+
+				    		  "</tbody>"+
+				    		"</table>";
+				    	$("#basicInfos").append(basicInfo);
+				    	var specificationHtml = "";
+				    	for(var k=0;k< data.commoditySpec.length;k++){
+				    		var kk = "<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data.commoditySpec[k].specificationName+"：</span>"+
+			    		      "<span style='margin-right:90px'>&nbsp;&nbsp;"+data.commoditySpec[k].specificationContent+"</span>";
+				    		specificationHtml += kk;
+				    	} 
+				    	$("#specification").append(specificationHtml);
+				    	$("#commodityDesc").append(data.commodityDesc.content);
 	    		 }else{
 	    			 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
 		    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
@@ -348,12 +374,6 @@
 	}
 	function closedWindowPanel(target){
 		$(target).parent().parent().hide();
-	}
-	function toLeft(){
-		alert("left")
-	}
-	function toRight(){
-		alert("right")
 	}
 	</script>
   </head>

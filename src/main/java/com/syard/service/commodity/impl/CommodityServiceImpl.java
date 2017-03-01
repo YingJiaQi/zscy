@@ -180,7 +180,7 @@ public class CommodityServiceImpl extends BaseService<Commodity>  implements Com
 		cv.setIsDel(cc.getIsDel());
 		cv.setNum(cc.getNum());
 		cv.setPrice(cc.getPrice());
-		cv.setSellPoint(cc.getSell_point()==null?"":cc.getSell_point());
+		cv.setSellPoint(cc.getSellPoint()==null?"":cc.getSellPoint());
 		cv.setTitle(cc.getTitle()==null?"":cc.getTitle());
 		cv.setUpdateTime(cc.getUpdateTime());
 		/*StringBuffer sb = new StringBuffer();

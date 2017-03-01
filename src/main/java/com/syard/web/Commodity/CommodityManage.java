@@ -166,10 +166,10 @@ public class CommodityManage {
 		if(StringUtils.isNotBlank(priceView)){
 			cy.setPrice(Double.parseDouble(priceView));
 		}
-		cy.setSell_point(sellPoint);
+		cy.setSellPoint(sellPoint);
 		cy.setId(commodityId);
 		cy.setTitle(title);
-		cy.setCategoryName("images/commodityImage"+cy.getId()+"/commodityImages");
+		cy.setCategoryName(categoryName);
 		Boolean flag = commodityService.addCommodity(cy);
 		Boolean tag =commodityDescService.addCommodityDesc(commodityDesc,commodityId);
 		//删除源文件

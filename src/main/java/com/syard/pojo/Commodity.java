@@ -8,7 +8,7 @@ public class Commodity  extends BasePojo{
 	@Column(name="title")
 	private String title;
 	@Column(name="sell_point")
-	private String sell_point;
+	private String sellPoint;
 	@Column(name="price")
 	private Double price;
 	@Column(name="num")
@@ -30,11 +30,11 @@ public class Commodity  extends BasePojo{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getSell_point() {
-		return sell_point;
+	public String getSellPoint() {
+		return sellPoint;
 	}
-	public void setSell_point(String sell_point) {
-		this.sell_point = sell_point;
+	public void setSellPoint(String sellPoint) {
+		this.sellPoint = sellPoint;
 	}
 	public Double getPrice() {
 		return price;
