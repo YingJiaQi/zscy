@@ -285,6 +285,7 @@
 	     });
 	}
 	function commodityDetail(obj){
+		$("#sourcePanel").empty();
 		//根据ID查找资源
 		var dataVo = {id:$(obj).attr("sourceId")};
 		$.ajax({
