@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="java.io.*,java.util.* " %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -294,17 +295,51 @@
 	    	 dataType : 'json',
 	    	 contentType : "application/json;charset=utf-8",
 	    	 success : function (data){
-	    		 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'><p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p><br/><br/><br/><br/><br/><div id='sourcePanel'>"+$(obj).attr("sourceId")+"</div></div>"; 
-	    		 $(document.body).append(windowPanel);
 	    		 if(data.success == "true"){
-	    			 var mainNews = data.commodityMain.title;
-	    			 $("#sourcePanel").append(mainNews);
-	    			 var desc = data.commodityDesc.content;
-	    			 $("#sourcePanel").append(desc);
-	    			 var spec = data.commoditySpec.length;
-	    			 $("#sourcePanel").append("<br/><br/>"+spec);
+	    			 var initialArray = data.commodityMain.image.split("?");
+ 					var secArray = initialArray[1].split("&");
+ 					var latestData = initialArray[0]+"/"+secArray[0];
+		    		 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
+			    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
+			    			"<br/><br/><br/><br/><br/>"+
+			    			"<div class='row'>"+
+			    				"<div class='col-md-2'></div>"+
+			    				"<div class='col-md-8'>"+
+			    					"<div class='row' style='border:1px solid red;height:500px'>"+
+			    						"<div class='col-md-6' style='border:1px solid black'>"+
+				    						"<div class='row' style='heigth:400px;width:100%;padding:12px;border:1px solid orange'><img src='"+hostIpAddress+latestData+"' width='400px' height='400px'/></div>"+
+				    						"<div class='row' style='height:70px;width:100%;overflow:hidden'>"+
+				    							"<ul style='list-style-type:none;margin-left:10px'>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>1</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>2</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>3</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>4</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>5</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>6</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid orange'>7</li>"+
+				    								"<li  style='list-style-type:none;float:left;height:70px;width:70px;border:1px solid blue'>8</li>"+
+				    							"</ul>"+
+				    							"<div style='position:absolute;z-index:999' onclick='toLeft();'><img src='${pageContext.request.contextPath }/static/image/arrowhead_left.png'  width='60px' height='60px' style='opacity:0.5;'/></div>"+
+				    							"<div style='position:absolute;margin-left:390px;z-index:999' onclick='toRight();'><img src='${pageContext.request.contextPath }/static/image/arrowhead_right.png'  width='60px' height='60px' style='opacity:0.5;'/></div>"+
+				    						"</div>"+
+			    						"</div>"+
+			    						"<div class='col-md-6' style='border:1px solid black'>454</div>"+
+			    					"</div>"+
+			    					"<div class='row' style='border:1px solid black;height:500px'>"+
+			    						"<div class='col-md-4' style='border:1px solid red'></div>"+
+			    						"<div class='col-md-8' style='border:1px solid red'></div>"+
+			    					"</div>"+
+			    				"</div>"+
+			    				"<div class='col-md-2'></div>"+
+			    			"</div>"+
+			    		"</div>";
+		    		 $(document.body).append(windowPanel);
 	    		 }else{
-	    			 $("#sourcePanel").append("<h1>获取产品失败，请联系管理员</h1>");
+	    			 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
+		    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
+		    			"<br/><br/><br/><br/><br/><h1 style='padding:10% 15% 15% 32%'>获取产品失败，请联系管理员</h1>"+
+		    		"</div>";
+	    			 $(document.body).append(windowPanel);
 	    		 }
 	    	 }
 		})
@@ -312,6 +347,12 @@
 	}
 	function closedWindowPanel(target){
 		$(target).parent().parent().hide();
+	}
+	function toLeft(){
+		alert("left")
+	}
+	function toRight(){
+		alert("right")
 	}
 	</script>
   </head>
