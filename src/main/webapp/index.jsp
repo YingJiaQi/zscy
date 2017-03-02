@@ -286,7 +286,7 @@
 	     });
 	}
 	function commodityDetail(obj){
-		$("#sourcePanel").empty();
+		$("#alertPanel").remove();//必需移除要不会出现异常
 		//根据ID查找资源
 		var dataVo = {id:$(obj).attr("sourceId")};
 		$.ajax({
@@ -304,7 +304,7 @@
  					for(var j=0;j<secArray.length-1;j++){
  						picArr[j] = hostIpAddress + initialArray[0]+"/"+secArray[j];
  					}
-		    		 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
+		    		 var windowPanel = "<div id='alertPanel' style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
 			    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
 			    			"<br/><br/><br/><br/><br/>"+
 			    			"<div class='row'>"+
@@ -373,9 +373,28 @@
 	    
 	}
 	function closedWindowPanel(target){
+		$("#mask").hide();
 		$(target).parent().parent().hide();
 	}
+	function contactUs(){
+		$("#mask").show();
+		var optionHtml = "<div style='padding:10px;height:300px;width:500px;position:absolute;top:200px;left:30%;z-index:9999;background-color:white'><p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
+		"<h2 style='margin-left:90px'>微信扫码，联系我们</h2><br/><img src='${pageContext.request.contextPath }/static/image/zm_logo.png'/></div>";
+		$(document.body).append(optionHtml);
+	}
 	</script>
+<style type="text/css">
+#mask{
+	width: 100%;
+	height: 200%;
+	position: absolute;
+	background-color: #000;
+	left: 0;
+	opacity:0.5;
+	top: 0;
+	z-index: 2;
+}
+</style>
   </head>
   <body>
 
@@ -410,6 +429,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/zs_bigImg.jpg" width="100%" height="100%">
+						<div style="position:absolute;top:270px;left:46%"><span class="btn" onclick="contactUs();" style="color:white;border:3px solid white;border-radius:12px;font-size:20px;padding:10px 26px">立即咨询</span>
+						</div>
 				</div>
 			</div>
 	</nav>
@@ -767,6 +788,6 @@
 			</div>
 		</div>
 	</div>
-  
+  <div id="mask" style="display:none"></div>
   </body>
 </html>

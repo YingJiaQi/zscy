@@ -187,6 +187,9 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		result.put("success", "true");
 		result.put("datas",clist);
 		result.put("total", clist.size());
+		if(clist.size() <= 0){
+			result.put("success", "false");
+		}
 		return result;
 	}
 

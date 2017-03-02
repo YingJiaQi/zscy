@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ page import="java.io.*,java.util.* " %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -11,8 +12,11 @@
     <meta name="author" content="LayoutIt!">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
 	<script src="${pageContext.request.contextPath }/static/js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/picHandle.js"></script>
 	<!-- 导入分页js -->
 	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/webPagination.js"></script>
+	<!-- 图片轮播 -->
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/unslider/js/unslider-min.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">
@@ -29,10 +33,42 @@
 		}
 	</style>
 	<script type="text/javascript">
+	<%  
+	Properties pro = new Properties();   
+	 String realpath = request.getRealPath("/WEB-INF/classes");   
+	 try{    
+	     //读取配置文件  
+	     FileInputStream in = new FileInputStream(realpath+"/program.properties");   
+	     pro.load(in);   
+	 }catch(FileNotFoundException e){   
+	     out.println(e);   
+	 }catch(IOException e){out.println(e);}   
+	
+	//通过key获取配置文件  
+	String path = "'"+pro.getProperty("hostIpAddress")+"'";  
+	%>  
+	//主机IP地址
+	var hostIpAddress =<%=path%>;
 	//用于保存点击的类目名
 	var onclickCategoryName = null;
 	var indexParam = null;
 		$(function(){
+			/* 图片轮播 */
+			$('.banner').unslider({
+				speed: 500,               //  The speed to animate each slide (in milliseconds)
+				delay: 3000,              //  The delay between slide animations (in milliseconds)
+				complete: function() {},  //  A function that gets called after every slide animation
+				keys: true,               //  Enable keyboard (left, right) arrow shortcuts
+				dots: true,               //  Display dot navigation
+				fluid: false              //  Support responsive design. May break non-responsive designs
+			});
+			 $('.unslider-arrow').click(function() {
+			        var fn = this.className.split(' ')[1];
+
+			        //  Either do unslider.data('unslider').next() or .prev() depending on the className
+			        unslider.data('unslider')[fn]();
+			 });
+			
 			/* 获取后台页面传递的参数，然后赋值给js变量 */
 			<%
 				String indexParamss = request.getAttribute("indexParam")+"";
@@ -99,7 +135,11 @@
 		    	 success : function (data){
 		    		if (data.success == "true") {
 		    			for(var i = 0; i< data.datas.length ;i++){
-		    				var optionHtml = "<div class='col-md-3'><img alt='Image Preview' src='${pageContext.request.contextPath }/static/image/classification_yxct.png' class='img-responsive img-thumbnail'>"+
+		    				var initialData = data.datas[i].image;
+	    					var initialArray = initialData.split("?");
+	    					var secArray = initialArray[1].split("&");
+	    					var latestData = initialArray[0]+"/"+secArray[0];
+		    				var optionHtml = "<div  sourceId = '"+data.datas[i].id+"' style='cursor:pointer'  onclick='commodityDetail(this)' class='col-md-3'><img alt='Image Preview' src='"+hostIpAddress+latestData+"' class='img-responsive img-thumbnail'>"+
 							"<div class='caption'><h6>"+data.datas[i].title+"</h6></div></div>";
 							$("#magnetListPanel").append(optionHtml);
 						}
@@ -144,7 +184,11 @@
 		    		if(data.success == "true"){	
 		    			
 		    			for(var i = 0; i< data.datas.length ;i++){
-		    				var optionHtml = "<div class='col-md-3'><img alt='Image Preview' src='${pageContext.request.contextPath }/static/image/classification_yxct.png' class='img-responsive img-thumbnail'>"+
+		    				var initialData = data.datas[i].image;
+	    					var initialArray = initialData.split("?");
+	    					var secArray = initialArray[1].split("&");
+	    					var latestData = initialArray[0]+"/"+secArray[0];
+		    				var optionHtml = "<div   sourceId = '"+data.datas[i].id+"'  style='cursor:pointer'   onclick='commodityDetail(this)'  class='col-md-3'><img alt='"+hostIpAddress+latestData+"' class='img-responsive img-thumbnail'>"+
 							"<div class='caption'><h6>"+data.datas[i].title+"</h6></div></div>";
 							$("#magnetListPanel").append(optionHtml);
 						}
@@ -164,8 +208,102 @@
 		    	 }
 		     });
 		}
-	
+		function commodityDetail(obj){
+			$("#alertPanel").remove();
+			//根据ID查找资源
+			var dataVo = {id:$(obj).attr("sourceId")};
+			$.ajax({
+		    	 type:'post',
+		    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getCommodityDetailByID',
+		    	 data:JSON.stringify(dataVo),
+		    	 dataType : 'json',
+		    	 contentType : "application/json;charset=utf-8",
+		    	 success : function (data){
+		    		 if(data.success == "true"){
+		    			 var initialArray = data.commodityMain.image.split("?");
+	 					var secArray = initialArray[1].split("&");
+	 					//var latestData = initialArray[0]+"/"+secArray[0];
+	 					var picArr = [];
+	 					for(var j=0;j<secArray.length-1;j++){
+	 						picArr[j] = hostIpAddress + initialArray[0]+"/"+secArray[j];
+	 					}
+			    		 var windowPanel = "<div id='alertPanel' style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
+				    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
+				    			"<br/><br/><br/><br/><br/>"+
+				    			"<div class='row'>"+
+				    				"<div class='col-md-2'></div>"+
+				    				"<div class='col-md-8'>"+
+				    					"<div class='row' height:500px'>"+
+				    						"<div class='col-md-6' id='picsShowPanels' >"+
+				    						"</div>"+
+				    						"<div class='col-md-6'  id='basicInfos'></div>"+
+				    					"</div><br/><br/><hr/>"+
+				    					"<div class='row'  id='specification'>"+
+				    					"<h3>规格参数</h3><br/></div><br/><br/><hr/>"+
+				    					"<div class='row'  id='commodityDesc'>"+
+				    					"<h3>产品详情</h3><br/></div>"+
+				    				"</div>"+
+				    				"<div class='col-md-2'></div>"+
+				    			"</div>"+
+				    		"</div>";
+			    		 $(document.body).append(windowPanel);
+			    		 //调用方法，显示图片
+			    		 picDisplayCommodity(picArr,$("#picsShowPanels"));
+			    		 //显示产品基本信息
+			    		 $("#basicInfos").empty();
+					    var basicInfo = "<table class='table'>"+
+					    		  "<thead>"+
+					    		    "<tr>"+
+					    		      "<th>"+data.commodityMain.title+"</th>"+
+					    		    "</tr>"+
+					    		  "</thead>"+
+					    		  "<tbody>"+
+					    		   "<tr>"+
+					    		      "<td>卖点:&nbsp;&nbsp;"+data.commodityMain.sellPoint+"</td>"+
+					    		    "</tr>"+
+					    		    "<tr>"+
+					    		   	   "<td>价格:&nbsp;&nbsp;"+data.commodityMain.price+"&nbsp;<b style='color:red'>元</b></td>"+
+					    		    "</tr>"+
+					    		    "<tr>"+
+					    		   	   "<td>数量:&nbsp;&nbsp;"+data.commodityMain.num+"</td>"+
+					    		    "</tr>"+
+					    		    "<tr>"+
+					    		   	   "<td>可作用途:&nbsp;&nbsp;"+data.commodityMain.usedType+"</td>"+
+					    		    "</tr>"+
+					    		    "<tr>"+
+					    		   	   "<td>所属分类:&nbsp;&nbsp;"+data.commodityMain.categoryName+"</td>"+
+					    		    "</tr>"+
+					    		  "</tbody>"+
+					    		"</table>";
+					    	$("#basicInfos").append(basicInfo);
+					    	var specificationHtml = "";
+					    	for(var k=0;k< data.commoditySpec.length;k++){
+					    		var kk = "<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data.commoditySpec[k].specificationName+"：</span>"+
+				    		      "<span style='margin-right:90px'>&nbsp;&nbsp;"+data.commoditySpec[k].specificationContent+"</span>";
+					    		specificationHtml += kk;
+					    	} 
+					    	$("#specification").append(specificationHtml);
+					    	$("#commodityDesc").append(data.commodityDesc.content);
+		    		 }else{
+		    			 var windowPanel = "<div style='background:white;width:100%;height:100%;z-index:999;position:fixed;top:0;left:0;overflow:auto;'>"+
+			    			"<p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
+			    			"<br/><br/><br/><br/><br/><h1 style='padding:10% 15% 15% 32%'>获取产品失败，请联系管理员</h1>"+
+			    		"</div>";
+		    			 $(document.body).append(windowPanel);
+		    		 }
+		    	 }
+			})
+		    
+		}
+		function closedWindowPanel(target){
+			$(target).parent().parent().hide();
+		}
 	</script>
+	<style type="text/css">
+		.banner { position: relative; overflow: auto; }
+    	.banner li { list-style: none; }
+        .banner ul li { float: left; }
+	</style>
   </head>
   
   <body>
@@ -204,7 +342,16 @@
 		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
-				<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/ctfl_big.png" class="img-responsive">
+				<%-- <img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/ctfl_big.png" class="img-responsive"> --%>
+				<div class="banner">
+				    <ul>
+				        <li>This is a slide.</li>
+				        <li>This is another slide.</li>
+				        <li>This is a final slide.</li>
+				    </ul>
+				</div>
+				<a href="#" class="unslider-arrow prev">Previous slide</a>
+				<a href="#" class="unslider-arrow next">Next slide</a>
 			</div>
 			<div class="col-md-2"></div>
 		</div>
