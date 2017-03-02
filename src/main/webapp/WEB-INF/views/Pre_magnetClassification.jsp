@@ -16,7 +16,7 @@
 	<!-- 导入分页js -->
 	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/webPagination.js"></script>
 	<!-- 图片轮播 -->
-	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/unslider/js/unslider-min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/unslider/js/unslider.min.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">
@@ -53,21 +53,6 @@
 	var onclickCategoryName = null;
 	var indexParam = null;
 		$(function(){
-			/* 图片轮播 */
-			$('.banner').unslider({
-				speed: 500,               //  The speed to animate each slide (in milliseconds)
-				delay: 3000,              //  The delay between slide animations (in milliseconds)
-				complete: function() {},  //  A function that gets called after every slide animation
-				keys: true,               //  Enable keyboard (left, right) arrow shortcuts
-				dots: true,               //  Display dot navigation
-				fluid: false              //  Support responsive design. May break non-responsive designs
-			});
-			 $('.unslider-arrow').click(function() {
-			        var fn = this.className.split(' ')[1];
-
-			        //  Either do unslider.data('unslider').next() or .prev() depending on the className
-			        unslider.data('unslider')[fn]();
-			 });
 			
 			/* 获取后台页面传递的参数，然后赋值给js变量 */
 			<%
@@ -300,17 +285,58 @@
 		}
 	</script>
 	<style type="text/css">
-		.banner { position: relative; overflow: auto; }
-    	.banner li { list-style: none; }
-        .banner ul li { float: left; }
+	#pictureCarousels ul li {
+		list-style-type:none;
+		display :none;
+	}
+	.prev {
+		position:absolute;
+		top:25%;
+		left:6%;
+	}
+	.next {
+		position:absolute;
+		top:25%;
+		left:94%;
+	}
 	</style>
   </head>
   
   <body>
-  <%-- 	<c:set var="indexParam" scope="session" value="${indexParam}"/> --%>
-  	 <c:if test="${!empty indexParam}">
-  	 	
-  	 </c:if>
+  <script type="text/javascript">
+  	$(function(){
+  		$("#pictureCarousels ul li:eq(0)").css("display","block");
+  		var liLength = $("#pictureCarousels ul li").length;
+  		/* $("#pictureCarousels").append("<div id='smailCircle' style='position:absolute;top:35%;left:26%;height:10px;widht:960px;text-align:center;background-color:blue;z-index:888'>454wertet</div>"); */
+  		var percent = 50-liLength-1;
+  		for(var i=0 ;i<liLength;i++){
+  				percent += 3;
+  			var htmls = "<span style='position:absolute;top:55%;left:"+percent+"%;height:15px;width:15px;border:2px solid white;border-radius:15px;' onclick='clickCircle(this)'></span>"
+  			$("#pictureCarousels").append(htmls);
+  		}
+  	});
+  	function clickCircle(obj){
+  		
+  		var liLength = $("#pictureCarousels ul li").length;
+  		for(var i=0;i<liLength;i++){
+  		/* 	var ii = $("#pictureCarousels ul li:eq("+i+")").css("background-color");
+  			alert(ii+"---"+i)
+  			 if(ii !="transparent"){
+  				 alert(6)
+  	  			$(obj).css("background-color","transparent");
+  	  		} */
+  			$("#pictureCarousels ul li:eq("+i+")").css("background-color","transparent");
+  		}
+  		$(obj).css("background-color","white");
+  		/*var bb =  $(obj).css("background-color");
+  		 if(bb=="transparent"){
+  			$(obj).css("background-color","white");
+  		}else{
+	  		$(obj).css("background-color","transparent");
+  		} */
+  	}
+  </script>
+  
      <div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12" style="height:5px;background-color:#0066cc">
@@ -339,19 +365,20 @@
 					</div>
 					<div class="col-md-2"></div>
 				</div>	
-		<div class="row">
+		<div class="row" style="height:400px;overflow:hidden">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
-				<%-- <img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/ctfl_big.png" class="img-responsive"> --%>
-				<div class="banner">
-				    <ul>
-				        <li>This is a slide.</li>
-				        <li>This is another slide.</li>
-				        <li>This is a final slide.</li>
-				    </ul>
-				</div>
-				<a href="#" class="unslider-arrow prev">Previous slide</a>
-				<a href="#" class="unslider-arrow next">Next slide</a>
+					<div id="pictureCarousels">
+					    <ul>
+					        <li><img  src="${pageContext.request.contextPath }/static/image/01.jpg" alt="" height="400px"  width="100%"  class="img-responsive"></li>
+					        <li><img  src="${pageContext.request.contextPath }/static/image/02.jpg" alt="" class="img-responsive"></li>
+					        <li><img  src="${pageContext.request.contextPath }/static/image/03.jpg" alt="" class="img-responsive" ></li>
+					        <li><img  src="${pageContext.request.contextPath }/static/image/04.jpg" alt="" class="img-responsive" ></li>
+					        <li><img  src="${pageContext.request.contextPath }/static/image/05.jpg" alt=""  class="img-responsive"></li>
+					    </ul>
+					    <a href="javascript:void(0);" class="prev"><img  id="al" src="${pageContext.request.contextPath }/static/image/arrowhead_left.png" alt="prev" width="30" height="50"></a>
+					    <a href="javascript:void(0);" class="next"><img  id="ar" src="${pageContext.request.contextPath }/static/image/arrowhead_right.png" alt="next" width="30" height="50"></a>
+					</div>
 			</div>
 			<div class="col-md-2"></div>
 		</div>

@@ -428,8 +428,8 @@
 				</div>	
 			<div class="row">
 				<div class="col-md-12">
-					<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/zs_bigImg.jpg" width="100%" height="100%">
-						<div style="position:absolute;top:270px;left:46%"><span class="btn" onclick="contactUs();" style="color:white;border:3px solid white;border-radius:12px;font-size:20px;padding:10px 26px">立即咨询</span>
+					<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/zs_bigImg.png" width="100%" height="100%">
+						<div style="position:absolute;top:250px;left:46%"><span class="btn" onclick="contactUs();" style="color:white;border:3px solid white;border-radius:12px;font-size:18px;padding:6px 26px">立即咨询</span>
 						</div>
 				</div>
 			</div>
