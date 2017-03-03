@@ -28,7 +28,9 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 		//用于存储更新后的新图片路径加内容
 		StringBuffer sourceContent = new StringBuffer();
 		//图片新地址
-		File DestcommodityImage = new File(PropsUtil.get("commodityImagePath")+File.separatorChar+commodityId+File.separator+"commodityDescImage");
+		String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
+		File DestcommodityImage = new File(t.substring(0, t.indexOf("ZSCY"))+"images/commodityImage/"+commodityId+"/commodityDescImage");
 		if(!DestcommodityImage.exists()){
 			DestcommodityImage.mkdirs();
 		}
@@ -58,8 +60,6 @@ public class CommodityDescServiceImpl extends BaseService<CommodityDesc>  implem
 		
 		//遍历商品图片，重新存储描述信息中的图片
 		for(Map<String, String> img : lmap){
-			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
-			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
 			File sourceCommodityImage = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 			try {
 				FileUtils.copyFile(sourceCommodityImage, new File(DestcommodityImage+File.separator+img.get("title")));

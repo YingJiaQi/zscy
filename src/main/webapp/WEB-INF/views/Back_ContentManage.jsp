@@ -681,7 +681,7 @@ var columns = [
 				$("#sourceVideoUpload").css("display","none");
 				$("#sourceUpload").css("display","none");
 				sourceTypes = "picture";
-				articalUploads =UE.getEditor('sourcePicture',{
+				picUploads =UE.getEditor('sourcePicture',{
 					 toolbars:[[
 						'fullscreen',  'undo', 'redo', '|',
 						'insertimage'
@@ -705,7 +705,7 @@ var columns = [
 		function allTypeSourceUplaod(){
 			var title = $("#sourceTitle_FileUpload").val();
 			var SourceData = null;
-			var hot = $("#hot").val();
+			var hot = $('input[name="hot"]:checked').val();
 			if(sourceTypes == "artical"){
 				SourceData = UE.getEditor('sourceUpload').getContent();
 			}else if(sourceTypes == "picture"){
@@ -713,7 +713,9 @@ var columns = [
 			}else if(sourceTypes == "video"){
 				SourceData = UE.getEditor('sourceVideoUpload').getContent();
 			}
-			
+			if(hot != 1){
+				hot = "";
+			}
 			SourceData = SourceData.replace(/=/g, "|f|");
 			var datas = "title="+title + "&" +"SourceData="+SourceData+"&sourceTypes="+sourceTypes+"&hot="+hot;
 			//alert(datas)
@@ -727,7 +729,14 @@ var columns = [
 					if (data.success == "true") {
 						$("#sourceTitle_FileUpload").val("");
 						$("#hot").removeAttr("checked");
-						articalUploads.execCommand("cleardoc");
+						if(sourceTypes == "artical"){
+							articalUploads.execCommand("cleardoc");
+						}else if(sourceTypes == "picture"){
+							picUploads.execCommand("cleardoc");
+						}else if(sourceTypes == "video"){
+							videoUploads.execCommand("cleardoc");
+						}
+						
 						$('#sourceGrid').datagrid("reload");
 						$.messager.alert('成功',data.msg,"info");
 					} else {

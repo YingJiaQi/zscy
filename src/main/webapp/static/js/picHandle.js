@@ -1,7 +1,9 @@
 /**
+ * 含有缩略图的图片展示，一般用于商品的展示
  * @author yingjq
- * @param location 图片存储位置，是个dom对象
- * @param picArr 图片数组
+ * @param location 图片存储位置，是个dom对象，高400px;宽400px
+ * @param picArr 图片数组，里面的图片必须是在浏览器中能访问的
+ * 
  */
 var picNumLocal = null;
 var picArrLocal = [];
@@ -51,4 +53,118 @@ function clickSinglePic(obj){
 		pic = pic.substring(0, end);
 	}
 	$("#bigPicPanel").attr("src",pic);
+}
+/**
+ * 首页大图轮播，可自动轮转
+ * @author yingjq
+ * @param carousels_picArr 图片数组,里面的图片必须是在浏览器中能访问的
+ * @param carousels_domObject 显示位置，dom对象
+ */
+//需要展示的图片数量
+var y_picLength = null;
+//当前展示第几个图片，保存图片序号
+var y_currPicOrder = null;
+function picCarousels(carousels_picArr, carousels_domObject){
+	var cacheHtml = "";
+	if(carousels_picArr != null){
+		y_picLength = carousels_picArr.length;
+		var picLis = "";
+		for(var i=0;i<y_picLength;i++){
+			picLis += "<li style='list-style-type:none;display :none;'><img  src='"+carousels_picArr[i]+"' alt=''  height='500px'  width='100%'  ></li>";
+		}
+		cacheHtml = "<div id='pictureCarousels'>"+
+						"<ul>"+picLis+
+						"</ul>"+
+						"<a href='javascript:void(0);' onclick='carousels_toLeft();' class='prev' style='position:absolute;top:40%;left:6%;'><img  id='al' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_left.png' alt='prev' width='30' height='80'></a>"+
+						"<a href='javascript:void(0);' onclick='carousels_toRight();' class='next' style='position:absolute;top:40%;left:94%;'><img  id='ar' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_right.png' alt='next' width='30' height='80'></a>"+
+					"</div>";
+	}else{
+		cacheHtml = "<div id='pictureCarousels'>"+
+						"<ul>"+
+							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/01.jpg' alt=''  height='500px'  width='100%'  ></li>"+
+							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/02.jpg' alt=''  height='500px'  width='100%'  ></li>"+
+							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/03.jpg' alt=''  height='500px'  width='100%'  ></li>"+
+							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/04.jpg' alt=''  height='500px'  width='100%'  ></li>"+
+							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/05.jpg' alt=''  height='500px'  width='100%'  ></li>"+
+						"</ul>"+
+						"<a href='javascript:void(0);' onclick='carousels_toLeft();' class='prev' style='position:absolute;top:40%;left:6%;'><img  id='al' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_left.png' alt='prev' width='30' height='80'></a>"+
+						"<a href='javascript:void(0);' onclick='carousels_toRight();' class='next' style='position:absolute;top:40%;left:94%;'><img  id='ar' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_right.png' alt='next' width='30' height='80'></a>"+
+					"</div>";
+	}
+	$(carousels_domObject).append(cacheHtml);
+	//先隐藏所有图片
+	$("#pictureCarousels ul li").css("display","none");
+	$("#pictureCarousels ul li:eq(0)").css("display","block");
+	y_currPicOrder = 0;
+	if(y_picLength == null){
+		y_picLength = $("#pictureCarousels ul li").length;
+	}
+	var percent = 50;
+	//alert(y_picLength)
+	//计算percent的初始位置
+	for(var j=0;j<y_picLength;j++){
+		if((i+1)%2 == 0){
+			percent -= 3;
+		}else{
+			percent -= 2;
+		}
+	}
+	for(var i=0 ;i<y_picLength;i++){
+		percent += 3;
+		var htmls = "<span orders='"+i+"' style='position:absolute;top:90%;left:"+percent+"%;height:15px;width:15px;border:2px solid white;border-radius:15px;cursor:pointer' onclick='clickCircle(this)'></span>"
+		$("#pictureCarousels").append(htmls);
+	}
+	$("#pictureCarousels span:eq(0)").css("background-color","white");
+	//图片自动轮换
+	setInterval(picLoopAuto, 6000);
+}
+function picLoopAuto(){
+		carousels_toRight();
+}
+function clickCircle(obj){
+	
+	for(var i=0;i<y_picLength;i++){
+  		$("#pictureCarousels span:eq("+i+")").css("background-color","transparent");
+	}
+	$(obj).css("background-color","white");
+	$("#pictureCarousels ul li").css("display","none");
+	var order = $(obj).attr("orders");
+	$("#pictureCarousels ul li:eq("+order+")").css("display","block");
+	y_currPicOrder = order;
+}
+function carousels_toLeft(){
+	//图片当前位置减1
+	//先初始化圆圈样式
+	for(var i=0;i<y_picLength;i++){
+  		$("#pictureCarousels span:eq("+i+")").css("background-color","transparent");
+	}
+	if(y_currPicOrder ==0){
+		y_currPicOrder = y_picLength;
+	}
+	y_currPicOrder --;
+	//给上一个圆圈加白色背景
+	$("#pictureCarousels span:eq("+y_currPicOrder+")").css("background-color","white");
+	//先隐藏所有图片
+	$("#pictureCarousels ul li").css("display","none");
+	//显示上一个图片
+	$("#pictureCarousels ul li:eq("+y_currPicOrder+")").css("display","block");
+	
+}
+function carousels_toRight(){
+	//图片当前位置加1
+	//先初始化圆圈样式
+	for(var i=0;i<y_picLength;i++){
+  		$("#pictureCarousels span:eq("+i+")").css("background-color","transparent");
+	}
+	if(y_currPicOrder ==(y_picLength-1)){
+		y_currPicOrder = -1;
+	}
+	y_currPicOrder ++;
+	//给下一个圆圈加白色背景
+	$("#pictureCarousels span:eq("+y_currPicOrder+")").css("background-color","white");
+	//先隐藏所有图片
+	$("#pictureCarousels ul li").css("display","none");
+	//显示下一个图片
+	$("#pictureCarousels ul li:eq("+y_currPicOrder+")").css("display","block");
+	
 }

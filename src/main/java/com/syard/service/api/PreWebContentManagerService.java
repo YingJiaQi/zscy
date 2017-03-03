@@ -2,6 +2,8 @@ package com.syard.service.api;
 
 import java.util.Map;
 
+import org.springframework.util.MultiValueMap;
+
 public interface PreWebContentManagerService {
 	/**
 	 * 前台页面获取关于我们数据
@@ -46,5 +48,20 @@ public interface PreWebContentManagerService {
 	 * @return
 	 */
 	Map<String, Object> getCommodityDetailByID(Map<String, String> param);
+	/**
+	 * 前台页面，获取磁性制品页面中轮播图片数据
+	 * @return
+	 */
+	Map<String, Object> getCarouselsPics();
+	/**
+	 * 前台采购报价页面获取数据
+	 * @return
+	 */
+	Map<String, Object> getByPriceData();
+	/**
+	 * 前台生产视频页面获取数据
+	 * @return
+	 */
+	Map<String, Object> getProductVideoData();
 
 }

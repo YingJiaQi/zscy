@@ -268,6 +268,11 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 		//视频资源存储
 		if(StringUtils.equals(dataType, "video")){
 			String[] split = SourceData.split("<video");
+			if(split.length >2){
+				result.put("success", "false");
+				result.put("msg", "最多一次只能上传一个视频");
+				return result;
+			}
 			//储存视频地址
 			String videoUrl = "";
 			for(int i=0;i<split.length;i++){
@@ -280,13 +285,14 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			//文件重命名
 			String oldVideoName = videoUrl.substring(videoUrl.lastIndexOf("/"));
 			String newVideoName = UUID.randomUUID().toString().replaceAll("-", "");
-			String newVideoUrl = PropsUtil.get("uploadVideoPath") +"/"+newVideoName+".mp4";
+			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			String newVideoUrl = t.substring(0, t.indexOf("ZSCY"))+"videos" +"/"+newVideoName+".mp4";
+			
 //			重新存储视频
-			File DestVideoUrl = new File(PropsUtil.get("uploadVideoPath"));
+			File DestVideoUrl = new File(t.substring(0, t.indexOf("ZSCY"))+"videos");
 			if(!DestVideoUrl.exists()){
 				DestVideoUrl.mkdirs();
 			}
-			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
 			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
 			File sourceVideoUrl = new File(rootPath+videoUrl);
 			try {
@@ -348,30 +354,27 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 					lmap.add(map);
 				}
 			}
-			File destPicture = new File(PropsUtil.get("picturePath"));
-			if(!destPicture.exists()){
-				destPicture.mkdirs();
-			}
 			//遍历商品图片
 			String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
 			String rootPath = t.substring(0, t.indexOf("ZSCY")+5);
-			int j =0;
+			File destPicture = new File(t.substring(0, t.indexOf("ZSCY"))+"pictures/"+ose.getId());
+			if(!destPicture.exists()){
+				destPicture.mkdirs();
+			}
+			StringBuffer sb = new StringBuffer();
 			for(Map<String, String> img : lmap){
-				if(j ==1){
-					continue;
-				}
+				sb.append(img.get("title")+"&");
 				File sourcePicture = new File(rootPath+img.get("path").substring(img.get("path").indexOf("ZSCY")+5,img.get("path").length()));
 				try {
-					FileUtils.copyFile(sourcePicture, new File(destPicture+File.separator+ose.getId()+".png"));
+					FileUtils.copyFile(sourcePicture, new File(destPicture+File.separator+img.get("title")));
 					//删除原文件
 					FileUtils.deleteQuietly(sourcePicture);
-					j++;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				
 			}
-			ose.setSourceUrl("pictures"+"/"+ose.getId()+".png");
+			ose.setSourceUrl("pictures"+"/"+ose.getId()+"?"+sb.toString());
 			ose.setUpdateTime(ose.getCreateTime());
 			otherSourceDao.insert(ose);
 		}

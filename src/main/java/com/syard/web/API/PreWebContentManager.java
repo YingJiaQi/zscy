@@ -111,4 +111,28 @@ public class PreWebContentManager {
 	public ResponseEntity<?> getCommodityDetailByID(@RequestBody Map<String,String> param){
 		return new ResponseEntity<Object>(webContentManagerService.getCommodityDetailByID(param),HttpStatus.OK);
 	}
+	/**
+	 * 前台页面，获取磁性制品页面中轮播图片数据
+	 * @return
+	 */
+	@RequestMapping(value="/getCarouselsPics", method = RequestMethod.POST)
+	public ResponseEntity<?> getCarouselsPics(){
+		return new ResponseEntity<Object>(webContentManagerService.getCarouselsPics(),HttpStatus.OK);
+	}
+	/**
+	 * 前台采购报价页面获取数据
+	 * @return
+	 */
+	@RequestMapping(value="/getByPriceData", method = RequestMethod.POST)
+	public ResponseEntity<?> getByPriceData(){
+		return new ResponseEntity<Object>(webContentManagerService.getByPriceData(),HttpStatus.OK);
+	}
+	/**
+	 * 前台生产视频页面获取数据
+	 * @return
+	 */
+	@RequestMapping(value="/getProductVideoData", method = RequestMethod.POST)
+	public ResponseEntity<?> getProductVideoData(){
+		return new ResponseEntity<Object>(webContentManagerService.getProductVideoData(),HttpStatus.OK);
+	}
 }

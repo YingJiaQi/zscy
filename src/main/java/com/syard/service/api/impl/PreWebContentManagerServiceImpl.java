@@ -338,4 +338,88 @@ public class PreWebContentManagerServiceImpl implements PreWebContentManagerServ
 		return result;
 	}
 
+	@Override
+	public Map<String, Object> getCarouselsPics() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<OtherSource> osList = new ArrayList<OtherSource>();
+		//先找到该模块的ID
+		Example parent = new Example(PreSystemComponents.class);
+		parent.createCriteria().andEqualTo("moduleName", "轮播图片");
+		List<PreSystemComponents> pscs = preSystemComponentsDao.selectByExample(parent);
+		//根据id去关联表中取数据
+		Example example = new Example(PreModuleContentLink.class);
+		example.createCriteria().andEqualTo("moduleId", pscs.get(0).getId());
+		List<PreModuleContentLink> pList = preModuleContentLinkDao.selectByExample(example);
+		//遍历关联集合，从资源表中获取详细数据
+		for(PreModuleContentLink ele: pList){
+			OtherSource os = otherSourceDao.selectByPrimaryKey(ele.getSourceId());
+			osList.add(os);
+		}
+		if(osList.size()>0){
+			result.put("success", "true");
+			result.put("datas", osList);
+		}else{
+			result.put("success", "false");
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getByPriceData() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<OtherSource> osList = new ArrayList<OtherSource>();
+		//取出关联的资源
+		//先获取该模块的id
+		String moduleID = "";
+		Example example = new Example(PreSystemComponents.class);
+		example.createCriteria().andEqualTo("moduleName", "采购报价");
+		List<PreSystemComponents> selectByExample = preSystemComponentsDao.selectByExample(example);
+		moduleID = selectByExample.get(0).getId();
+		//从tbl_pre_module_content_link表中获取关联资源集合，根据moduleID
+		Example plinkExample = new Example(PreModuleContentLink.class);
+		plinkExample.createCriteria().andEqualTo("moduleId", moduleID);
+		List<PreModuleContentLink> plists = preModuleContentLinkDao.selectByExample(plinkExample);
+		//遍历关联集合，从资源表中获取详细数据
+		for(PreModuleContentLink ele: plists){
+			OtherSource os = otherSourceDao.selectByPrimaryKey(ele.getSourceId());
+			osList.add(os);
+		}
+		if(osList.size() >0){
+			result.put("success", "true");
+			result.put("datas", osList);
+		}else{
+			result.put("success", "false");
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getProductVideoData() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<OtherSource> osList = new ArrayList<OtherSource>();
+		//取出关联的资源
+		//先获取该模块的id
+		String moduleID = "";
+		Example example = new Example(PreSystemComponents.class);
+		example.createCriteria().andEqualTo("moduleName", "视频");
+		List<PreSystemComponents> selectByExample = preSystemComponentsDao.selectByExample(example);
+		moduleID = selectByExample.get(0).getId();
+		//从tbl_pre_module_content_link表中获取关联资源集合，根据moduleID
+		Example plinkExample = new Example(PreModuleContentLink.class);
+		plinkExample.createCriteria().andEqualTo("moduleId", moduleID);
+		List<PreModuleContentLink> plists = preModuleContentLinkDao.selectByExample(plinkExample);
+		//遍历关联集合，从资源表中获取详细数据
+		for(PreModuleContentLink ele: plists){
+			OtherSource os = otherSourceDao.selectByPrimaryKey(ele.getSourceId());
+			osList.add(os);
+		}
+		if(osList.size() >0){
+			result.put("success", "true");
+			result.put("datas", osList);
+		}else{
+			result.put("success", "false");
+		}
+		return result;
+	}
+
 }

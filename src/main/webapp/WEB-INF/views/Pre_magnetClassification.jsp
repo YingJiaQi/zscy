@@ -16,7 +16,6 @@
 	<!-- 导入分页js -->
 	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/webPagination.js"></script>
 	<!-- 图片轮播 -->
-	<script type="text/javascript" src="${pageContext.request.contextPath }/static/js/unslider/js/unslider.min.js"></script>
     <script src="${pageContext.request.contextPath }/static/js/bootstrap/js/bootstrap.min.js"></script>
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath }/static/js/bootstrap/css/style.css" rel="stylesheet">
@@ -92,7 +91,33 @@
 					}
 		    	 }
 		     });
-		})
+			/**
+			*页面加载时向后台请求，轮播图片数据
+			*/
+			$.ajax({
+		    	 type:'post',
+		    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getCarouselsPics',
+		    	 dataType : 'json',
+		    	 contentType : "application/json;charset=utf-8",
+		    	 success : function (data){
+		    		 if(data.success == "true"){
+		    			 var carouselsPanel = $("#pictureCarouselsPanel");
+		    			 var picArr = [];
+		    			 for(var i=0;i<data.datas.length;i++){
+			    			var initialArray = data.datas[i].sourceUrl.split("?");
+		 					var secArray = initialArray[1].split("&");
+		 					for(var j=0;j<secArray.length-1;j++){
+		 						picArr[j] = hostIpAddress + initialArray[0]+"/"+secArray[j];
+		 					}
+		    			 }
+		    			picCarousels(picArr,carouselsPanel);
+		    		 }else{
+		    			 var windowPanel = "<div ><h1>获取轮播图片失败,请联系管理员</h1></div>";
+		    			 $(carouselsPanel).append(windowPanel);
+		    		 }
+		    	 }
+			});
+		});
 		function getDetailCategory(obj){
 			$("#magnetListPanel").empty();
 			$("#magnetListPanel").append("<br/>");
@@ -284,58 +309,9 @@
 			$(target).parent().parent().hide();
 		}
 	</script>
-	<style type="text/css">
-	#pictureCarousels ul li {
-		list-style-type:none;
-		display :none;
-	}
-	.prev {
-		position:absolute;
-		top:25%;
-		left:6%;
-	}
-	.next {
-		position:absolute;
-		top:25%;
-		left:94%;
-	}
-	</style>
   </head>
   
   <body>
-  <script type="text/javascript">
-  	$(function(){
-  		$("#pictureCarousels ul li:eq(0)").css("display","block");
-  		var liLength = $("#pictureCarousels ul li").length;
-  		/* $("#pictureCarousels").append("<div id='smailCircle' style='position:absolute;top:35%;left:26%;height:10px;widht:960px;text-align:center;background-color:blue;z-index:888'>454wertet</div>"); */
-  		var percent = 50-liLength-1;
-  		for(var i=0 ;i<liLength;i++){
-  				percent += 3;
-  			var htmls = "<span style='position:absolute;top:55%;left:"+percent+"%;height:15px;width:15px;border:2px solid white;border-radius:15px;' onclick='clickCircle(this)'></span>"
-  			$("#pictureCarousels").append(htmls);
-  		}
-  	});
-  	function clickCircle(obj){
-  		
-  		var liLength = $("#pictureCarousels ul li").length;
-  		for(var i=0;i<liLength;i++){
-  		/* 	var ii = $("#pictureCarousels ul li:eq("+i+")").css("background-color");
-  			alert(ii+"---"+i)
-  			 if(ii !="transparent"){
-  				 alert(6)
-  	  			$(obj).css("background-color","transparent");
-  	  		} */
-  			$("#pictureCarousels ul li:eq("+i+")").css("background-color","transparent");
-  		}
-  		$(obj).css("background-color","white");
-  		/*var bb =  $(obj).css("background-color");
-  		 if(bb=="transparent"){
-  			$(obj).css("background-color","white");
-  		}else{
-	  		$(obj).css("background-color","transparent");
-  		} */
-  	}
-  </script>
   
      <div class="container-fluid">
 			<div class="row">
@@ -365,19 +341,10 @@
 					</div>
 					<div class="col-md-2"></div>
 				</div>	
-		<div class="row" style="height:400px;overflow:hidden">
+		<div class="row" style="height:500px;margin-top:10px;overflow:hidden">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
-					<div id="pictureCarousels">
-					    <ul>
-					        <li><img  src="${pageContext.request.contextPath }/static/image/01.jpg" alt="" height="400px"  width="100%"  class="img-responsive"></li>
-					        <li><img  src="${pageContext.request.contextPath }/static/image/02.jpg" alt="" class="img-responsive"></li>
-					        <li><img  src="${pageContext.request.contextPath }/static/image/03.jpg" alt="" class="img-responsive" ></li>
-					        <li><img  src="${pageContext.request.contextPath }/static/image/04.jpg" alt="" class="img-responsive" ></li>
-					        <li><img  src="${pageContext.request.contextPath }/static/image/05.jpg" alt=""  class="img-responsive"></li>
-					    </ul>
-					    <a href="javascript:void(0);" class="prev"><img  id="al" src="${pageContext.request.contextPath }/static/image/arrowhead_left.png" alt="prev" width="30" height="50"></a>
-					    <a href="javascript:void(0);" class="next"><img  id="ar" src="${pageContext.request.contextPath }/static/image/arrowhead_right.png" alt="next" width="30" height="50"></a>
+					<div id="pictureCarouselsPanel">
 					</div>
 			</div>
 			<div class="col-md-2"></div>

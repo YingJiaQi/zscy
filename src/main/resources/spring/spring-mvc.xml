@@ -91,4 +91,17 @@
 		<!-- 设定文件上传的最大值5MB，5*1024*1024,如果一次性上传多个文件，则只的时候所有文件的总和 -->
 		<property name="maxUploadSize" value="5242880"></property>
 	</bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+	        <mvc:mapping path="/**" />
+	        <mvc:exclude-mapping path="/PreWebContentManager/**"/> 
+	        <mvc:exclude-mapping path="/MagnetClassification/**"/> 
+	        <mvc:exclude-mapping path="/MessageInfo/**"/> 
+	        <mvc:exclude-mapping path="/productVideo/**"/>
+	        <mvc:exclude-mapping path="/toLogin/**"/> 
+	        <bean class="com.syard.interceptor.LogInterceptor"></bean>
+	    </mvc:interceptor>
+	</mvc:interceptors>
+	
 </beans>

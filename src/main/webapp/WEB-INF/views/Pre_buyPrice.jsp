@@ -33,7 +33,7 @@
 		$(function () {
 			$.ajax({
 		    	 type:'post',
-		    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getNewsCentorData',
+		    	 url:'${pageContext.request.contextPath}/PreWebContentManager/getByPriceData',
 		    	 dataType : 'json',
 		    	 contentType : "application/json;charset=utf-8",
 		    	 success : function (data){
