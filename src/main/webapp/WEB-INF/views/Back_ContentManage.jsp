@@ -53,7 +53,12 @@ var columns = [
 		}, {
 			field: 'sourceTitle',
 			title: '资源标题',
-			width: 260,
+			width: 160,
+			align: 'center',
+		},{
+			field: 'categoryType',
+			title: '分类类型',
+			width: 160,
 			align: 'center',
 		}, {
 			field: 'createTime',

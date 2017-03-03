@@ -67,6 +67,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			map.put("sourceTitle", ele.getTitle());
 			map.put("createTime", ele.getCreateTime());
 			map.put("updateTime", ele.getUpdateTime());
+			map.put("categoryType", ele.getCategoryName());
 			//关联加选中
 			if(associatedList != null && associatedList.size() > 0 ){
 				for(PreModuleContentLink pm:associatedList){
@@ -90,6 +91,7 @@ public class WebContentManagerServiceImpl implements WebContentManagerService{
 			map.put("sourceTitle", ele.getSourceTitle());
 			map.put("createTime", ele.getCreateTime());
 			map.put("updateTime", ele.getUpdateTime());
+			map.put("categoryType", "");
 			//关联加选中
 			if(associatedList != null && associatedList.size() > 0 ){
 				for(PreModuleContentLink pm:associatedList){

@@ -94,12 +94,12 @@
 	
 	<mvc:interceptors>
 		<mvc:interceptor>
-	        <mvc:mapping path="/**" />
-	        <mvc:exclude-mapping path="/PreWebContentManager/**"/> 
-	        <mvc:exclude-mapping path="/MagnetClassification/**"/> 
-	        <mvc:exclude-mapping path="/MessageInfo/**"/> 
-	        <mvc:exclude-mapping path="/productVideo/**"/>
-	        <mvc:exclude-mapping path="/toLogin/**"/> 
+	        <mvc:mapping path="/category/**" />
+	        <mvc:mapping path="/Commodity/**" />
+	        <mvc:mapping path="/CommoditySpecification/**" />
+	        <mvc:mapping path="/sys/**" />
+	        <mvc:mapping path="/user/**" />
+	        <mvc:mapping path="/webContentManager/**" />
 	        <bean class="com.syard.interceptor.LogInterceptor"></bean>
 	    </mvc:interceptor>
 	</mvc:interceptors>

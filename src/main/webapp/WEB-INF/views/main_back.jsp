@@ -192,7 +192,7 @@
 						'您确定要退出本次登录吗?',
 						function(isConfirm) {
 							if (isConfirm) {
-								location.href = '${pageContext.request.contextPath }/admin/index';
+								location.href = '${pageContext.request.contextPath }/toLogin/toOut';
 							}
 						});
 	}

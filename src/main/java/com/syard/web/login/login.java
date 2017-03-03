@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import sun.misc.BASE64Encoder;
 
@@ -70,5 +71,10 @@ public class login {
 	@RequestMapping(value = "{value}")
 	public String toPage(@PathVariable("value") String value) {
 		return value;
+	}
+	@RequestMapping(value="toOut")
+	public String toOut( HttpServletRequest request){
+		request.getSession().setAttribute("user", null);
+		return "Back_login";
 	}
 }

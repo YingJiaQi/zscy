@@ -377,10 +377,10 @@
 		$(target).parent().parent().hide();
 	}
 	function contactUs(){
-		$("#mask").show();
+		/* $("#mask").show();
 		var optionHtml = "<div style='padding:10px;height:300px;width:500px;position:absolute;top:200px;left:30%;z-index:9999;background-color:white'><p><button class='btn' style='float:right;margin:10px 30px 20px 10px' onclick='closedWindowPanel(this)'>关闭</button></p>"+
 		"<h2 style='margin-left:90px'>微信扫码，联系我们</h2><br/><img src='${pageContext.request.contextPath }/static/image/zm_logo.png'/></div>";
-		$(document.body).append(optionHtml);
+		$(document.body).append(optionHtml); */
 	}
 	</script>
 <style type="text/css">
@@ -429,7 +429,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<img alt="Image Preview" src="${pageContext.request.contextPath }/static/image/zs_bigImg.png" width="100%" height="100%">
-						<div style="position:absolute;top:250px;left:46%"><span class="btn" onclick="contactUs();" style="color:white;border:3px solid white;border-radius:12px;font-size:18px;padding:6px 26px">立即咨询</span>
+						<div style="position:absolute;top:250px;left:46%"><span class="btn" onclick="contactUs();" style="color:white;border:3px solid white;border-radius:12px;font-size:18px;padding:6px 26px;"><a style="color:white;" href="tencent://message/?uin=969112711">立即咨询</a></span>
 						</div>
 				</div>
 			</div>

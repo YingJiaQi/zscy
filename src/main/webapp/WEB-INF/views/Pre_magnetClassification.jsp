@@ -56,7 +56,7 @@
 			/* 获取后台页面传递的参数，然后赋值给js变量 */
 			<%
 				String indexParamss = request.getAttribute("indexParam")+"";
-			    // indexParamss = new String(indexParamss.getBytes("iso-8859-1"),"utf-8");
+			    indexParamss = new String(indexParamss.getBytes("iso-8859-1"),"utf-8");
 			%>
 			indexParam = <%=indexParamss %>;
 			//alert(indexParam)
@@ -344,7 +344,7 @@
 		<div class="row" style="height:500px;margin-top:10px;overflow:hidden">
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
-					<div id="pictureCarouselsPanel">
+					<div id="pictureCarouselsPanel" style="margin-left:-40px">
 					</div>
 			</div>
 			<div class="col-md-2"></div>

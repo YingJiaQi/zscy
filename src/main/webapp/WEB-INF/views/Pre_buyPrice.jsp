@@ -43,10 +43,10 @@
 		    				newsIDs[i] = String(data.datas[i].sourceContent);
 		    				newsTitles[i] = String(data.datas[i].sourceTitle);
 		    				if(data.datas[i].viewCount == 1){
-		    					var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;新闻标题："+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a><img src='${pageContext.request.contextPath }/static/image/hot.png' width='30px' height='30px' style='margin-top:-8px;margin-left:20px'/></div>"
+		    					var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;"+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a><img src='${pageContext.request.contextPath }/static/image/hot.png' width='30px' height='30px' style='margin-top:-8px;margin-left:20px'/></div>"
 								$("#showDataPanal").append(optionHtml);
 		    				}else{
-								var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;新闻标题："+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a></div>"
+								var optionHtml = "<div style='height:30px;overflow:hidden;padding:3px;font-size:1.0em;'><a href='javascript:void(0);' onclick='showDetailNews("+i+")' >&nbsp;&nbsp;&nbsp;"+data.datas[i].sourceTitle+"------&nbsp;&nbsp;创建时间:"+data.datas[i].createTime+"</a></div>"
 								$("#showDataPanal").append(optionHtml);
 		    				}
 						}

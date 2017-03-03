@@ -75,7 +75,7 @@ function picCarousels(carousels_picArr, carousels_domObject){
 		cacheHtml = "<div id='pictureCarousels'>"+
 						"<ul>"+picLis+
 						"</ul>"+
-						"<a href='javascript:void(0);' onclick='carousels_toLeft();' class='prev' style='position:absolute;top:40%;left:6%;'><img  id='al' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_left.png' alt='prev' width='30' height='80'></a>"+
+						"<a href='javascript:void(0);' onclick='carousels_toLeft();' class='prev' style='position:absolute;top:40%;left:3%;'><img  id='al' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_left.png' alt='prev' width='30' height='80'></a>"+
 						"<a href='javascript:void(0);' onclick='carousels_toRight();' class='next' style='position:absolute;top:40%;left:94%;'><img  id='ar' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_right.png' alt='next' width='30' height='80'></a>"+
 					"</div>";
 	}else{
@@ -88,7 +88,7 @@ function picCarousels(carousels_picArr, carousels_domObject){
 							"<li style='list-style-type:none;display :none;'><img  src='http://127.0.0.1:8080/ZSCY/static/image/05.jpg' alt=''  height='500px'  width='100%'  ></li>"+
 						"</ul>"+
 						"<a href='javascript:void(0);' onclick='carousels_toLeft();' class='prev' style='position:absolute;top:40%;left:6%;'><img  id='al' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_left.png' alt='prev' width='30' height='80'></a>"+
-						"<a href='javascript:void(0);' onclick='carousels_toRight();' class='next' style='position:absolute;top:40%;left:94%;'><img  id='ar' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_right.png' alt='next' width='30' height='80'></a>"+
+						"<a href='javascript:void(0);' onclick='carousels_toRight();' class='next' style='position:absolute;top:40%;left:80%;'><img  id='ar' src='http://127.0.0.1:8080/ZSCY/static/image/arrowhead_right.png' alt='next' width='30' height='80'></a>"+
 					"</div>";
 	}
 	$(carousels_domObject).append(cacheHtml);
@@ -104,9 +104,9 @@ function picCarousels(carousels_picArr, carousels_domObject){
 	//计算percent的初始位置
 	for(var j=0;j<y_picLength;j++){
 		if((i+1)%2 == 0){
-			percent -= 3;
-		}else{
 			percent -= 2;
+		}else{
+			percent -= 1;
 		}
 	}
 	for(var i=0 ;i<y_picLength;i++){
